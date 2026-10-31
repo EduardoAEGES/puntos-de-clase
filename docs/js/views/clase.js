@@ -23,7 +23,9 @@ Views.clase = {
         <button class="btn primary" data-act="tab" data-tab="ajustes">Importar alumnos</button></div>`;
     }
 
-    h += `<div class="toolbar">
+    h += `<div class="card" style="margin-bottom:16px">${podioHTML()}</div>
+      <p class="muted small" style="margin:0 0 10px">Toca un alumno para ver sus notas · usa <b>Varios</b> o <b>Toda la clase</b> para dar puntos rápido.</p>
+      <div class="toolbar">
         <div class="seg">${[['equipo', 'Equipo'], ['nombre', 'Nombre'], ['puntos', 'Puntos']].map(([k, l]) =>
           `<button class="${S.orden === k ? 'on' : ''}" data-act="orden" data-v="${k}">${l}</button>`).join('')}</div>
         <div class="chips">
@@ -60,7 +62,8 @@ function tarjetaHTML(a) {
     ${S.multi ? '<span class="check"></span>' : ''}
     <span class="total ${cls}">${a.total}</span>
     ${avatarHTML(a, color, 58)}
-    <span class="nombre">${esc(nombreCorto(a))}</span></button>`;
+    <span class="nombre">${esc(nombreCorto(a))}</span>
+    <span class="mini-nota ${UI.notaClase(a.nota, S.st.config.aprobatoria)}">Nota ${fmtNota(a.nota)}</span></button>`;
 }
 
 function ordenarAlumnos(lista) {
@@ -125,7 +128,7 @@ Object.assign(Acciones, {
   tocar(el) {
     const k = el.dataset.clave;
     if (S.multi) { S.sel.has(k) ? S.sel.delete(k) : S.sel.add(k); render(); }
-    else abrirPuntos([k]);
+    else abrirPerfil(k);
   },
   orden(el) { S.orden = el.dataset.v; store.set('orden', S.orden); render(); },
   multi() { S.multi = !S.multi; S.sel.clear(); render(); },

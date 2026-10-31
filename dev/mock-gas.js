@@ -146,40 +146,52 @@
     }
   };
 
-  /** Consola: devReset() borra todo; devDemo() crea 8 sesiones pasadas con datos al azar en el primer curso con alumnos. */
-  window.devReset = () => { localStorage.removeItem(KEY); localStorage.removeItem(PROPS); location.reload(); };
+  /**
+   * Consola: devReset() borra todo; devDemo() crea 8 sesiones pasadas en cada curso con alumnos.
+   * Cada alumno tiene un "ánimo" fijo (0.45 a 0.95) para que haya notas altas, medias y bajas.
+   */
   window.devDemo = (recargar = true) => {
-    const cursos = window.__gas.getState_('').cursos;
-    const st = cursos.map(c => window.__gas.getState_(c.curso)).find(x => x.alumnos.length);
-    if (!st) return;
-    const curso = st.curso;
-    const hoy = new Date(st.fecha + 'T12:00:00');
-    const fechas = [];
-    for (let d = new Date(hoy); fechas.length < 8; d.setDate(d.getDate() - 1)) {
-      if ([1, 3].includes(d.getDay()) && d < hoy) fechas.unshift(d.toISOString().slice(0, 10));
-    }
-    fechas.forEach((f, i) => {
-      const asis = st.alumnos.map(a => {
-        const r = Math.random();
-        return r < 0.75 ? { clave: a.clave, categoria: 'Puntualidad', puntos: 1, nota: 'Ingresó 07:0' + Math.floor(Math.random() * 9) }
-          : r < 0.9 ? { clave: a.clave, categoria: 'Tardanza', puntos: -1, nota: 'Ingresó 07:2' + Math.floor(Math.random() * 9) }
-            : { clave: a.clave, categoria: 'Falta', puntos: -1, nota: 'Sin hora de ingreso' };
-      });
-      window.__gas.addMovs_(curso, 'asistencia', asis, f);
-      const chat = st.alumnos.filter(() => Math.random() < 0.6).map(a => ({ clave: a.clave, categoria: 'Participación', puntos: 1, nota: (1 + Math.floor(Math.random() * 6)) + ' mensajes' }));
-      window.__gas.addMovs_(curso, 'chat', chat, f);
-      if (i % 2 === 1) {
-        const tareas = st.alumnos.map(a => Math.random() < 0.8
-          ? { clave: a.clave, categoria: 'Tarea completa', puntos: 1 } : { clave: a.clave, categoria: 'No entregó tarea', puntos: -1 });
-        window.__gas.addMovs_(curso, 'manual', tareas, f);
+    const DIA = { DOM: 0, LUN: 1, MAR: 2, MIE: 3, JUE: 4, VIE: 5, SAB: 6 };
+    const plano = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+    const hhmm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+    const azar = () => Math.random();
+    let dni = 70000001;
+    window.__gas.getState_('').cursos.forEach(c => {
+      const st = window.__gas.getState_(c.curso);
+      if (!st.alumnos.length) return;
+      const curso = st.curso;
+      const dias = plano(c.dias).split(/[^A-Z]+/).map(d => DIA[d]).filter(d => d !== undefined);
+      const [h, m] = c.hora.split(':').map(Number);
+      const inicio = h * 60 + m;
+      const animo = {};
+      st.alumnos.forEach(a => { animo[a.clave] = 0.45 + azar() * 0.5; });
+      const hoy = new Date(st.fecha + 'T12:00:00');
+      const fechas = [];
+      for (let d = new Date(hoy); fechas.length < 8 && dias.length; d.setDate(d.getDate() - 1)) {
+        if (dias.includes(d.getDay()) && d < hoy) fechas.unshift(d.toISOString().slice(0, 10));
       }
-      const extra = st.alumnos.filter(() => Math.random() < 0.15).map(a => ({ clave: a.clave, categoria: 'Buena respuesta', puntos: 2 }));
-      window.__gas.addMovs_(curso, 'manual', extra, f);
+      fechas.forEach((f, i) => {
+        window.__gas.addMovs_(curso, 'asistencia', st.alumnos.map(a => {
+          const r = azar() * animo[a.clave] + (1 - animo[a.clave]) * azar() * 0.6;
+          return r > 0.3 ? { clave: a.clave, categoria: 'Puntualidad', puntos: 1, nota: 'Ingresó ' + hhmm(inicio - 5 + Math.floor(azar() * 18)) }
+            : r > 0.12 ? { clave: a.clave, categoria: 'Tardanza', puntos: -1, nota: 'Ingresó ' + hhmm(inicio + 17 + Math.floor(azar() * 25)) }
+              : { clave: a.clave, categoria: 'Falta', puntos: -1, nota: 'Sin hora de ingreso' };
+        }), f);
+        window.__gas.addMovs_(curso, 'chat', st.alumnos.filter(a => azar() < animo[a.clave])
+          .map(a => ({ clave: a.clave, categoria: 'Participación', puntos: 1, nota: (1 + Math.floor(azar() * 8 * animo[a.clave])) + ' mensajes en el chat' })), f);
+        if (i % 2 === 1) {
+          window.__gas.addMovs_(curso, 'manual', st.alumnos.map(a => azar() < animo[a.clave] + 0.1
+            ? { clave: a.clave, categoria: 'Tarea completa', puntos: 1 } : { clave: a.clave, categoria: 'No entregó tarea', puntos: -1 }), f);
+        }
+        window.__gas.addMovs_(curso, 'manual', st.alumnos.filter(a => azar() < animo[a.clave] * 0.35)
+          .map(a => azar() < 0.5 ? { clave: a.clave, categoria: 'Buena respuesta', puntos: 2 } : { clave: a.clave, categoria: 'Ayuda a un compañero', puntos: 1 }), f);
+      });
+      // DNI de prueba correlativos: 70000001, 70000002, ...
+      st.alumnos.forEach(a => window.__gas.updateAlumno_(curso, a.clave, { dni: String(dni++) }));
     });
-    // DNIs de prueba: 70000001, 70000002, ...
-    st.alumnos.forEach((a, i) => window.__gas.updateAlumno_(curso, a.clave, { dni: String(70000001 + i) }));
     guardar();
     if (recargar) location.reload();
   };
+  window.devReset = () => { localStorage.removeItem(KEY); localStorage.removeItem(PROPS); location.reload(); };
   if (window.MOCK_DEMO && nueva) { window.devDemo(false); guardar(); }
 })();

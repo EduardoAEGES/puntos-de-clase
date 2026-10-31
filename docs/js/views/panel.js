@@ -34,28 +34,7 @@ Views.panel = {
         <div class="kpi"><div class="v">${conNota.length ? aprobados + '/' + conNota.length : '—'}</div><div class="l">Aprobando</div></div>
       </div><div class="panel-grid">`;
 
-    // Podio
-    const modo = S.podio || 'nota';
-    let top = [];
-    if (modo === 'equipos') {
-      top = st.equipos.slice().sort((x, y) => y.total - x.total).slice(0, 3)
-        .map(e => ({ html: `<div class="av" style="width:56px;height:56px;--av-bg:${e.color};--av-ink:${shade(e.color, .55)};font-size:20px"><span>${e.equipo}</span></div>`, n: e.nombre, v: e.total + ' pts' }));
-    } else {
-      const campo = modo === 'nota' ? 'nota' : 'total';
-      top = al.filter(a => a[campo] !== null).sort((x, y) => y[campo] - x[campo] || y.total - x.total).slice(0, 3)
-        .map(a => ({ html: avatarHTML(a, colorEq(a.equipo), 56), n: nombreCorto(a), v: modo === 'nota' ? fmtNota(a.nota) : a.total + ' pts', clave: a.clave }));
-    }
-    const lugar = (i, cls) => {
-      const t = top[i];
-      if (!t) return `<div class="p ${cls}"></div>`;
-      return `<div class="p ${cls}" ${t.clave ? `data-act="perfil" data-clave="${esc(t.clave)}" role="button"` : ''}>
-        ${i === 0 ? '<span class="corona">👑</span>' : ''}${t.html}<span class="n">${esc(t.n)}</span><span class="val">${esc(t.v)}</span>
-        <div class="base">${i + 1}</div></div>`;
-    };
-    h += `<div class="card"><div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>Podio</h3>
-      <div class="seg">${[['nota', 'Nota'], ['puntos', 'Puntos'], ['equipos', 'Equipos']].map(([k, l]) =>
-        `<button class="${modo === k ? 'on' : ''}" data-act="podio" data-v="${k}">${l}</button>`).join('')}</div></div>
-      ${top.length ? `<div class="podio">${lugar(1, 'p2')}${lugar(0, 'p1')}${lugar(2, 'p3')}</div>` : '<p class="muted">Todavía no hay datos.</p>'}</div>`;
+    h += `<div class="card">${podioHTML()}</div>`;
 
     // Asistencia por sesión
     const grupos = st.sesiones.map(s => ({ x: 'S' + s.n, partes: [porSes[s.fecha].P, porSes[s.fecha].T, porSes[s.fecha].F] }));
@@ -88,6 +67,48 @@ Views.panel = {
     return h + '</div>';
   }
 };
+
+/** Puntos de participación (categorías del componente Participación) por alumno, en todo el curso. */
+function participacionPorAlumno() {
+  const st = S.st;
+  const esPart = {};
+  st.categorias.forEach(c => { esPart[norm(c.categoria)] = norm(c.componente) === 'PARTICIPACION'; });
+  const o = {};
+  st.movs.forEach(m => { if (esPart[norm(m.categoria)] && m.puntos > 0) o[m.clave] = (o[m.clave] || 0) + m.puntos; });
+  return o;
+}
+
+const MODOS_PODIO = [['participacion', 'Participación'], ['nota', 'Nota'], ['puntos', 'Puntos'], ['equipos', 'Equipos']];
+
+/** Podio del curso actual: los tres primeros según el modo elegido (S.podio). */
+function podioHTML() {
+  const st = S.st;
+  const modo = S.podio || 'participacion';
+  let top = [];
+  if (modo === 'equipos') {
+    top = st.equipos.slice().sort((x, y) => y.total - x.total).slice(0, 3)
+      .map(e => ({ html: `<div class="av" style="width:56px;height:56px;--av-bg:${e.color};--av-ink:${shade(e.color, .55)};font-size:20px"><span>${e.equipo}</span></div>`, n: e.nombre, v: e.total + ' pts' }));
+  } else {
+    const part = modo === 'participacion' ? participacionPorAlumno() : null;
+    const valor = a => modo === 'nota' ? a.nota : modo === 'puntos' ? a.total : (part[a.clave] || 0);
+    top = st.alumnos.filter(a => valor(a) !== null).sort((x, y) => valor(y) - valor(x) || y.total - x.total).slice(0, 3)
+      .map(a => ({
+        html: avatarHTML(a, colorEq(a.equipo), 56), n: nombreCorto(a), clave: a.clave,
+        v: modo === 'nota' ? fmtNota(a.nota) : modo === 'puntos' ? a.total + ' pts' : valor(a) + ' part.'
+      }));
+  }
+  const lugar = (i, cls) => {
+    const t = top[i];
+    if (!t) return `<div class="p ${cls}"></div>`;
+    return `<div class="p ${cls}" ${t.clave ? `data-act="perfil" data-clave="${esc(t.clave)}" role="button"` : ''}>
+      ${i === 0 ? '<span class="corona">👑</span>' : ''}${t.html}<span class="n">${esc(t.n)}</span><span class="val">${esc(t.v)}</span>
+      <div class="base">${i + 1}</div></div>`;
+  };
+  const titulo = modo === 'participacion' ? 'Más participativos' : modo === 'nota' ? 'Mejores notas' : modo === 'puntos' ? 'Más puntos' : 'Mejores equipos';
+  return `<div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>🏆 ${titulo}</h3>
+    <div class="seg">${MODOS_PODIO.map(([k, l]) => `<button class="${modo === k ? 'on' : ''}" data-act="podio" data-v="${k}">${l}</button>`).join('')}</div></div>
+    ${top.length ? `<div class="podio">${lugar(1, 'p2')}${lugar(0, 'p1')}${lugar(2, 'p3')}</div>` : '<p class="muted">Todavía no hay datos.</p>'}`;
+}
 
 function itemAlumno(a, { extra = '', barras = false } = {}) {
   const ap = S.st.config.aprobatoria;

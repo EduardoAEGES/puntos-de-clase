@@ -2,11 +2,12 @@
 
 const S = {
   st: null,                     // estado que devuelve el servidor
-  tab: store.get('tab', 'clase'),
+  resumen: null,                // todos los cursos, para la pantalla de inicio
+  tab: 'inicio',
   orden: store.get('orden', 'equipo'),
   multi: false, sel: new Set(),
   pendientes: 0, ultimo: null,
-  asis: null, chat: null, sesSel: null, cal: null, imp: null, podio: 'nota',
+  asis: null, chat: null, sesSel: null, cal: null, imp: null, podio: 'participacion',
   puntosCtx: null, perfilAbierto: null
 };
 
@@ -36,6 +37,7 @@ function enviar(fn, args, { silencio = false } = {}) {
   cola = p.catch(() => {});
   return p.then(st => {
     S.ultimo = st;
+    S.resumen = null;           // cambió algo: el inicio se vuelve a calcular al abrirlo
     S.pendientes--;
     if (S.pendientes === 0) aplicar(st, { silencio });
     else pintarSync();
@@ -86,19 +88,26 @@ function render() {
   const st = S.st;
   const y = window.scrollY;
   const vista = Views[S.tab] || Views.clase;
-  $('#app').innerHTML = `
+  const enInicio = S.tab === 'inicio';
+  const ajustes = `<button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>`;
+  $('#app').innerHTML = (enInicio ? `
     <header class="top"><div class="top-in">
+      <div class="marca">${ICON.birrete}<b>Puntos de clase</b></div>
+      <span class="sync" id="sync"></span>${ajustes}
+    </div></header>` : `
+    <header class="top"><div class="top-in">
+      <button class="icon-btn" data-act="tab" data-tab="inicio" title="Mis cursos" aria-label="Volver a mis cursos">${ICON.atras}</button>
       <select class="curso-sel" data-chg="curso" aria-label="Curso">
         ${st.cursos.map(c => `<option value="${esc(c.curso)}" ${c.curso === st.curso ? 'selected' : ''}>${esc(c.nombre)} · ${esc(c.seccion)}</option>`).join('')}
       </select>
       <span class="sync" id="sync"></span>
       <button class="icon-btn" data-act="deshacer" title="Deshacer último" aria-label="Deshacer último">${ICON.deshacer}</button>
-      <button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>
-    </div></header>
-    <main>${vista.render()}</main>
+      ${ajustes}
+    </div></header>`) + `
+    <main>${vista.render()}</main>` + (enInicio ? '' : `
     <nav class="nav"><div class="nav-in">
       ${TABS.map(([k, l]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${ICON[k]}<span>${l}</span></button>`).join('')}
-    </div></nav>`;
+    </div></nav>`);
   pintarSync();
   window.scrollTo(0, y);
 }

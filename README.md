@@ -46,7 +46,7 @@ Si olvidas el PIN, ejecuta `resetPin` en el editor y crea uno nuevo al abrir la 
 ## Probar en local
 
 ```bash
-python -m http.server 5500
+python dev/servidor.py
 ```
 
 Abre `http://localhost:5500/src/index.html`. En **Ajustes → Cargar datos de prueba** se crean 8 sesiones al azar y los DNI 70000001 a 70000030.
@@ -57,9 +57,9 @@ Abre `http://localhost:5500/src/index.html`. En **Ajustes → Cargar datos de pr
 node build-demo.js
 ```
 
-Genera `docs/`, con HTML, CSS y JS separados. Usa un curso y 24 alumnos inventados (`demo/seed-demo.js`), entra sin PIN y trae 8 sesiones de historial. Todo se guarda en el navegador de quien la abre. El build se detiene si encuentra un nombre real.
+Genera `docs/`, con HTML, CSS y JS separados. Usa 9 cursos con 5 alumnos inventados cada uno (`demo/seed-demo.js`), entra sin PIN y trae 8 sesiones de historial. Todo se guarda en el navegador de quien la abre. El build se detiene si encuentra un nombre real.
 
-Para publicarla: sube el repositorio a GitHub y ve a **Settings → Pages → Deploy from a branch → main / docs**. La página de notas de la demo es `.../?v=notas`, con los DNI 70000001 a 70000024.
+Para publicarla: sube el repositorio a GitHub y ve a **Settings → Pages → Deploy from a branch → main / docs**. La página de notas de la demo es `.../?v=notas`, con los DNI 70000001 a 70000045.
 
 ## Cómo se calcula la nota
 

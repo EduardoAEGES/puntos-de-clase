@@ -28,6 +28,7 @@ const ICON = (() => {
     candado: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     birrete: '<path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
     mas: '<path d="M12 5v14M5 12h14"/>',
+    atras: '<path d="M15 18l-6-6 6-6"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'
   };
   const o = {};

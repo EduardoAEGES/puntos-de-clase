@@ -105,18 +105,20 @@ function setup() {
   });
 }
 
+/** SEED_ALUMNOS puede ser un curso {curso, nombresEquipo, equipos} o una lista de ellos. */
 function seedAlumnos_() {
   const seed = semilla_().alumnos;
   if (!seed) return;
-  const curso = seed.curso;
   const alumnos = [];
   const equipos = [];
   let n = 1;
-  seed.equipos.forEach(function (lista, i) {
-    equipos.push([curso, i + 1, (seed.nombresEquipo || [])[i] || ('Equipo ' + (i + 1)), COLORES[i % COLORES.length]]);
-    lista.forEach(function (x) {
-      const p = x.split('|');
-      alumnos.push([clave_(n++), '', '', p[0], p[1], '', curso, i + 1, '', '']);
+  [].concat(seed).forEach(function (s) {
+    s.equipos.forEach(function (lista, i) {
+      equipos.push([s.curso, i + 1, (s.nombresEquipo || [])[i] || ('Equipo ' + (i + 1)), COLORES[i % COLORES.length]]);
+      lista.forEach(function (x) {
+        const p = x.split('|');
+        alumnos.push([clave_(n++), '', '', p[0], p[1], '', s.curso, i + 1, '', '']);
+      });
     });
   });
   append_('Alumnos', alumnos);
@@ -144,7 +146,7 @@ function resetPin() {
 }
 
 const API = {
-  getState: getState_, addMovs: addMovs_, undoLast: undoLast_, deleteMov: deleteMov_,
+  getState: getState_, getResumen: getResumen_, addMovs: addMovs_, undoLast: undoLast_, deleteMov: deleteMov_,
   updateAlumno: updateAlumno_, saveEquipo: saveEquipo_, saveApodo: saveApodo_, ignorarChat: ignorarChat_,
   importAlumnos: importAlumnos_, saveSesion: saveSesion_, saveCalificacion: saveCalificacion_, saveConfig: saveConfig_,
   actualizarNotas: function (curso) { actualizarNotasHoja(); const st = getState_(curso); st.msg = 'Hoja Notas actualizada'; return st; }
@@ -190,6 +192,39 @@ function getState_(curso) {
   st.categorias = db.categorias;
   try { st.urlApp = ScriptApp.getService().getUrl(); } catch (e) { st.urlApp = ''; }
   return st;
+}
+
+/** Resumen de todos los cursos para la pantalla de inicio. */
+function getResumen_() {
+  const db = load_();
+  const compDe = {};
+  db.categorias.forEach(function (c) { compDe[norm_(c.categoria)] = norm_(c.componente); });
+  return {
+    fecha: db.hoy,
+    escala: num_(db.cfg.escala_nota, 20),
+    aprobatoria: num_(db.cfg.nota_aprobatoria, 13),
+    avatarEstilo: str_(db.cfg.avatar_estilo) || 'adventurer',
+    cursos: db.cursos.map(function (c) {
+      const st = calcCurso_(db, c.curso);
+      const part = {};
+      let p = 0, t = 0, f = 0;
+      st.movs.forEach(function (m) {
+        const k = norm_(m.categoria);
+        if (k === 'PUNTUALIDAD') p++; else if (k === 'TARDANZA') t++; else if (k === 'FALTA') f++;
+        if (compDe[k] === 'PARTICIPACION' && m.puntos > 0) part[m.clave] = (part[m.clave] || 0) + m.puntos;
+      });
+      const notas = st.alumnos.filter(function (a) { return a.nota !== null; }).map(function (a) { return a.nota; });
+      return {
+        info: c, sesiones: st.sesiones.length,
+        promedio: notas.length ? Math.round(notas.reduce(function (s, x) { return s + x; }, 0) / notas.length * 10) / 10 : null,
+        asistencia: (p + t + f) ? (p + t) / (p + t + f) : null,
+        equipos: st.equipos,
+        alumnos: st.alumnos.map(function (a) {
+          return { clave: a.clave, nombres: a.nombres, apellidos: a.apellidos, avatar: a.avatar, equipo: a.equipo, nota: a.nota, total: a.total, participacion: part[a.clave] || 0 };
+        })
+      };
+    })
+  };
 }
 
 function load_() {

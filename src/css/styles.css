@@ -391,3 +391,37 @@ label.campo > * { margin-top: 6px; }
   background: var(--warn-bg); color: var(--warn); text-align: center;
   font-size: 12.5px; font-weight: 800; padding: calc(env(safe-area-inset-top, 0px) + 6px) 12px 6px;
 }
+
+/* ===== Inicio: tarjetas de cursos ===== */
+.marca { flex: 1; display: flex; align-items: center; gap: 10px; color: var(--accent); }
+.marca svg { width: 28px; height: 28px; }
+.marca b { font-size: 18px; font-weight: 900; color: var(--ink); }
+.cursos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.curso-card {
+  position: relative; text-align: left; border: 0; background: var(--surface); border-radius: 20px;
+  box-shadow: var(--shadow); padding: 18px 16px 14px; overflow: hidden;
+  display: flex; flex-direction: column; gap: 12px; transition: transform .12s ease, box-shadow .12s ease;
+}
+.curso-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cc); }
+.curso-card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(30, 34, 53, .06), 0 10px 26px rgba(30, 34, 53, .1); }
+.curso-card:active { transform: scale(.98); }
+.cc-top { display: flex; align-items: flex-start; gap: 10px; }
+.cc-tit { flex: 1; min-width: 0; }
+.cc-tit b { display: block; font-size: 17px; font-weight: 900; line-height: 1.2; }
+.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--cc); }
+.cc-meta { font-size: 13px; color: var(--muted); font-weight: 700; margin-top: -6px; }
+.cc-avatares { display: flex; align-items: center; min-height: 40px; }
+.cc-avatares .av { border: 2px solid var(--surface); margin-left: -8px; }
+.cc-avatares .av:first-child { margin-left: 0; }
+.cc-mas { margin-left: 6px; font-weight: 800; font-size: 13px; color: var(--muted); }
+.cc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; border-top: 1px solid var(--line); padding-top: 12px; }
+.cc-stats b { font-size: 17px; font-weight: 900; display: block; line-height: 32px; }
+.cc-stats .nota-pill { display: inline-block; min-width: 46px; padding: 4px 6px; font-size: 15px; }
+.cc-stats small { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.cc-lider { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border-radius: 12px; padding: 6px 10px 6px 6px; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.cc-lider b { color: var(--ink); }
+
+/* Nota pequeña en la tarjeta del alumno */
+.mini-nota { font-size: 11.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; background: var(--pos-bg); color: var(--pos); }
+.mini-nota.neg { background: var(--neg-bg); color: var(--neg); }
+.mini-nota.na { background: var(--surface-2); color: var(--muted); }

@@ -401,6 +401,40 @@ label.campo > * { margin-top: 6px; }
   font-size: 12.5px; font-weight: 800; padding: calc(env(safe-area-inset-top, 0px) + 6px) 12px 6px;
 }
 
+/* ===== Inicio: tarjetas de cursos ===== */
+.marca { flex: 1; display: flex; align-items: center; gap: 10px; color: var(--accent); }
+.marca svg { width: 28px; height: 28px; }
+.marca b { font-size: 18px; font-weight: 900; color: var(--ink); }
+.cursos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.curso-card {
+  position: relative; text-align: left; border: 0; background: var(--surface); border-radius: 20px;
+  box-shadow: var(--shadow); padding: 18px 16px 14px; overflow: hidden;
+  display: flex; flex-direction: column; gap: 12px; transition: transform .12s ease, box-shadow .12s ease;
+}
+.curso-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cc); }
+.curso-card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(30, 34, 53, .06), 0 10px 26px rgba(30, 34, 53, .1); }
+.curso-card:active { transform: scale(.98); }
+.cc-top { display: flex; align-items: flex-start; gap: 10px; }
+.cc-tit { flex: 1; min-width: 0; }
+.cc-tit b { display: block; font-size: 17px; font-weight: 900; line-height: 1.2; }
+.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--cc); }
+.cc-meta { font-size: 13px; color: var(--muted); font-weight: 700; margin-top: -6px; }
+.cc-avatares { display: flex; align-items: center; min-height: 40px; }
+.cc-avatares .av { border: 2px solid var(--surface); margin-left: -8px; }
+.cc-avatares .av:first-child { margin-left: 0; }
+.cc-mas { margin-left: 6px; font-weight: 800; font-size: 13px; color: var(--muted); }
+.cc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; border-top: 1px solid var(--line); padding-top: 12px; }
+.cc-stats b { font-size: 17px; font-weight: 900; display: block; line-height: 32px; }
+.cc-stats .nota-pill { display: inline-block; min-width: 46px; padding: 4px 6px; font-size: 15px; }
+.cc-stats small { display: block; font-size: 11.5px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.cc-lider { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border-radius: 12px; padding: 6px 10px 6px 6px; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.cc-lider b { color: var(--ink); }
+
+/* Nota pequeña en la tarjeta del alumno */
+.mini-nota { font-size: 11.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; background: var(--pos-bg); color: var(--pos); }
+.mini-nota.neg { background: var(--neg-bg); color: var(--neg); }
+.mini-nota.na { background: var(--surface-2); color: var(--muted); }
+
 </style>
 </head>
 <body>
@@ -701,6 +735,7 @@ const ICON = (() => {
     candado: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     birrete: '<path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
     mas: '<path d="M12 5v14M5 12h14"/>',
+    atras: '<path d="M15 18l-6-6 6-6"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'
   };
   const o = {};
@@ -758,6 +793,89 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') UI.cerrar();
 
 </script>
   <script>
+/* js/views/inicio.js */
+/* Inicio: todos los cursos en tarjetas. Al tocar uno se entra a su clase. */
+
+const COLOR_CURSO = ['#5B5BD6', '#0E9F6E', '#E8590C', '#D6336C', '#1C7ED6', '#7048E8', '#2B8A3E', '#C2410C', '#0B7285', '#9C36B5'];
+
+Views.inicio = {
+  render() {
+    const R = S.resumen;
+    if (!R) {
+      cargarResumen();
+      return '<div class="cargando"><div class="spinner"></div><p>Cargando cursos…</p></div>';
+    }
+    const ahora = cursoAhora(R.cursos.map(c => c.info));
+    const hoy = norm(DIAS[new Date().getDay()]);
+    const alumnos = R.cursos.reduce((s, c) => s + c.alumnos.length, 0);
+    const proms = R.cursos.filter(c => c.promedio !== null);
+    const promGeneral = proms.length ? proms.reduce((s, c) => s + c.promedio * c.alumnos.length, 0) / proms.reduce((s, c) => s + c.alumnos.length, 0) : null;
+    const asis = R.cursos.filter(c => c.asistencia !== null);
+    const asisGeneral = asis.length ? asis.reduce((s, c) => s + c.asistencia, 0) / asis.length : null;
+
+    let h = `<div class="seccion-head"><div><h2>Mis cursos</h2>
+        <p class="muted small">${esc(tc(fmtFecha(R.fecha)))} · ${R.cursos.length} cursos</p></div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v">${R.cursos.length}</div><div class="l">Cursos</div></div>
+        <div class="kpi"><div class="v">${alumnos}</div><div class="l">Alumnos</div></div>
+        <div class="kpi"><div class="v ${promGeneral !== null && promGeneral < R.aprobatoria ? 'neg' : ''}">${fmtNota(promGeneral)}</div><div class="l">Promedio general</div></div>
+        <div class="kpi"><div class="v">${pct(asisGeneral)}</div><div class="l">Asistencia</div></div>
+      </div>
+      <div class="cursos-grid">`;
+
+    R.cursos.forEach((c, i) => {
+      const info = c.info;
+      const color = COLOR_CURSO[i % COLOR_CURSO.length];
+      const eqColor = n => (c.equipos.find(e => e.equipo === n) || {}).color || '#E5E7EB';
+      const esHoy = norm(info.dias).split(' ').includes(hoy);
+      const lider = c.alumnos.slice().sort((x, y) => y.participacion - x.participacion || (y.nota ?? 0) - (x.nota ?? 0))[0];
+      const mejor = c.alumnos.filter(a => a.nota !== null).sort((x, y) => y.nota - x.nota)[0];
+      h += `<button class="curso-card" style="--cc:${color}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+        <div class="cc-top">
+          <div class="cc-tit"><b>${esc(info.nombre)}</b><span>${esc(info.seccion)}</span></div>
+          ${ahora === info.curso ? '<span class="badge pos">Ahora</span>' : esHoy ? '<span class="badge accent">Hoy</span>' : ''}
+        </div>
+        <div class="cc-meta">${esc(info.modalidad || '')}${info.dias ? ' · ' + esc(info.dias) : ''} · ${esc(info.hora)}</div>
+        <div class="cc-avatares">${c.alumnos.slice(0, 6).map(a => avatarHTML(a, eqColor(a.equipo), 40, R.avatarEstilo)).join('')}
+          ${c.alumnos.length > 6 ? `<span class="cc-mas">+${c.alumnos.length - 6}</span>` : ''}
+          ${!c.alumnos.length ? '<span class="muted small">Sin alumnos todavía</span>' : ''}</div>
+        <div class="cc-stats">
+          <div><span class="nota-pill ${UI.notaClase(c.promedio, R.aprobatoria)}">${fmtNota(c.promedio)}</span><small>Promedio</small></div>
+          <div><b>${pct(c.asistencia)}</b><small>Asistencia</small></div>
+          <div><b>${c.sesiones}</b><small>Sesiones</small></div>
+          <div><b>${c.alumnos.length}</b><small>Alumnos</small></div>
+        </div>
+        ${lider && lider.participacion ? `<div class="cc-lider">${avatarHTML(lider, eqColor(lider.equipo), 28, R.avatarEstilo)}
+          <span>🏆 <b>${esc(nombreCorto(lider))}</b> participa más (${lider.participacion})${mejor && mejor.clave !== lider.clave ? ` · ⭐ mejor nota: ${esc(nombreCorto(mejor))} ${fmtNota(mejor.nota)}` : ''}</span></div>` : ''}
+      </button>`;
+    });
+    return h + '</div>';
+  }
+};
+
+function cargarResumen() {
+  if (S.cargandoResumen) return;
+  S.cargandoResumen = true;
+  Api.call('getResumen')
+    .then(r => { S.resumen = r; })
+    .catch(e => UI.toast(e.message, { error: true }))
+    .finally(() => { S.cargandoResumen = false; render(); });
+}
+
+Object.assign(Acciones, {
+  abrirCurso(el) {
+    const curso = el.dataset.curso;
+    S.tab = 'clase';
+    store.set('tab', S.tab);
+    if (S.st && S.st.curso === curso) { render(); window.scrollTo(0, 0); return; }
+    $('#app').innerHTML = '<div class="cargando"><div class="spinner"></div><p>Abriendo curso…</p></div>';
+    Api.call('getState', curso).then(st => { aplicar(st, { silencio: true }); window.scrollTo(0, 0); })
+      .catch(e => UI.toast(e.message, { error: true }));
+  }
+});
+
+</script>
+  <script>
 /* js/views/clase.js */
 /* Pantalla Clase: tarjetas de alumnos y hoja para dar puntos. */
 
@@ -784,7 +902,9 @@ Views.clase = {
         <button class="btn primary" data-act="tab" data-tab="ajustes">Importar alumnos</button></div>`;
     }
 
-    h += `<div class="toolbar">
+    h += `<div class="card" style="margin-bottom:16px">${podioHTML()}</div>
+      <p class="muted small" style="margin:0 0 10px">Toca un alumno para ver sus notas · usa <b>Varios</b> o <b>Toda la clase</b> para dar puntos rápido.</p>
+      <div class="toolbar">
         <div class="seg">${[['equipo', 'Equipo'], ['nombre', 'Nombre'], ['puntos', 'Puntos']].map(([k, l]) =>
           `<button class="${S.orden === k ? 'on' : ''}" data-act="orden" data-v="${k}">${l}</button>`).join('')}</div>
         <div class="chips">
@@ -821,7 +941,8 @@ function tarjetaHTML(a) {
     ${S.multi ? '<span class="check"></span>' : ''}
     <span class="total ${cls}">${a.total}</span>
     ${avatarHTML(a, color, 58)}
-    <span class="nombre">${esc(nombreCorto(a))}</span></button>`;
+    <span class="nombre">${esc(nombreCorto(a))}</span>
+    <span class="mini-nota ${UI.notaClase(a.nota, S.st.config.aprobatoria)}">Nota ${fmtNota(a.nota)}</span></button>`;
 }
 
 function ordenarAlumnos(lista) {
@@ -886,7 +1007,7 @@ Object.assign(Acciones, {
   tocar(el) {
     const k = el.dataset.clave;
     if (S.multi) { S.sel.has(k) ? S.sel.delete(k) : S.sel.add(k); render(); }
-    else abrirPuntos([k]);
+    else abrirPerfil(k);
   },
   orden(el) { S.orden = el.dataset.v; store.set('orden', S.orden); render(); },
   multi() { S.multi = !S.multi; S.sel.clear(); render(); },
@@ -1114,28 +1235,7 @@ Views.panel = {
         <div class="kpi"><div class="v">${conNota.length ? aprobados + '/' + conNota.length : '—'}</div><div class="l">Aprobando</div></div>
       </div><div class="panel-grid">`;
 
-    // Podio
-    const modo = S.podio || 'nota';
-    let top = [];
-    if (modo === 'equipos') {
-      top = st.equipos.slice().sort((x, y) => y.total - x.total).slice(0, 3)
-        .map(e => ({ html: `<div class="av" style="width:56px;height:56px;--av-bg:${e.color};--av-ink:${shade(e.color, .55)};font-size:20px"><span>${e.equipo}</span></div>`, n: e.nombre, v: e.total + ' pts' }));
-    } else {
-      const campo = modo === 'nota' ? 'nota' : 'total';
-      top = al.filter(a => a[campo] !== null).sort((x, y) => y[campo] - x[campo] || y.total - x.total).slice(0, 3)
-        .map(a => ({ html: avatarHTML(a, colorEq(a.equipo), 56), n: nombreCorto(a), v: modo === 'nota' ? fmtNota(a.nota) : a.total + ' pts', clave: a.clave }));
-    }
-    const lugar = (i, cls) => {
-      const t = top[i];
-      if (!t) return `<div class="p ${cls}"></div>`;
-      return `<div class="p ${cls}" ${t.clave ? `data-act="perfil" data-clave="${esc(t.clave)}" role="button"` : ''}>
-        ${i === 0 ? '<span class="corona">👑</span>' : ''}${t.html}<span class="n">${esc(t.n)}</span><span class="val">${esc(t.v)}</span>
-        <div class="base">${i + 1}</div></div>`;
-    };
-    h += `<div class="card"><div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>Podio</h3>
-      <div class="seg">${[['nota', 'Nota'], ['puntos', 'Puntos'], ['equipos', 'Equipos']].map(([k, l]) =>
-        `<button class="${modo === k ? 'on' : ''}" data-act="podio" data-v="${k}">${l}</button>`).join('')}</div></div>
-      ${top.length ? `<div class="podio">${lugar(1, 'p2')}${lugar(0, 'p1')}${lugar(2, 'p3')}</div>` : '<p class="muted">Todavía no hay datos.</p>'}</div>`;
+    h += `<div class="card">${podioHTML()}</div>`;
 
     // Asistencia por sesión
     const grupos = st.sesiones.map(s => ({ x: 'S' + s.n, partes: [porSes[s.fecha].P, porSes[s.fecha].T, porSes[s.fecha].F] }));
@@ -1168,6 +1268,48 @@ Views.panel = {
     return h + '</div>';
   }
 };
+
+/** Puntos de participación (categorías del componente Participación) por alumno, en todo el curso. */
+function participacionPorAlumno() {
+  const st = S.st;
+  const esPart = {};
+  st.categorias.forEach(c => { esPart[norm(c.categoria)] = norm(c.componente) === 'PARTICIPACION'; });
+  const o = {};
+  st.movs.forEach(m => { if (esPart[norm(m.categoria)] && m.puntos > 0) o[m.clave] = (o[m.clave] || 0) + m.puntos; });
+  return o;
+}
+
+const MODOS_PODIO = [['participacion', 'Participación'], ['nota', 'Nota'], ['puntos', 'Puntos'], ['equipos', 'Equipos']];
+
+/** Podio del curso actual: los tres primeros según el modo elegido (S.podio). */
+function podioHTML() {
+  const st = S.st;
+  const modo = S.podio || 'participacion';
+  let top = [];
+  if (modo === 'equipos') {
+    top = st.equipos.slice().sort((x, y) => y.total - x.total).slice(0, 3)
+      .map(e => ({ html: `<div class="av" style="width:56px;height:56px;--av-bg:${e.color};--av-ink:${shade(e.color, .55)};font-size:20px"><span>${e.equipo}</span></div>`, n: e.nombre, v: e.total + ' pts' }));
+  } else {
+    const part = modo === 'participacion' ? participacionPorAlumno() : null;
+    const valor = a => modo === 'nota' ? a.nota : modo === 'puntos' ? a.total : (part[a.clave] || 0);
+    top = st.alumnos.filter(a => valor(a) !== null).sort((x, y) => valor(y) - valor(x) || y.total - x.total).slice(0, 3)
+      .map(a => ({
+        html: avatarHTML(a, colorEq(a.equipo), 56), n: nombreCorto(a), clave: a.clave,
+        v: modo === 'nota' ? fmtNota(a.nota) : modo === 'puntos' ? a.total + ' pts' : valor(a) + ' part.'
+      }));
+  }
+  const lugar = (i, cls) => {
+    const t = top[i];
+    if (!t) return `<div class="p ${cls}"></div>`;
+    return `<div class="p ${cls}" ${t.clave ? `data-act="perfil" data-clave="${esc(t.clave)}" role="button"` : ''}>
+      ${i === 0 ? '<span class="corona">👑</span>' : ''}${t.html}<span class="n">${esc(t.n)}</span><span class="val">${esc(t.v)}</span>
+      <div class="base">${i + 1}</div></div>`;
+  };
+  const titulo = modo === 'participacion' ? 'Más participativos' : modo === 'nota' ? 'Mejores notas' : modo === 'puntos' ? 'Más puntos' : 'Mejores equipos';
+  return `<div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>🏆 ${titulo}</h3>
+    <div class="seg">${MODOS_PODIO.map(([k, l]) => `<button class="${modo === k ? 'on' : ''}" data-act="podio" data-v="${k}">${l}</button>`).join('')}</div></div>
+    ${top.length ? `<div class="podio">${lugar(1, 'p2')}${lugar(0, 'p1')}${lugar(2, 'p3')}</div>` : '<p class="muted">Todavía no hay datos.</p>'}`;
+}
 
 function itemAlumno(a, { extra = '', barras = false } = {}) {
   const ap = S.st.config.aprobatoria;
@@ -1981,11 +2123,12 @@ Views.notas = {
 
 const S = {
   st: null,                     // estado que devuelve el servidor
-  tab: store.get('tab', 'clase'),
+  resumen: null,                // todos los cursos, para la pantalla de inicio
+  tab: 'inicio',
   orden: store.get('orden', 'equipo'),
   multi: false, sel: new Set(),
   pendientes: 0, ultimo: null,
-  asis: null, chat: null, sesSel: null, cal: null, imp: null, podio: 'nota',
+  asis: null, chat: null, sesSel: null, cal: null, imp: null, podio: 'participacion',
   puntosCtx: null, perfilAbierto: null
 };
 
@@ -2015,6 +2158,7 @@ function enviar(fn, args, { silencio = false } = {}) {
   cola = p.catch(() => {});
   return p.then(st => {
     S.ultimo = st;
+    S.resumen = null;           // cambió algo: el inicio se vuelve a calcular al abrirlo
     S.pendientes--;
     if (S.pendientes === 0) aplicar(st, { silencio });
     else pintarSync();
@@ -2065,19 +2209,26 @@ function render() {
   const st = S.st;
   const y = window.scrollY;
   const vista = Views[S.tab] || Views.clase;
-  $('#app').innerHTML = `
+  const enInicio = S.tab === 'inicio';
+  const ajustes = `<button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>`;
+  $('#app').innerHTML = (enInicio ? `
     <header class="top"><div class="top-in">
+      <div class="marca">${ICON.birrete}<b>Puntos de clase</b></div>
+      <span class="sync" id="sync"></span>${ajustes}
+    </div></header>` : `
+    <header class="top"><div class="top-in">
+      <button class="icon-btn" data-act="tab" data-tab="inicio" title="Mis cursos" aria-label="Volver a mis cursos">${ICON.atras}</button>
       <select class="curso-sel" data-chg="curso" aria-label="Curso">
         ${st.cursos.map(c => `<option value="${esc(c.curso)}" ${c.curso === st.curso ? 'selected' : ''}>${esc(c.nombre)} · ${esc(c.seccion)}</option>`).join('')}
       </select>
       <span class="sync" id="sync"></span>
       <button class="icon-btn" data-act="deshacer" title="Deshacer último" aria-label="Deshacer último">${ICON.deshacer}</button>
-      <button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>
-    </div></header>
-    <main>${vista.render()}</main>
+      ${ajustes}
+    </div></header>`) + `
+    <main>${vista.render()}</main>` + (enInicio ? '' : `
     <nav class="nav"><div class="nav-in">
       ${TABS.map(([k, l]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${ICON[k]}<span>${l}</span></button>`).join('')}
-    </div></nav>`;
+    </div></nav>`);
   pintarSync();
   window.scrollTo(0, y);
 }
