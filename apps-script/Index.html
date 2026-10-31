@@ -1,0 +1,2174 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Puntos de clase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+/* ===== Tokens ===== */
+:root {
+  --bg: #F4F5FA;
+  --surface: #FFFFFF;
+  --surface-2: #F8F9FC;
+  --ink: #1E2235;
+  --muted: #6B7088;
+  --line: #E4E6EF;
+  --accent: #5B5BD6;
+  --accent-soft: #ECECFD;
+  --pos: #15803D;
+  --pos-bg: #DCFCE7;
+  --pos-line: #86EFAC;
+  --neg: #C2261D;
+  --neg-bg: #FEE2E2;
+  --neg-line: #FCA5A5;
+  --warn: #A15C07;
+  --warn-bg: #FEF3C7;
+  --oro: #F5B700;
+  --plata: #A8B0BD;
+  --bronce: #CD7F45;
+  --radius: 16px;
+  --shadow: 0 1px 2px rgba(30, 34, 53, .06), 0 4px 14px rgba(30, 34, 53, .06);
+  --nav-h: 64px;
+  --font: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3 { margin: 0; line-height: 1.2; }
+h2 { font-size: 20px; font-weight: 900; }
+h3 { font-size: 16px; font-weight: 800; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+.hidden { display: none !important; }
+
+/* ===== Estructura ===== */
+.top {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px;
+}
+.top-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 10px; }
+.curso-sel {
+  flex: 1; min-width: 0;
+  border: 0; background: var(--accent-soft); color: var(--accent);
+  font-weight: 800; border-radius: 12px; padding: 10px 12px; min-height: 44px;
+  appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px; background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+.icon-btn {
+  width: 44px; height: 44px; flex: none;
+  border: 0; border-radius: 12px; background: var(--surface-2);
+  display: grid; place-items: center; color: var(--muted);
+}
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn.on { background: var(--accent); color: #fff; }
+
+main { max-width: 1100px; margin: 0 auto; padding: 16px 16px calc(var(--nav-h) + 90px + env(safe-area-inset-bottom, 0px)); }
+
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px));
+}
+.nav-in { max-width: 640px; margin: 0 auto; display: flex; }
+.nav button {
+  flex: 1; min-width: 0; border: 0; background: none; color: var(--muted);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 11px; font-weight: 800; padding: 6px 0; border-radius: 12px; min-height: 52px;
+}
+.nav button svg { width: 24px; height: 24px; }
+.nav button.on { color: var(--accent); background: var(--accent-soft); }
+
+.seccion-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 4px 0 12px; flex-wrap: wrap; }
+.seccion-head p { margin: 2px 0 0; }
+
+/* ===== Elementos ===== */
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
+.card + .card, .stack > * + * { margin-top: 12px; }
+.btn {
+  border: 0; border-radius: 12px; padding: 10px 16px; min-height: 44px;
+  font-weight: 800; background: var(--surface-2); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn svg { width: 18px; height: 18px; }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.pos { background: var(--pos-bg); color: var(--pos); }
+.btn.neg { background: var(--neg-bg); color: var(--neg); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: .5; cursor: default; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+  padding: 6px 12px; min-height: 36px; font-weight: 700; font-size: 13.5px; color: var(--muted);
+}
+.chip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: none; border-radius: 999px; padding: 6px 12px; min-height: 34px; font-weight: 800; font-size: 13px; color: var(--muted); }
+.seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+
+input[type=text], input[type=number], input[type=time], input[type=date], input[type=password], input[type=tel], select, textarea {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 12px;
+  padding: 10px 12px; min-height: 44px; width: 100%;
+}
+textarea { min-height: 140px; resize: vertical; font-size: 14px; }
+label.campo { display: block; font-weight: 800; font-size: 13px; color: var(--muted); }
+label.campo > * { margin-top: 6px; }
+.fila { display: flex; gap: 10px; align-items: center; }
+.fila > .grow { flex: 1; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  border-radius: 999px; padding: 2px 9px; font-size: 12.5px; font-weight: 800;
+  background: var(--surface-2); color: var(--muted);
+}
+.badge.pos { background: var(--pos-bg); color: var(--pos); }
+.badge.neg { background: var(--neg-bg); color: var(--neg); }
+.badge.warn { background: var(--warn-bg); color: var(--warn); }
+.badge.accent { background: var(--accent-soft); color: var(--accent); }
+
+.vacio { text-align: center; padding: 32px 16px; color: var(--muted); }
+.vacio svg { width: 44px; height: 44px; opacity: .5; }
+
+/* ===== Avatares ===== */
+.av {
+  position: relative; flex: none; border-radius: 50%; overflow: hidden;
+  display: grid; place-items: center; font-weight: 900; color: var(--av-ink, #333);
+  background: var(--av-bg, #E5E7EB);
+}
+.av img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.av span { line-height: 1; }
+
+/* ===== Clase ===== */
+.resumen-hoy { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.toolbar { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
+.grid-alumnos { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+.grupo-equipo { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 14px; margin-top: 6px; }
+.grupo-equipo i { width: 12px; height: 12px; border-radius: 4px; background: var(--eq); }
+.grupo-equipo .badge { margin-left: auto; }
+.tarjeta {
+  position: relative; border: 0; background: var(--surface); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 12px 6px 10px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  border-top: 5px solid var(--eq, var(--line));
+  transition: transform .12s ease;
+}
+.tarjeta:active { transform: scale(.96); }
+.tarjeta .nombre { font-weight: 800; font-size: 13.5px; line-height: 1.15; min-height: 2.3em; display: flex; align-items: center; }
+.tarjeta .total {
+  position: absolute; top: 6px; right: 6px; min-width: 28px; height: 24px; padding: 0 7px;
+  border-radius: 999px; font-weight: 900; font-size: 13px; display: grid; place-items: center;
+  background: var(--pos-bg); color: var(--pos);
+}
+.tarjeta .total.neg { background: var(--neg-bg); color: var(--neg); }
+.tarjeta .total.cero { background: var(--surface-2); color: var(--muted); }
+.tarjeta.sel { outline: 3px solid var(--accent); outline-offset: -3px; }
+.tarjeta .check {
+  position: absolute; top: 6px; left: 6px; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--line); background: var(--surface);
+}
+.tarjeta.sel .check { background: var(--accent); border-color: var(--accent); }
+.tarjeta.sel .check::after { content: ''; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
+.flota {
+  position: fixed; z-index: 60; pointer-events: none; font-weight: 900; font-size: 26px;
+  animation: flota .9s ease-out forwards; text-shadow: 0 2px 0 #fff;
+}
+@keyframes flota { from { opacity: 1; transform: translate(-50%, 0) scale(.8); } to { opacity: 0; transform: translate(-50%, -60px) scale(1.2); } }
+.barra-multi {
+  position: fixed; left: 12px; right: 12px; z-index: 25;
+  bottom: calc(var(--nav-h) + 12px + env(safe-area-inset-bottom, 0px));
+  max-width: 640px; margin: 0 auto;
+  background: var(--ink); color: #fff; border-radius: 16px; padding: 10px 10px 10px 16px;
+  display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0, 0, 0, .25);
+}
+.barra-multi b { flex: 1; }
+
+/* ===== Hojas (bottom sheet) ===== */
+#capa .fondo { position: fixed; inset: 0; z-index: 40; background: rgba(20, 22, 35, .45); animation: aparece .15s ease; }
+.hoja {
+  position: fixed; z-index: 41; left: 0; right: 0; bottom: 0;
+  max-height: 92vh; overflow: auto; background: var(--surface);
+  border-radius: 22px 22px 0 0; padding: 8px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  animation: sube .2s ease;
+  max-width: 640px; margin: 0 auto;
+}
+.hoja.ancha { max-width: 900px; }
+.hoja .asa { width: 42px; height: 5px; border-radius: 3px; background: var(--line); margin: 4px auto 12px; }
+.hoja-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.hoja-head .grow { flex: 1; min-width: 0; }
+@keyframes sube { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes aparece { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 700px) {
+  .hoja { bottom: auto; top: 50%; transform: translateY(-50%); border-radius: 22px; max-height: 86vh; animation: aparece .15s ease; }
+}
+
+.cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.cat {
+  border: 1.5px solid var(--pos-line); background: var(--pos-bg); color: var(--pos);
+  border-radius: 14px; padding: 12px 8px; min-height: 70px; font-weight: 800;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center;
+}
+.cat b { font-size: 22px; font-weight: 900; }
+.cat span { font-size: 13px; line-height: 1.15; color: var(--ink); }
+.cat.neg { border-color: var(--neg-line); background: var(--neg-bg); color: var(--neg); }
+.cat:active { transform: scale(.96); }
+.cats-titulo { font-weight: 900; font-size: 13px; color: var(--muted); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .04em; }
+
+/* ===== Toast ===== */
+#toasts { position: fixed; z-index: 70; left: 0; right: 0; bottom: calc(var(--nav-h) + 16px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; padding: 0 12px; }
+.toast {
+  pointer-events: auto; background: var(--ink); color: #fff; border-radius: 14px;
+  padding: 10px 10px 10px 16px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .25); max-width: 520px; animation: sube .2s ease; font-weight: 700;
+}
+.toast.error { background: var(--neg); }
+.toast button { border: 0; background: rgba(255, 255, 255, .16); color: #fff; font-weight: 900; border-radius: 10px; padding: 8px 12px; }
+
+/* ===== Panel ===== */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.kpi { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; }
+.kpi .v { font-size: 28px; font-weight: 900; line-height: 1.1; }
+.kpi .l { font-size: 13px; font-weight: 700; color: var(--muted); }
+.panel-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .panel-grid { grid-template-columns: 1fr 1fr; } .panel-grid .full { grid-column: 1 / -1; } }
+
+.podio { display: grid; grid-template-columns: 1fr 1.15fr 1fr; align-items: end; gap: 8px; margin-top: 10px; }
+.podio .p { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
+.podio .p .n { font-weight: 800; font-size: 13.5px; line-height: 1.15; }
+.podio .p .val { font-weight: 900; }
+.podio .base { width: 100%; border-radius: 12px 12px 0 0; display: grid; place-items: center; font-weight: 900; font-size: 22px; color: #fff; }
+.podio .p1 .base { height: 96px; background: var(--oro); }
+.podio .p2 .base { height: 70px; background: var(--plata); }
+.podio .p3 .base { height: 52px; background: var(--bronce); }
+.podio .corona { font-size: 22px; line-height: 1; }
+
+.lista { display: flex; flex-direction: column; }
+.item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 4px;
+  border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; width: 100%;
+}
+.item:last-child { border-bottom: 0; }
+.item .grow { flex: 1; min-width: 0; }
+.item .t { font-weight: 800; }
+.item .s { font-size: 13px; color: var(--muted); }
+.nota-pill { min-width: 52px; text-align: center; border-radius: 10px; padding: 6px 8px; font-weight: 900; font-size: 16px; background: var(--pos-bg); color: var(--pos); }
+.nota-pill.neg { background: var(--neg-bg); color: var(--neg); }
+.nota-pill.na { background: var(--surface-2); color: var(--muted); }
+
+.barra { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.barra i { display: block; height: 100%; border-radius: 99px; background: var(--accent); }
+.minibarras { display: flex; gap: 4px; margin-top: 6px; }
+.minibarras .barra { flex: 1; height: 6px; }
+
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font-family: var(--font); font-size: 15px; fill: var(--muted); font-weight: 700; }
+.leyenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); font-weight: 700; margin-top: 8px; }
+.leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+/* ===== Equipos ===== */
+.equipo-card { border-left: 6px solid var(--eq); }
+.equipo-card .fila-top { display: flex; align-items: center; gap: 12px; }
+.equipo-card .puesto { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--surface-2); flex: none; }
+.equipo-card .puesto.m1 { background: var(--oro); color: #fff; }
+.equipo-card .puesto.m2 { background: var(--plata); color: #fff; }
+.equipo-card .puesto.m3 { background: var(--bronce); color: #fff; }
+.equipo-card .pts { font-size: 26px; font-weight: 900; }
+.miembros { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.miembro { display: flex; align-items: center; gap: 6px; background: var(--surface-2); border: 0; border-radius: 999px; padding: 3px 10px 3px 3px; font-size: 13px; font-weight: 700; }
+
+/* ===== Asistencia / Chat ===== */
+.fuentes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.fuente {
+  border: 2px dashed var(--line); background: var(--surface); border-radius: var(--radius);
+  padding: 18px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-weight: 800;
+}
+.fuente svg { width: 30px; height: 30px; color: var(--accent); }
+.fuente small { font-weight: 600; color: var(--muted); }
+.progreso { height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 10px; }
+.progreso i { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.revision .item { padding: 8px 0; }
+.estado-seg { display: inline-flex; gap: 4px; }
+.estado-seg button { border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; min-width: 40px; min-height: 40px; font-weight: 900; font-size: 13px; color: var(--muted); }
+.estado-seg button.on.P { background: var(--pos-bg); border-color: var(--pos-line); color: var(--pos); }
+.estado-seg button.on.T { background: var(--warn-bg); border-color: #FCD34D; color: var(--warn); }
+.estado-seg button.on.F { background: var(--neg-bg); border-color: var(--neg-line); color: var(--neg); }
+.estado-seg button.on.N { background: var(--ink); border-color: var(--ink); color: #fff; }
+.hora-in { width: 104px !important; flex: none; padding: 8px !important; }
+.pts-in { width: 70px !important; flex: none; text-align: center; }
+.conf { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.conf.alta, .conf.id, .conf.apodo { background: var(--pos); }
+.conf.media { background: #F59E0B; }
+.conf.ninguna { background: var(--line); }
+.confirmar-bar {
+  position: sticky; bottom: calc(var(--nav-h) + 8px + env(safe-area-inset-bottom, 0px));
+  margin-top: 14px; background: var(--surface); border-radius: var(--radius); box-shadow: 0 6px 24px rgba(30, 34, 53, .15);
+  padding: 10px; display: flex; gap: 10px; align-items: center;
+}
+.confirmar-bar .grow { flex: 1; font-weight: 800; font-size: 13.5px; }
+.thumb { max-width: 100%; max-height: 220px; border-radius: 12px; border: 1px solid var(--line); display: block; margin-top: 10px; }
+
+/* ===== Sesiones / línea de tiempo ===== */
+.sesion-card { display: flex; gap: 12px; align-items: center; border: 0; text-align: left; width: 100%; }
+.sesion-num { width: 46px; height: 46px; flex: none; border-radius: 14px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 900; line-height: 1; text-align: center; font-size: 11px; }
+.sesion-num b { font-size: 18px; display: block; }
+.lote { border: 1px solid var(--line); border-radius: 14px; margin-top: 10px; overflow: hidden; }
+.lote-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--surface-2); font-size: 13px; font-weight: 800; }
+.lote-head .grow { flex: 1; }
+.mov { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 14px; }
+.mov .grow { flex: 1; min-width: 0; }
+.mov .x { border: 0; background: none; color: var(--muted); width: 36px; height: 36px; border-radius: 10px; }
+.mov .x:hover { background: var(--neg-bg); color: var(--neg); }
+
+.timeline { position: relative; margin-top: 8px; padding-left: 22px; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+.tl-ses { position: relative; padding-bottom: 16px; }
+.tl-ses::before { content: ''; position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 3px solid var(--tl, var(--accent)); }
+.tl-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.tl-head b { font-weight: 900; }
+.tl-movs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.tl-mov { font-size: 12.5px; font-weight: 800; border-radius: 10px; padding: 4px 9px; background: var(--pos-bg); color: var(--pos); }
+.tl-mov.neg { background: var(--neg-bg); color: var(--neg); }
+.tl-mov small { font-weight: 700; opacity: .75; }
+
+/* ===== Perfil ===== */
+.perfil-top { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.perfil-top .grow { flex: 1; min-width: 160px; }
+.nota-grande { text-align: center; border-radius: 18px; padding: 10px 16px; background: var(--pos-bg); color: var(--pos); min-width: 100px; }
+.nota-grande.neg { background: var(--neg-bg); color: var(--neg); }
+.nota-grande.na { background: var(--surface-2); color: var(--muted); }
+.nota-grande .v { font-size: 36px; font-weight: 900; line-height: 1; }
+.nota-grande .l { font-size: 12px; font-weight: 800; }
+.comp { margin-top: 12px; }
+.comp .fila { justify-content: space-between; font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+.asis-resumen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.asis-resumen div { border-radius: 12px; padding: 10px; text-align: center; font-weight: 800; font-size: 12.5px; }
+.asis-resumen b { display: block; font-size: 22px; font-weight: 900; }
+
+/* ===== Ajustes ===== */
+.comp-edit { display: grid; grid-template-columns: 1fr 76px 76px 120px 40px; gap: 8px; align-items: center; margin-top: 8px; }
+.comp-edit.head { font-size: 12px; font-weight: 800; color: var(--muted); }
+@media (max-width: 560px) {
+  .comp-edit { grid-template-columns: 1fr 64px 64px; }
+  .comp-edit .ses, .comp-edit .del { grid-column: span 1; }
+  .comp-edit.head .ses, .comp-edit.head .del { display: none; }
+}
+.formula { background: var(--surface-2); border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 700; line-height: 1.5; margin-top: 12px; }
+.avatar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 10px; margin-top: 12px; }
+.avatar-grid button { border: 2px solid transparent; background: none; border-radius: 50%; padding: 2px; aspect-ratio: 1; display: grid; place-items: center; }
+.avatar-grid button.on { border-color: var(--accent); }
+
+/* ===== PIN y notas públicas ===== */
+.centro { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+.caja { width: 100%; max-width: 380px; text-align: center; }
+.caja .logo { width: 64px; height: 64px; border-radius: 20px; background: var(--accent); color: #fff; display: grid; place-items: center; margin: 0 auto 14px; }
+.caja .logo svg { width: 34px; height: 34px; }
+.caja p { margin: 6px 0 18px; }
+.pin-in { text-align: center; font-size: 26px !important; letter-spacing: .4em; font-weight: 900; }
+.notas-wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.cargando { min-height: 60vh; display: grid; place-items: center; align-content: center; gap: 12px; color: var(--muted); font-weight: 700; }
+.spinner { width: 36px; height: 36px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: gira .8s linear infinite; margin: 0 auto; }
+@keyframes gira { to { transform: rotate(360deg); } }
+.sync { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); flex: none; }
+.sync.on { background: #F59E0B; animation: late 1s infinite; }
+@keyframes late { 50% { opacity: .3; } }
+
+@media (min-width: 700px) {
+  .grid-alumnos { grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 12px; }
+}
+
+/* ===== Aviso de la demo pública ===== */
+.demo-aviso {
+  background: var(--warn-bg); color: var(--warn); text-align: center;
+  font-size: 12.5px; font-weight: 800; padding: calc(env(safe-area-inset-top, 0px) + 6px) 12px 6px;
+}
+
+</style>
+</head>
+<body>
+  <div id="app">
+    <div class="cargando"><div class="spinner"></div><p>Cargando…</p></div>
+  </div>
+  <div id="capa"></div>
+  <div id="toasts"></div>
+
+  <script>
+/* js/util.js */
+/* Utilidades generales: texto, fechas, nombres y coincidencias. */
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/** Sin tildes ni signos, en mayúsculas: ÑANDÚ → NANDU */
+function norm(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase()
+    .replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+const STOP = new Set(['DE', 'DEL', 'LA', 'LAS', 'LOS', 'Y', 'DA', 'DI', 'SAN']);
+function tokens(s) { return norm(s).split(' ').filter(t => t && !STOP.has(t)); }
+
+function lev(a, b) {
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+
+const MINUS = new Set(['de', 'del', 'la', 'las', 'los', 'y']);
+function tc(s) {
+  return String(s || '').toLowerCase().split(/\s+/).filter(Boolean)
+    .map((w, i) => (i > 0 && MINUS.has(w)) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+const primero = s => String(s || '').trim().split(/\s+/)[0] || '';
+const nombreCorto = a => tc(primero(a.nombres) + ' ' + primero(a.apellidos));
+const nombreCompleto = a => tc(a.nombres + ' ' + a.apellidos);
+const iniciales = a => (primero(a.nombres).charAt(0) + primero(a.apellidos).charAt(0)).toUpperCase();
+
+function toMin(h) { const m = String(h || '').match(/(\d{1,2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+function deMin(n) { n = ((n % 1440) + 1440) % 1440; return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0'); }
+const signo = n => (n > 0 ? '+' : '') + n;
+
+const DIAS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+function fmtFecha(f, conDia = true) {
+  if (!f) return '';
+  const d = new Date(f + 'T12:00:00');
+  return (conDia ? DIAS[d.getDay()] + ' ' : '') + d.getDate() + ' ' + MESES[d.getMonth()];
+}
+function hoyISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+const fmtNota = n => (n === null || n === undefined) ? '—' : (Math.round(n * 10) / 10).toFixed(n % 1 ? 1 : 0);
+const pct = x => (x === null || x === undefined) ? '—' : Math.round(x * 100) + '%';
+
+/** Oscurece un color hex (para texto sobre el color del equipo). */
+function shade(hex, f) {
+  const h = String(hex || '#E5E7EB').replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map(x => x + x).join('') : h, 16);
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => Math.round(v * (1 - f)));
+  return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } }
+};
+
+/**
+ * Busca al alumno que corresponde a un nombre (del chat o de una captura).
+ * Devuelve {alumno, conf: 'apodo'|'alta'|'media'} o null si no hay uno claro.
+ */
+function matchNombre(q, alumnos) {
+  const nq = norm(q);
+  if (!nq) return null;
+  for (const a of alumnos) {
+    if ((a.apodos || []).some(p => norm(p) === nq)) return { alumno: a, conf: 'apodo' };
+    if (norm(a.apellidos + ' ' + a.nombres) === nq || norm(a.nombres + ' ' + a.apellidos) === nq) return { alumno: a, conf: 'alta' };
+  }
+  const qt = tokens(q);
+  if (!qt.length) return null;
+  const res = alumnos.map(a => {
+    const at = tokens(a.apellidos + ' ' + a.nombres);
+    const usados = new Set();
+    let m = 0;
+    qt.forEach(t => {
+      const i = at.findIndex((x, j) => !usados.has(j) && (x === t ||
+        (t.length >= 4 && x.length >= 4 && lev(x, t) <= (Math.min(x.length, t.length) >= 7 ? 2 : 1))));
+      if (i >= 0) { usados.add(i); m++; }
+    });
+    return { a, m, s: m / qt.length, s2: m / at.length };
+  }).sort((x, y) => y.m - x.m || y.s2 - x.s2);
+  const b = res[0], c = res[1];
+  if (!b || b.m === 0) return null;
+  const unico = !c || c.m < b.m;
+  if (b.m >= 2 && b.s >= 0.6 && unico) return { alumno: b.a, conf: 'alta' };
+  // Coincidencia parcial: solo si cubre al menos la mitad de lo leído (evita "PEREZ QUISPE" → "MAMANI QUISPE")
+  if (unico && b.s >= 0.5) return { alumno: b.a, conf: 'media' };
+  return null;
+}
+
+function cargarScript(src) {
+  return new Promise((ok, fail) => {
+    if ($$('script').some(s => s.src === src)) return ok();
+    const s = document.createElement('script');
+    s.src = src; s.onload = ok; s.onerror = () => fail(new Error('No se pudo cargar ' + src));
+    document.head.appendChild(s);
+  });
+}
+
+</script>
+  <script>
+/* js/api.js */
+/* Comunicación con Apps Script (google.script.run). En desarrollo lo atiende dev/mock-gas.js. */
+
+const Api = {
+  pin: store.get('pin', ''),
+
+  run(fn, ...args) {
+    return new Promise((ok, fail) => {
+      if (typeof google === 'undefined' || !google.script) return fail(new Error('Abre la app desde el enlace de Apps Script.'));
+      google.script.run.withSuccessHandler(ok).withFailureHandler(e => fail(e instanceof Error ? e : new Error(String(e && e.message || e))))[fn](...args);
+    });
+  },
+
+  /** Acciones del docente: siempre pasan por api(pin, fn, args) en el servidor. */
+  call(fn, ...args) { return this.run('api', this.pin, fn, args); },
+
+  setPin(p) { this.pin = p; store.set('pin', p); },
+  olvidarPin() { this.pin = ''; store.del('pin'); },
+
+  location() {
+    return new Promise(ok => {
+      try { google.script.url.getLocation(l => ok(l.parameter || {})); }
+      catch (e) { ok(Object.fromEntries(new URLSearchParams(location.search))); }
+    });
+  }
+};
+
+</script>
+  <script>
+/* js/avatar.js */
+/* Avatares: ilustrados (DiceBear) o iniciales con el color del equipo. */
+
+const ESTILOS = [
+  { id: 'adventurer', nombre: 'Aventurero' },
+  { id: 'avataaars', nombre: 'Clásico' },
+  { id: 'big-smile', nombre: 'Sonrisa' },
+  { id: 'fun-emoji', nombre: 'Emoji' },
+  { id: 'bottts', nombre: 'Robot' },
+  { id: 'lorelei', nombre: 'Lorelei' },
+  { id: 'micah', nombre: 'Micah' },
+  { id: 'thumbs', nombre: 'Pulgar' }
+];
+
+/** Lee el valor de la columna Avatar: "estilo:semilla", "iniciales" o vacío (usa el estilo por defecto). */
+function avatarDe(a, estiloDef) {
+  const v = String(a.avatar || '');
+  if (v === 'iniciales') return null;
+  if (v.includes(':')) { const [estilo, ...r] = v.split(':'); return { estilo, semilla: r.join(':') }; }
+  if (!estiloDef || estiloDef === 'iniciales') return null;
+  return { estilo: estiloDef, semilla: a.clave + ' ' + a.nombres };
+}
+
+const avatarUrl = (estilo, semilla) => `https://api.dicebear.com/9.x/${estilo}/svg?seed=${encodeURIComponent(semilla)}`;
+
+/** a: alumno; color: color del equipo; px: tamaño. */
+function avatarHTML(a, color, px = 56, estiloDef) {
+  const av = avatarDe(a, estiloDef ?? (typeof S !== 'undefined' && S.st ? S.st.config.avatarEstilo : 'adventurer'));
+  const bg = color || '#E5E7EB';
+  const img = av ? `<img src="${esc(avatarUrl(av.estilo, av.semilla))}" alt="" loading="lazy" onerror="this.remove()">` : '';
+  return `<div class="av" style="width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px;--av-bg:${bg};--av-ink:${shade(bg, .55)}"><span>${esc(iniciales(a))}</span>${img}</div>`;
+}
+
+</script>
+  <script>
+/* js/charts.js */
+/* Gráficos SVG simples, sin librerías. */
+
+const Charts = {
+  /** Línea con puntos. datos: [{x: etiqueta, y: número|null}] */
+  linea(datos, { min = 0, max = 20, ref = null, color = 'var(--accent)', alto = 180 } = {}) {
+    const W = 480, H = alto, L = 30, R = 10, T = 12, B = 24;
+    if (!datos.length) return '<p class="muted small">Aún no hay sesiones.</p>';
+    const n = datos.length;
+    const x = i => L + (n === 1 ? (W - L - R) / 2 : i * (W - L - R) / (n - 1));
+    const y = v => T + (H - T - B) * (1 - (v - min) / (max - min || 1));
+    const ticks = [min, (min + max) / 2, max];
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+    ticks.forEach(t => {
+      s += `<line x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" />`;
+      s += `<text x="${L - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`;
+    });
+    if (ref !== null) {
+      s += `<line x1="${L}" x2="${W - R}" y1="${y(ref)}" y2="${y(ref)}" stroke="var(--neg)" stroke-dasharray="5 5" opacity=".6" />`;
+    }
+    const pts = datos.map((d, i) => d.y === null ? null : [x(i), y(d.y)]);
+    let path = '';
+    pts.forEach(p => { if (p) path += (path ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + ' '; });
+    if (path) s += `<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />`;
+    pts.forEach((p, i) => {
+      if (p) s += `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="var(--surface)" stroke="${color}" stroke-width="3"><title>${esc(datos[i].x)}: ${fmtNota(datos[i].y)}</title></circle>`;
+    });
+    const paso = Math.ceil(n / 8);
+    datos.forEach((d, i) => { if (i % paso === 0 || i === n - 1) s += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${esc(d.x)}</text>`; });
+    return s + '</svg>';
+  },
+
+  /** Barras apiladas. grupos: [{x, partes: [n, n, n]}], colores: [..] (mismo orden que partes) */
+  apiladas(grupos, colores, { alto = 180 } = {}) {
+    const W = 480, H = alto, L = 30, R = 10, T = 12, B = 24;
+    if (!grupos.length) return '<p class="muted small">Aún no hay datos.</p>';
+    const max = Math.max(1, ...grupos.map(g => g.partes.reduce((a, b) => a + b, 0)));
+    const n = grupos.length;
+    const ancho = (W - L - R) / n;
+    const bw = Math.min(36, ancho * 0.7);
+    const y = v => T + (H - T - B) * (1 - v / max);
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+    [0, Math.round(max / 2), max].forEach(t => {
+      s += `<line x1="${L}" x2="${W - R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" />`;
+      s += `<text x="${L - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`;
+    });
+    grupos.forEach((g, i) => {
+      const cx = L + ancho * i + ancho / 2;
+      let acc = 0;
+      g.partes.forEach((v, k) => {
+        if (!v) return;
+        const y1 = y(acc + v), y0 = y(acc);
+        s += `<rect x="${cx - bw / 2}" y="${y1}" width="${bw}" height="${Math.max(0, y0 - y1 - 1.5)}" rx="4" fill="${colores[k]}"><title>${esc(g.x)}: ${v}</title></rect>`;
+        acc += v;
+      });
+    });
+    const paso = Math.ceil(n / 10);
+    grupos.forEach((g, i) => { if (i % paso === 0 || i === n - 1) s += `<text x="${L + ancho * i + ancho / 2}" y="${H - 6}" text-anchor="middle">${esc(g.x)}</text>`; });
+    return s + '</svg>';
+  },
+
+  /** Histograma de notas por tramos. */
+  histograma(valores, escala, aprobatoria) {
+    const tramos = [];
+    const paso = escala / 5;
+    for (let i = 0; i < 5; i++) tramos.push({ x: Math.round(i * paso) + '–' + Math.round((i + 1) * paso), n: 0, desde: i * paso });
+    valores.forEach(v => { tramos[Math.min(4, Math.floor(v / paso))].n++; });
+    // Tramos bajo la nota aprobatoria en rojo, el resto en verde
+    return Charts.apiladas(tramos.map(t => ({ x: t.x, partes: t.desde + paso <= aprobatoria ? [t.n, 0] : [0, t.n] })),
+      ['var(--neg-line)', 'var(--pos-line)'], { alto: 150 });
+  }
+};
+
+</script>
+  <script>
+/* js/ui.js */
+/* Piezas de interfaz compartidas: íconos, hojas, avisos. */
+
+/** Cada pantalla se registra aquí: Views.x = { render() → html }. */
+const Views = {};
+/** Acciones por clic: <button data-act="nombre">. Cambios por input: <input data-chg="nombre">. */
+const Acciones = {};
+const Cambios = {};
+
+const ICON = (() => {
+  const p = {
+    clase: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
+    panel: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>',
+    equipos: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+    asistencia: '<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M9 15l2 2 4-4"/>',
+    chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/>',
+    sesiones: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    ajustes: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    deshacer: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+    camara: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    pegar: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
+    lista: '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+    x: '<path d="M18 6L6 18M6 6l12 12"/>',
+    check: '<path d="M20 6L9 17l-5-5"/>',
+    usuarios: '<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 4a4 4 0 0 1 0 8M22 21a7 7 0 0 0-5-6.7"/>',
+    lapiz: '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    enlace: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+    estrella: '<path d="M12 2l3 6.5 7 .8-5.2 4.8 1.5 7L12 17.6 5.7 21l1.5-7L2 9.3l7-.8z"/>',
+    candado: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+    birrete: '<path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
+    mas: '<path d="M12 5v14M5 12h14"/>',
+    salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'
+  };
+  const o = {};
+  Object.keys(p).forEach(k => { o[k] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p[k]}</svg>`; });
+  return o;
+})();
+
+const UI = {
+  toast(msg, { accion, fn, error, ms = 3500 } = {}) {
+    const t = document.createElement('div');
+    t.className = 'toast' + (error ? ' error' : '');
+    t.innerHTML = `<span>${esc(msg)}</span>` + (accion ? `<button>${esc(accion)}</button>` : '');
+    if (accion) t.querySelector('button').onclick = () => { t.remove(); fn(); };
+    $('#toasts').appendChild(t);
+    setTimeout(() => t.remove(), accion ? ms + 1500 : ms);
+  },
+
+  hoja(html, { ancha = false, alCerrar } = {}) {
+    UI.cerrar();
+    const capa = $('#capa');
+    capa.innerHTML = `<div class="fondo"></div><div class="hoja${ancha ? ' ancha' : ''}" role="dialog"><div class="asa"></div>${html}</div>`;
+    capa._alCerrar = alCerrar;
+    $('.fondo', capa).onclick = UI.cerrar;
+    document.body.style.overflow = 'hidden';
+    return $('.hoja', capa);
+  },
+
+  cerrar() {
+    const capa = $('#capa');
+    if (!capa.innerHTML) return;
+    const f = capa._alCerrar;
+    capa.innerHTML = '';
+    capa._alCerrar = null;
+    document.body.style.overflow = '';
+    if (f) f();
+  },
+
+  /** Número que sube y se desvanece sobre un elemento (al dar puntos). */
+  flotar(el, texto, positivo) {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const f = document.createElement('div');
+    f.className = 'flota ' + (positivo ? 'pos' : 'neg');
+    f.textContent = texto;
+    f.style.left = (r.left + r.width / 2) + 'px';
+    f.style.top = (r.top + 10) + 'px';
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 950);
+  },
+
+  notaClase(n, aprob) { return n === null || n === undefined ? 'na' : (n < aprob ? 'neg' : ''); }
+};
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') UI.cerrar(); });
+
+</script>
+  <script>
+/* js/views/clase.js */
+/* Pantalla Clase: tarjetas de alumnos y hoja para dar puntos. */
+
+Views.clase = {
+  render() {
+    const st = S.st;
+    const c = st.cursoInfo;
+    const hoy = st.movs.filter(m => m.fecha === st.fecha);
+    const mas = hoy.filter(m => m.puntos > 0).reduce((s, m) => s + m.puntos, 0);
+    const menos = hoy.filter(m => m.puntos < 0).reduce((s, m) => s + m.puntos, 0);
+    const ses = st.sesiones.find(s => s.fecha === st.fecha);
+
+    let h = `<div class="seccion-head"><div>
+        <h2>${esc(c.nombre)} · ${esc(c.seccion)}</h2>
+        <p class="muted small">${ses ? 'Sesión ' + ses.n + ' · ' : ''}${esc(fmtFecha(st.fecha))} · inicia ${esc(c.hora)}${c.modalidad ? ' · ' + esc(c.modalidad) : ''}</p>
+      </div></div>
+      <div class="resumen-hoy">
+        <span class="badge pos">+${mas} hoy</span><span class="badge neg">${menos} hoy</span>
+        <span class="badge">${st.alumnos.length} alumnos</span>
+      </div>`;
+
+    if (!st.alumnos.length) {
+      return h + `<div class="card vacio">${ICON.usuarios}<p>Este curso aún no tiene alumnos.</p>
+        <button class="btn primary" data-act="tab" data-tab="ajustes">Importar alumnos</button></div>`;
+    }
+
+    h += `<div class="toolbar">
+        <div class="seg">${[['equipo', 'Equipo'], ['nombre', 'Nombre'], ['puntos', 'Puntos']].map(([k, l]) =>
+          `<button class="${S.orden === k ? 'on' : ''}" data-act="orden" data-v="${k}">${l}</button>`).join('')}</div>
+        <div class="chips">
+          <button class="chip ${S.multi ? 'on' : ''}" data-act="multi">Varios</button>
+          <button class="chip" data-act="todos">Toda la clase</button>
+        </div>
+      </div><div class="grid-alumnos">`;
+
+    const lista = ordenarAlumnos(st.alumnos);
+    let eqActual = null;
+    lista.forEach(a => {
+      if (S.orden === 'equipo' && a.equipo !== eqActual) {
+        eqActual = a.equipo;
+        const e = equipoDe(a.equipo);
+        h += `<div class="grupo-equipo" style="--eq:${e.color}"><i></i>${esc(e.nombre)}<span class="badge">${e.total} pts</span></div>`;
+      }
+      h += tarjetaHTML(a);
+    });
+    h += '</div>';
+
+    if (S.multi) {
+      h += `<div class="barra-multi"><b>${S.sel.size} seleccionados</b>
+        <button class="btn ghost" style="color:#fff" data-act="multi">Cancelar</button>
+        <button class="btn primary" data-act="darVarios" ${S.sel.size ? '' : 'disabled'}>Dar puntos</button></div>`;
+    }
+    return h;
+  }
+};
+
+function tarjetaHTML(a) {
+  const color = colorEq(a.equipo);
+  const cls = a.total > 0 ? '' : a.total < 0 ? 'neg' : 'cero';
+  return `<button class="tarjeta ${S.sel.has(a.clave) ? 'sel' : ''}" data-act="tocar" data-clave="${esc(a.clave)}" style="--eq:${color}">
+    ${S.multi ? '<span class="check"></span>' : ''}
+    <span class="total ${cls}">${a.total}</span>
+    ${avatarHTML(a, color, 58)}
+    <span class="nombre">${esc(nombreCorto(a))}</span></button>`;
+}
+
+function ordenarAlumnos(lista) {
+  const l = lista.slice();
+  const nom = (x, y) => norm(x.nombres).localeCompare(norm(y.nombres));
+  if (S.orden === 'nombre') l.sort(nom);
+  else if (S.orden === 'puntos') l.sort((x, y) => y.total - x.total || nom(x, y));
+  else l.sort((x, y) => (x.equipo || 99) - (y.equipo || 99) || nom(x, y));
+  return l;
+}
+
+/** Hoja de puntos para uno o varios alumnos. fecha: para corregir una sesión pasada. */
+function abrirPuntos(claves, { fecha } = {}) {
+  const st = S.st;
+  S.puntosCtx = { claves, fecha: fecha && fecha !== st.fecha ? fecha : null };
+  const als = claves.map(alumnoDe).filter(Boolean);
+  let head;
+  if (als.length === 1) {
+    const a = als[0];
+    const e = equipoDe(a.equipo);
+    head = `${avatarHTML(a, e.color, 56)}<div class="grow"><h3>${esc(nombreCompleto(a))}</h3>
+      <div class="chips" style="margin-top:6px"><span class="badge" style="background:${e.color};color:${shade(e.color, .6)}">${esc(e.nombre)}</span>
+      <span class="badge ${a.total < 0 ? 'neg' : 'pos'}">${a.total} pts</span>
+      <span class="badge accent">Nota ${fmtNota(a.nota)}</span></div></div>
+      <button class="btn" data-act="perfil" data-clave="${esc(a.clave)}">Ver perfil</button>`;
+  } else {
+    head = `<div class="fila">${als.slice(0, 4).map((a, i) => `<div style="margin-left:${i ? -14 : 0}px">${avatarHTML(a, colorEq(a.equipo), 40)}</div>`).join('')}</div>
+      <div class="grow"><h3>${als.length === st.alumnos.length ? 'Toda la clase' : als.length + ' alumnos'}</h3></div>`;
+  }
+  const btn = (c, i) => `<button class="cat ${c.puntos < 0 ? 'neg' : ''}" data-act="dar" data-cat="${i}"><b>${signo(c.puntos)}</b><span>${esc(c.categoria)}</span></button>`;
+  const pos = st.categorias.map((c, i) => [c, i]).filter(([c]) => c.puntos >= 0);
+  const neg = st.categorias.map((c, i) => [c, i]).filter(([c]) => c.puntos < 0);
+  UI.hoja(`<div class="hoja-head">${head}</div>
+    ${S.puntosCtx.fecha ? `<p class="badge warn">Se registra en la sesión del ${esc(fmtFecha(S.puntosCtx.fecha))}</p>` : ''}
+    <div class="cats-titulo">Suma</div><div class="cats">${pos.map(([c, i]) => btn(c, i)).join('')}</div>
+    <div class="cats-titulo">Resta</div><div class="cats">${neg.map(([c, i]) => btn(c, i)).join('')}</div>`);
+}
+
+/** Registra puntos con respuesta inmediata en pantalla; el servidor confirma después. */
+function darPuntos(claves, cat, fecha) {
+  const st = S.st;
+  const f = fecha || st.fecha;
+  const hora = new Date().toTimeString().slice(0, 8);
+  claves.forEach(k => {
+    const a = alumnoDe(k);
+    if (!a) return;
+    a.total += cat.puntos;
+    st.movs.push({ fecha: f, hora, curso: st.curso, clave: k, alumno: nombreCorto(a), categoria: cat.categoria, puntos: cat.puntos, origen: 'manual', nota: '', lote: 'tmp', regId: 'tmp' });
+  });
+  const eqs = new Set(claves.map(k => (alumnoDe(k) || {}).equipo));
+  st.equipos.forEach(e => { if (eqs.has(e.equipo)) e.total = st.alumnos.filter(a => a.equipo === e.equipo).reduce((s, a) => s + a.total, 0); });
+  render();
+  claves.forEach(k => UI.flotar($(`.tarjeta[data-clave="${CSS.escape(k)}"]`), signo(cat.puntos), cat.puntos > 0));
+  const quien = claves.length === 1 ? nombreCorto(alumnoDe(claves[0])) : claves.length + ' alumnos';
+  UI.toast(`${quien} ${signo(cat.puntos)} ${cat.categoria}`, { accion: 'Deshacer', fn: deshacer });
+  enviar('addMovs', [st.curso, 'manual', claves.map(k => ({ clave: k, categoria: cat.categoria, puntos: cat.puntos })), fecha || null], { silencio: true });
+}
+
+function deshacer() { enviar('undoLast', [S.st.curso]); }
+
+Object.assign(Acciones, {
+  tocar(el) {
+    const k = el.dataset.clave;
+    if (S.multi) { S.sel.has(k) ? S.sel.delete(k) : S.sel.add(k); render(); }
+    else abrirPuntos([k]);
+  },
+  orden(el) { S.orden = el.dataset.v; store.set('orden', S.orden); render(); },
+  multi() { S.multi = !S.multi; S.sel.clear(); render(); },
+  todos() { abrirPuntos(S.st.alumnos.map(a => a.clave)); },
+  darVarios() { if (S.sel.size) abrirPuntos([...S.sel]); },
+  dar(el) {
+    const cat = S.st.categorias[+el.dataset.cat];
+    const { claves, fecha } = S.puntosCtx;
+    UI.cerrar();
+    if (S.multi) { S.multi = false; S.sel.clear(); }
+    darPuntos(claves, cat, fecha);
+  },
+  deshacer
+});
+
+</script>
+  <script>
+/* js/views/perfil.js */
+/* Perfil del alumno: nota, componentes, evolución y línea de tiempo por sesión.
+   Lo usan el docente (con acciones) y la página pública de notas (solo lectura). */
+
+const ASIS = { PUNTUALIDAD: 'P', TARDANZA: 'T', FALTA: 'F' };
+const ASIS_TXT = { P: 'Puntual', T: 'Tardanza', F: 'Falta' };
+const ASIS_COLOR = { P: 'var(--pos)', T: '#F59E0B', F: 'var(--neg)' };
+const estadoAsis = mov => ASIS[norm(mov.categoria)] || null;
+
+const Perfil = {
+  /**
+   * d: { alumno, equipo, curso, sesiones, movs (del alumno), componentes, escala, aprobatoria, avatarEstilo }
+   */
+  html(d, { publico = false } = {}) {
+    const a = d.alumno;
+    const color = d.equipo ? d.equipo.color : '#E5E7EB';
+    const cls = UI.notaClase(a.nota, d.aprobatoria);
+    const cuenta = { P: 0, T: 0, F: 0 };
+    d.movs.forEach(m => { const e = estadoAsis(m); if (e) cuenta[e]++; });
+
+    let h = `<div class="perfil-top">
+      ${avatarHTML(a, color, 84, d.avatarEstilo)}
+      <div class="grow">
+        <h2>${esc(nombreCompleto(a))}</h2>
+        <p class="muted small" style="margin:4px 0 8px">${esc(d.curso.nombre)} · ${esc(d.curso.seccion)}</p>
+        <div class="chips">
+          ${d.equipo ? `<span class="badge" style="background:${color};color:${shade(color, .6)}">${esc(d.equipo.nombre)}</span>` : ''}
+          <span class="badge ${a.total < 0 ? 'neg' : 'pos'}">${a.total} puntos</span>
+          <span class="badge">${d.sesiones.length} sesiones</span>
+        </div>
+      </div>
+      <div class="nota-grande ${cls}"><div class="v">${fmtNota(a.nota)}</div><div class="l">de ${d.escala}</div></div>
+    </div>`;
+
+    if (!publico) {
+      h += `<div class="chips" style="margin-top:14px">
+        <button class="btn primary" data-act="puntosPerfil" data-clave="${esc(a.clave)}">${ICON.estrella}Dar puntos</button>
+        <button class="btn" data-act="editarAlumno" data-clave="${esc(a.clave)}">${ICON.lapiz}Editar</button>
+        <button class="btn" data-act="elegirAvatar" data-clave="${esc(a.clave)}">Avatar</button>
+      </div>`;
+    }
+
+    // Componentes de la nota
+    h += `<div class="card" style="margin-top:14px"><h3>Cómo va su nota</h3>`;
+    (a.comps || []).forEach(c => {
+      const w = c.logro === null ? 0 : Math.round(c.logro * 100);
+      h += `<div class="comp"><div class="fila"><span>${esc(c.componente)} <span class="muted small">· ${c.peso}%</span></span>
+        <span>${c.logro === null ? '<span class="muted small">Aún no cuenta</span>' : w + '%'}</span></div>
+        <div class="barra"><i style="width:${w}%;background:${w < (d.aprobatoria / d.escala) * 100 ? 'var(--neg-line)' : 'var(--pos-line)'}"></i></div>
+        <div class="muted small" style="margin-top:4px">${c.puntos} de ${c.posible} puntos posibles</div></div>`;
+    });
+    h += `<div class="asis-resumen">
+        <div style="background:var(--pos-bg);color:var(--pos)"><b>${cuenta.P}</b>Puntual</div>
+        <div style="background:var(--warn-bg);color:var(--warn)"><b>${cuenta.T}</b>Tardanza</div>
+        <div style="background:var(--neg-bg);color:var(--neg)"><b>${cuenta.F}</b>Falta</div>
+      </div></div>`;
+
+    // Evolución
+    h += `<div class="card"><h3>Evolución de la nota</h3>
+      ${Charts.linea((a.serie || []).map(s => ({ x: 'S' + s.n, y: s.nota })), { max: d.escala, ref: d.aprobatoria })}
+      <div class="leyenda"><span><i style="background:var(--accent)"></i>Nota acumulada</span><span><i style="background:var(--neg)"></i>Aprobatoria (${d.aprobatoria})</span></div></div>`;
+
+    // Línea de tiempo
+    h += `<div class="card"><h3>Línea de tiempo</h3><div class="timeline">`;
+    const porFecha = {};
+    d.movs.forEach(m => { (porFecha[m.fecha] = porFecha[m.fecha] || []).push(m); });
+    d.sesiones.slice().reverse().forEach(s => {
+      const ms = (porFecha[s.fecha] || []).slice().sort((x, y) => x.hora.localeCompare(y.hora));
+      const asis = ms.map(estadoAsis).find(Boolean);
+      const sub = ms.reduce((t, m) => t + m.puntos, 0);
+      h += `<div class="tl-ses" style="--tl:${asis ? ASIS_COLOR[asis] : 'var(--line)'}">
+        <div class="tl-head"><b>Sesión ${s.n}</b><span class="muted small">${esc(fmtFecha(s.fecha))}${s.tema ? ' · ' + esc(s.tema) : ''}</span>
+          ${asis ? `<span class="badge ${asis === 'P' ? 'pos' : asis === 'T' ? 'warn' : 'neg'}">${ASIS_TXT[asis]}</span>` : ''}
+          ${ms.length ? `<span class="badge ${sub < 0 ? 'neg' : 'pos'}">${signo(sub)}</span>` : ''}
+          ${!publico ? `<button class="btn ghost small" style="min-height:32px;padding:4px 8px" data-act="corregir" data-clave="${esc(a.clave)}" data-fecha="${s.fecha}">Corregir</button>` : ''}
+        </div>
+        <div class="tl-movs">${ms.length ? ms.map(m => `<span class="tl-mov ${m.puntos < 0 ? 'neg' : ''}" ${!publico && m.regId !== 'tmp' ? `data-act="borrarMov" data-reg="${esc(m.regId)}" role="button" title="Tocar para borrar"` : ''}>
+            ${signo(m.puntos)} ${esc(m.categoria)} <small>${esc(m.hora.slice(0, 5))}${m.nota ? ' · ' + esc(m.nota) : ''}</small></span>`).join('')
+          : '<span class="muted small">Sin registros en esta sesión</span>'}</div>
+      </div>`;
+    });
+    if (!d.sesiones.length) h += '<p class="muted small">Aún no hay sesiones.</p>';
+    h += '</div></div>';
+    return h;
+  },
+
+  /** Datos del perfil a partir del estado del docente. */
+  datos(clave) {
+    const st = S.st;
+    const a = alumnoDe(clave);
+    return {
+      alumno: a, equipo: equipoDe(a.equipo), curso: st.cursoInfo, sesiones: st.sesiones,
+      movs: st.movs.filter(m => m.clave === clave), componentes: st.componentes,
+      escala: st.config.escala, aprobatoria: st.config.aprobatoria, avatarEstilo: st.config.avatarEstilo
+    };
+  }
+};
+
+function abrirPerfil(clave) {
+  S.perfilAbierto = clave;
+  UI.hoja(`<div class="fila" style="justify-content:flex-end"><button class="icon-btn" data-act="cerrar" aria-label="Cerrar">${ICON.x}</button></div>
+    ${Perfil.html(Perfil.datos(clave))}`, { ancha: true, alCerrar: () => { S.perfilAbierto = null; } });
+}
+
+function abrirEditarAlumno(clave) {
+  const a = alumnoDe(clave);
+  const st = S.st;
+  const nEq = Math.max(st.equipos.length, ...st.alumnos.map(x => x.equipo || 0)) + 1;
+  const opts = [];
+  for (let i = 1; i <= nEq; i++) {
+    const e = equipoDe(i);
+    opts.push(`<option value="${i}" ${a.equipo === i ? 'selected' : ''}>${esc(e.nombre)}${i === nEq ? ' (nuevo)' : ''}</option>`);
+  }
+  UI.hoja(`<div class="hoja-head">${avatarHTML(a, colorEq(a.equipo), 48)}<div class="grow"><h3>${esc(nombreCompleto(a))}</h3></div></div>
+    <div class="stack">
+      <label class="campo">DNI<input type="tel" inputmode="numeric" maxlength="8" id="ed-dni" value="${esc(a.dni)}" placeholder="8 dígitos"></label>
+      <label class="campo">ID CERTUS<input type="text" id="ed-id" value="${esc(a.id)}"></label>
+      <label class="campo">Equipo<select id="ed-eq">${opts.join('')}</select></label>
+      <button class="btn primary block" data-act="guardarAlumno" data-clave="${esc(clave)}">Guardar</button>
+    </div>`);
+}
+
+function abrirAvatar(clave, estilo) {
+  const a = alumnoDe(clave);
+  const actual = avatarDe(a, S.st.config.avatarEstilo);
+  estilo = estilo || (actual ? actual.estilo : 'adventurer');
+  const semillas = Array.from({ length: 16 }, (_, i) => i === 0 ? a.clave + ' ' + a.nombres : a.nombres + '-' + i);
+  const color = colorEq(a.equipo);
+  UI.hoja(`<div class="hoja-head"><div class="grow"><h3>Avatar de ${esc(nombreCorto(a))}</h3></div>
+      <button class="icon-btn" data-act="cerrar">${ICON.x}</button></div>
+    <div class="chips">${ESTILOS.map(e => `<button class="chip ${e.id === estilo ? 'on' : ''}" data-act="avatarEstilo" data-clave="${esc(clave)}" data-estilo="${e.id}">${e.nombre}</button>`).join('')}
+      <button class="chip" data-act="ponerAvatar" data-clave="${esc(clave)}" data-v="iniciales">Iniciales</button></div>
+    <div class="avatar-grid">${semillas.map(s => {
+      const v = estilo + ':' + s;
+      const on = actual && actual.estilo === estilo && actual.semilla === s;
+      return `<button class="${on ? 'on' : ''}" data-act="ponerAvatar" data-clave="${esc(clave)}" data-v="${esc(v)}">${avatarHTML({ ...a, avatar: v }, color, 60)}</button>`;
+    }).join('')}</div>`, { ancha: true });
+}
+
+Object.assign(Acciones, {
+  perfil(el) { abrirPerfil(el.dataset.clave); },
+  cerrar() { UI.cerrar(); },
+  puntosPerfil(el) { abrirPuntos([el.dataset.clave]); },
+  corregir(el) { abrirPuntos([el.dataset.clave], { fecha: el.dataset.fecha }); },
+  editarAlumno(el) { abrirEditarAlumno(el.dataset.clave); },
+  guardarAlumno(el) {
+    const k = el.dataset.clave;
+    const dni = $('#ed-dni').value.replace(/\D/g, '');
+    if (dni && dni.length !== 8) return UI.toast('El DNI debe tener 8 dígitos', { error: true });
+    const cambios = { dni, id: $('#ed-id').value.trim(), equipo: +$('#ed-eq').value };
+    Object.assign(alumnoDe(k), cambios);
+    UI.cerrar();
+    enviar('updateAlumno', [S.st.curso, k, cambios]).then(() => abrirPerfil(k));
+  },
+  elegirAvatar(el) { abrirAvatar(el.dataset.clave); },
+  avatarEstilo(el) { abrirAvatar(el.dataset.clave, el.dataset.estilo); },
+  ponerAvatar(el) {
+    const k = el.dataset.clave;
+    alumnoDe(k).avatar = el.dataset.v;
+    abrirPerfil(k);
+    render();
+    enviar('updateAlumno', [S.st.curso, k, { avatar: el.dataset.v }], { silencio: true });
+  },
+  borrarMov(el) {
+    const m = S.st.movs.find(x => x.regId === el.dataset.reg);
+    if (!m || !confirm(`¿Borrar ${signo(m.puntos)} ${m.categoria} de ${m.alumno} (${fmtFecha(m.fecha)})?`)) return;
+    const k = S.perfilAbierto;
+    enviar('deleteMov', [S.st.curso, m.regId]).then(() => { if (k) abrirPerfil(k); });
+  }
+});
+
+</script>
+  <script>
+/* js/views/panel.js */
+/* Panel de la clase: indicadores, podio, gráficos y alumnos que necesitan atención. */
+
+Views.panel = {
+  render() {
+    const st = S.st;
+    const { escala, aprobatoria } = st.config;
+    const al = st.alumnos;
+    const conNota = al.filter(a => a.nota !== null);
+    const prom = conNota.length ? conNota.reduce((s, a) => s + a.nota, 0) / conNota.length : null;
+    const aprobados = conNota.filter(a => a.nota >= aprobatoria).length;
+
+    // Asistencia por sesión
+    const porSes = {};
+    st.sesiones.forEach(s => { porSes[s.fecha] = { P: 0, T: 0, F: 0 }; });
+    const faltas = {};
+    st.movs.forEach(m => {
+      const e = estadoAsis(m);
+      if (!e || !porSes[m.fecha]) return;
+      porSes[m.fecha][e]++;
+      if (e === 'F') faltas[m.clave] = (faltas[m.clave] || 0) + 1;
+    });
+    const tot = { P: 0, T: 0, F: 0 };
+    Object.values(porSes).forEach(x => { tot.P += x.P; tot.T += x.T; tot.F += x.F; });
+    const nAsis = tot.P + tot.T + tot.F;
+
+    let h = `<div class="seccion-head"><div><h2>Panel de la clase</h2>
+      <p class="muted small">${esc(st.cursoInfo.nombre)} · ${esc(st.cursoInfo.seccion)}</p></div>
+      <button class="btn" data-act="actualizarNotas">Actualizar hoja Notas</button></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v">${st.sesiones.length}</div><div class="l">Sesiones</div></div>
+        <div class="kpi"><div class="v">${nAsis ? pct((tot.P + tot.T) / nAsis) : '—'}</div><div class="l">Asistencia</div></div>
+        <div class="kpi"><div class="v">${nAsis ? pct(tot.P / nAsis) : '—'}</div><div class="l">Puntualidad</div></div>
+        <div class="kpi"><div class="v ${prom !== null && prom < aprobatoria ? 'neg' : ''}">${fmtNota(prom)}</div><div class="l">Nota promedio</div></div>
+        <div class="kpi"><div class="v">${conNota.length ? aprobados + '/' + conNota.length : '—'}</div><div class="l">Aprobando</div></div>
+      </div><div class="panel-grid">`;
+
+    // Podio
+    const modo = S.podio || 'nota';
+    let top = [];
+    if (modo === 'equipos') {
+      top = st.equipos.slice().sort((x, y) => y.total - x.total).slice(0, 3)
+        .map(e => ({ html: `<div class="av" style="width:56px;height:56px;--av-bg:${e.color};--av-ink:${shade(e.color, .55)};font-size:20px"><span>${e.equipo}</span></div>`, n: e.nombre, v: e.total + ' pts' }));
+    } else {
+      const campo = modo === 'nota' ? 'nota' : 'total';
+      top = al.filter(a => a[campo] !== null).sort((x, y) => y[campo] - x[campo] || y.total - x.total).slice(0, 3)
+        .map(a => ({ html: avatarHTML(a, colorEq(a.equipo), 56), n: nombreCorto(a), v: modo === 'nota' ? fmtNota(a.nota) : a.total + ' pts', clave: a.clave }));
+    }
+    const lugar = (i, cls) => {
+      const t = top[i];
+      if (!t) return `<div class="p ${cls}"></div>`;
+      return `<div class="p ${cls}" ${t.clave ? `data-act="perfil" data-clave="${esc(t.clave)}" role="button"` : ''}>
+        ${i === 0 ? '<span class="corona">👑</span>' : ''}${t.html}<span class="n">${esc(t.n)}</span><span class="val">${esc(t.v)}</span>
+        <div class="base">${i + 1}</div></div>`;
+    };
+    h += `<div class="card"><div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>Podio</h3>
+      <div class="seg">${[['nota', 'Nota'], ['puntos', 'Puntos'], ['equipos', 'Equipos']].map(([k, l]) =>
+        `<button class="${modo === k ? 'on' : ''}" data-act="podio" data-v="${k}">${l}</button>`).join('')}</div></div>
+      ${top.length ? `<div class="podio">${lugar(1, 'p2')}${lugar(0, 'p1')}${lugar(2, 'p3')}</div>` : '<p class="muted">Todavía no hay datos.</p>'}</div>`;
+
+    // Asistencia por sesión
+    const grupos = st.sesiones.map(s => ({ x: 'S' + s.n, partes: [porSes[s.fecha].P, porSes[s.fecha].T, porSes[s.fecha].F] }));
+    h += `<div class="card"><h3>Asistencia por sesión</h3>
+      ${Charts.apiladas(grupos, ['var(--pos-line)', '#FCD34D', 'var(--neg-line)'])}
+      <div class="leyenda"><span><i style="background:var(--pos-line)"></i>Puntual</span><span><i style="background:#FCD34D"></i>Tardanza</span><span><i style="background:var(--neg-line)"></i>Falta</span></div></div>`;
+
+    // Nota promedio por sesión
+    const serieProm = st.sesiones.map((s, i) => {
+      const v = al.map(a => a.serie[i] && a.serie[i].nota).filter(x => x !== null && x !== undefined);
+      return { x: 'S' + s.n, y: v.length ? v.reduce((p, q) => p + q, 0) / v.length : null };
+    });
+    h += `<div class="card"><h3>Nota promedio de la clase</h3>${Charts.linea(serieProm, { max: escala, ref: aprobatoria })}</div>`;
+
+    h += `<div class="card"><h3>Distribución de notas</h3>${conNota.length ? Charts.histograma(conNota.map(a => a.nota), escala, aprobatoria) : '<p class="muted small">Aún no hay notas.</p>'}</div>`;
+
+    // Atención
+    const alerta = al.filter(a => (a.nota !== null && a.nota < aprobatoria) || (faltas[a.clave] || 0) >= 2)
+      .sort((x, y) => (x.nota ?? 99) - (y.nota ?? 99));
+    h += `<div class="card full"><h3>Necesitan atención</h3>${alerta.length ? `<div class="lista">${alerta.map(a => itemAlumno(a, {
+      extra: [a.nota !== null && a.nota < aprobatoria ? 'Nota baja' : '', faltas[a.clave] ? faltas[a.clave] + ' faltas' : ''].filter(Boolean).join(' · ')
+    })).join('')}</div>` : '<p class="muted small">Nadie por ahora. 🎉</p>'}</div>`;
+
+    // Tabla de notas
+    const orden = al.slice().sort((x, y) => (y.nota ?? -1) - (x.nota ?? -1) || y.total - x.total);
+    h += `<div class="card full"><h3>Notas de todos</h3>
+      <p class="muted small" style="margin:4px 0 6px">${st.componentes.map(c => esc(c.componente) + ' ' + c.peso + '%').join(' · ')}</p>
+      <div class="lista">${orden.map(a => itemAlumno(a, { barras: true })).join('')}</div></div>`;
+
+    return h + '</div>';
+  }
+};
+
+function itemAlumno(a, { extra = '', barras = false } = {}) {
+  const ap = S.st.config.aprobatoria;
+  return `<button class="item" data-act="perfil" data-clave="${esc(a.clave)}">
+    ${avatarHTML(a, colorEq(a.equipo), 42)}
+    <div class="grow"><div class="t">${esc(nombreCompleto(a))}</div>
+      <div class="s">${esc(equipoDe(a.equipo).nombre)} · ${a.total} pts${extra ? ' · ' + esc(extra) : ''}</div>
+      ${barras ? `<div class="minibarras">${a.comps.map(c => `<div class="barra" title="${esc(c.componente)}: ${pct(c.logro)}"><i style="width:${c.logro === null ? 0 : Math.round(c.logro * 100)}%"></i></div>`).join('')}</div>` : ''}
+    </div>
+    <span class="nota-pill ${UI.notaClase(a.nota, ap)}">${fmtNota(a.nota)}</span></button>`;
+}
+
+Object.assign(Acciones, {
+  podio(el) { S.podio = el.dataset.v; render(); },
+  actualizarNotas() { enviar('actualizarNotas', [S.st.curso]); }
+});
+
+</script>
+  <script>
+/* js/views/equipos.js */
+/* Pantalla Equipos: ranking por puntos acumulados. */
+
+Views.equipos = {
+  render() {
+    const st = S.st;
+    const lista = st.equipos.slice().sort((x, y) => y.total - x.total);
+    const max = Math.max(1, ...lista.map(e => Math.abs(e.total)));
+    let h = `<div class="seccion-head"><div><h2>Equipos</h2><p class="muted small">Suma de los puntos de sus integrantes</p></div></div>`;
+    if (!lista.length) return h + '<div class="card vacio"><p>Este curso aún no tiene equipos.</p></div>';
+    h += '<div class="stack">';
+    lista.forEach((e, i) => {
+      const miembros = st.alumnos.filter(a => a.equipo === e.equipo).sort((x, y) => y.total - x.total);
+      h += `<div class="card equipo-card" style="--eq:${e.color}">
+        <div class="fila-top">
+          <div class="puesto ${i < 3 ? 'm' + (i + 1) : ''}">${i + 1}</div>
+          <div class="grow" style="flex:1;min-width:0"><h3>${esc(e.nombre)}</h3>
+            <div class="barra" style="margin-top:8px"><i style="width:${Math.round(Math.abs(e.total) / max * 100)}%;background:${shade(e.color, .25)}"></i></div></div>
+          <div class="pts ${e.total < 0 ? 'neg' : ''}">${e.total}</div>
+        </div>
+        <div class="miembros">${miembros.map(a => `<button class="miembro" data-act="perfil" data-clave="${esc(a.clave)}">${avatarHTML(a, e.color, 28)}${esc(nombreCorto(a))} <b class="${a.total < 0 ? 'neg' : 'pos'}">${a.total}</b></button>`).join('')}</div>
+        <div class="chips" style="margin-top:12px">
+          <button class="btn pos" data-act="puntosEquipo" data-eq="${e.equipo}">${ICON.estrella}Dar puntos al equipo</button>
+          <button class="btn ghost" data-act="renombrarEquipo" data-eq="${e.equipo}">${ICON.lapiz}Renombrar</button>
+        </div></div>`;
+    });
+    return h + '</div>';
+  }
+};
+
+Object.assign(Acciones, {
+  puntosEquipo(el) {
+    const claves = S.st.alumnos.filter(a => a.equipo === +el.dataset.eq).map(a => a.clave);
+    if (claves.length) abrirPuntos(claves);
+  },
+  renombrarEquipo(el) {
+    const e = equipoDe(+el.dataset.eq);
+    const n = prompt('Nombre del equipo', e.nombre);
+    if (n === null || !n.trim() || n.trim() === e.nombre) return;
+    e.nombre = n.trim();
+    render();
+    enviar('saveEquipo', [S.st.curso, e.equipo, e.nombre]);
+  }
+});
+
+</script>
+  <script>
+/* js/views/asistencia.js */
+/* Asistencia: lee la captura de la lista de CERTUS (OCR), un texto pegado o se marca a mano.
+   Siempre pasa por una tabla de revisión antes de guardar. */
+
+const TESSERACT = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+const ESTADO_CAT = { P: 'Puntualidad', T: 'Tardanza', F: 'Falta' };
+
+Views.asistencia = {
+  render() {
+    const st = S.st;
+    const c = st.cursoInfo;
+    const lim = deMin(toMin(c.hora) + c.tolerancia);
+    if (!S.asis) S.asis = { fecha: st.fecha, filas: null, extras: [], leyendo: false, progreso: 0 };
+    const A = S.asis;
+    const yaHay = st.movs.some(m => m.fecha === A.fecha && m.origen === 'asistencia');
+
+    let h = `<div class="seccion-head"><div><h2>Asistencia</h2>
+      <p class="muted small">Inicio ${esc(c.hora)} · ${c.tolerancia} min de tolerancia · puntual hasta las <b>${lim}</b></p></div>
+      <label class="campo" style="width:170px">Sesión del<input type="date" value="${A.fecha}" data-chg="asisFecha" max="${st.fecha}"></label></div>`;
+    if (yaHay) h += `<p class="badge warn" style="margin:0 0 12px">Ya registraste asistencia del ${esc(fmtFecha(A.fecha))}. Si guardas otra vez se suma.</p>`;
+
+    if (A.leyendo) {
+      return h + `<div class="card"><h3>Leyendo la captura…</h3><p class="muted small">La primera vez tarda un poco más porque descarga el lector.</p>
+        <div class="progreso"><i style="width:${Math.round(A.progreso * 100)}%"></i></div>
+        ${A.img ? `<img class="thumb" src="${A.img}" alt="Captura">` : ''}</div>`;
+    }
+
+    if (!A.filas) {
+      return h + `<div class="fuentes">
+          <label class="fuente" role="button">${ICON.camara}Subir captura<small>Foto o pantallazo de la lista</small>
+            <input type="file" accept="image/*" hidden data-chg="asisImagen"></label>
+          <button class="fuente" data-act="asisPegar">${ICON.pegar}Pegar texto<small>Si puedes copiar la lista</small></button>
+          <button class="fuente" data-act="asisManual">${ICON.lista}Marcar a mano<small>Todos puntuales y corriges</small></button>
+        </div>
+        <div class="card ${A.pegar ? '' : 'hidden'}" style="margin-top:12px">
+          <textarea id="asis-texto" placeholder="Pega aquí la lista: ID, APELLIDOS,NOMBRES y hora de inicio"></textarea>
+          <button class="btn primary" style="margin-top:10px" data-act="asisLeerTexto">Leer lista</button>
+        </div>`;
+    }
+
+    // Revisión
+    const cuenta = { P: 0, T: 0, F: 0, N: 0 };
+    Object.values(A.filas).forEach(f => cuenta[f.estado]++);
+    const lista = st.alumnos.slice().sort((x, y) => norm(x.apellidos).localeCompare(norm(y.apellidos)));
+    h += `<div class="card revision"><div class="fila" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <h3>Revisa y corrige</h3>
+        <div class="chips"><span class="badge pos">P ${cuenta.P}</span><span class="badge warn">T ${cuenta.T}</span><span class="badge neg">F ${cuenta.F}</span></div></div>
+      <p class="muted small" style="margin:4px 0 8px">P puntual · T tardanza · F falta · — no registrar. El punto verde indica que lo encontré seguro; el ámbar, que conviene revisar.</p>
+      ${A.img ? `<details><summary class="small muted">Ver captura</summary><img class="thumb" src="${A.img}" alt="Captura"></details>` : ''}
+      <div class="lista">`;
+    lista.forEach(a => {
+      const f = A.filas[a.clave];
+      h += `<div class="item">
+        <span class="conf ${f.fuente || 'ninguna'}" title="${esc(f.fuente || 'no aparece')}"></span>
+        ${avatarHTML(a, colorEq(a.equipo), 34)}
+        <div class="grow"><div class="t">${esc(tc(a.apellidos))}, ${esc(tc(primero(a.nombres)))}</div>
+          ${f.leido ? `<div class="s">Leído: ${esc(f.leido)}</div>` : ''}</div>
+        <input type="time" class="hora-in" value="${esc(f.hora)}" data-chg="asisHora" data-clave="${esc(a.clave)}">
+        <div class="estado-seg">${['P', 'T', 'F', 'N'].map(e =>
+          `<button class="${e} ${f.estado === e ? 'on' : ''}" data-act="asisEstado" data-clave="${esc(a.clave)}" data-v="${e}">${e === 'N' ? '—' : e}</button>`).join('')}</div>
+      </div>`;
+    });
+    h += '</div></div>';
+
+    if (A.extras.length) {
+      h += `<div class="card"><h3>No están en tu lista</h3><p class="muted small">Asígnalos si son alumnos tuyos con el nombre mal leído; si no, ignóralos.</p><div class="lista">`;
+      A.extras.forEach((x, i) => {
+        h += `<div class="item"><div class="grow"><div class="t">${esc(x.nombre || x.raw)}</div><div class="s">${esc([x.id, x.hora].filter(Boolean).join(' · '))}</div></div>
+          <select style="max-width:190px" data-chg="asisAsignar" data-i="${i}"><option value="">Ignorar</option>
+          ${lista.map(a => `<option value="${esc(a.clave)}">${esc(tc(a.apellidos))}, ${esc(tc(primero(a.nombres)))}</option>`).join('')}</select></div>`;
+      });
+      h += '</div></div>';
+    }
+
+    h += `<div class="confirmar-bar"><div class="grow">${cuenta.P + cuenta.T + cuenta.F} registros para el ${esc(fmtFecha(A.fecha))}</div>
+      <button class="btn" data-act="asisCancelar">Cancelar</button>
+      <button class="btn primary" data-act="asisGuardar">${ICON.check}Guardar</button></div>`;
+    return h;
+  }
+};
+
+function limiteMin() { const c = S.st.cursoInfo; return toMin(c.hora) + c.tolerancia; }
+function estadoPorHora(hora) {
+  const m = toMin(hora);
+  if (m === null) return 'F';
+  return m <= limiteMin() ? 'P' : 'T';
+}
+
+/** Una línea de la lista: "123456 PEREZ LOPEZ,JUAN CARLOS 07:03:12 a. m." */
+function parseLineaAsis(linea) {
+  let s = ' ' + linea + ' ';
+  s = s.replace(/\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}/g, ' ');
+  let hora = '';
+  const tm = s.match(/(\d{1,2})\s?[:.]\s?(\d{2})(?:\s?[:.]\s?(\d{2}))?(?:\s*([apAP])\.?\s?[mM]\b\.?)?/);
+  if (tm) {
+    let hh = +tm[1];
+    const mm = +tm[2];
+    if (tm[4]) { const pm = tm[4].toLowerCase() === 'p'; if (pm && hh < 12) hh += 12; if (!pm && hh === 12) hh = 0; }
+    else {
+      // Sin a.m./p.m.: si el curso es de noche y la hora leída es de mañana, se asume p.m.
+      const ini = toMin(S.st.cursoInfo.hora);
+      if (hh < 12 && ini >= 12 * 60 && Math.abs((hh + 12) * 60 + mm - ini) < Math.abs(hh * 60 + mm - ini)) hh += 12;
+    }
+    if (hh < 24 && mm < 60) hora = deMin(hh * 60 + mm);
+    s = s.replace(tm[0], ' ');
+  }
+  const idm = s.match(/\b[A-Za-z]{0,2}\d{5,}\b/);
+  const id = idm ? idm[0] : '';
+  if (idm) s = s.replace(idm[0], ' ');
+  const nombre = s.replace(/[^A-Za-zÀ-ÿÑñ,\s]/g, ' ').replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim().replace(/^,|,$/g, '').trim();
+  const letras = nombre.replace(/[^A-Za-zÀ-ÿÑñ]/g, '');
+  if (letras.length < 6) return null;
+  if (!id && !hora && /NOMBRE|APELLIDO|HORA|INICIO|ASISTENCIA|ESTADO|FECHA|PARTICIPANTE/.test(norm(nombre))) return null;
+  return { id, hora, nombre, raw: linea.trim() };
+}
+
+function procesarAsistencia(texto) {
+  const st = S.st;
+  const A = S.asis;
+  A.filas = {};
+  st.alumnos.forEach(a => { A.filas[a.clave] = { hora: '', estado: 'F', fuente: '', leido: '' }; });
+  A.extras = [];
+  texto.split(/\r?\n/).forEach(l => {
+    const p = parseLineaAsis(l);
+    if (!p) return;
+    let a = p.id ? st.alumnos.find(x => (x.id && norm(x.id) === norm(p.id)) || (x.dni && x.dni === p.id.replace(/\D/g, ''))) : null;
+    let fuente = 'id';
+    if (!a) { const m = matchNombre(p.nombre.replace(',', ' '), st.alumnos); if (m) { a = m.alumno; fuente = m.conf; } }
+    if (!a) { A.extras.push(p); return; }
+    const f = A.filas[a.clave];
+    if (p.hora && (!f.hora || p.hora < f.hora)) f.hora = p.hora;
+    f.fuente = f.fuente === 'id' ? 'id' : fuente;
+    f.leido = [p.nombre, p.hora].filter(Boolean).join(' · ');
+  });
+  Object.values(A.filas).forEach(f => { f.estado = estadoPorHora(f.hora); });
+  render();
+  window.scrollTo(0, 0);
+}
+
+/** Agranda y pasa a gris la imagen: el OCR lee mejor. */
+function prepararImagen(file) {
+  return new Promise((ok, fail) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(3, Math.max(1, 2400 / img.width));
+      const c = document.createElement('canvas');
+      c.width = img.width * k; c.height = img.height * k;
+      const g = c.getContext('2d');
+      g.filter = 'grayscale(1) contrast(1.3)';
+      g.drawImage(img, 0, 0, c.width, c.height);
+      ok(c.toDataURL('image/png'));
+    };
+    img.onerror = () => fail(new Error('No pude abrir la imagen'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+Object.assign(Cambios, {
+  asisFecha(el) { S.asis.fecha = el.value || S.st.fecha; render(); },
+  async asisImagen(el) {
+    const file = el.files[0];
+    if (!file) return;
+    const A = S.asis;
+    A.img = URL.createObjectURL(file);
+    A.leyendo = true; A.progreso = 0;
+    render();
+    try {
+      await cargarScript(TESSERACT);
+      const dataUrl = await prepararImagen(file);
+      const r = await Tesseract.recognize(dataUrl, 'spa', {
+        logger: m => { if (m.status === 'recognizing text') { A.progreso = m.progress; const b = $('.progreso i'); if (b) b.style.width = Math.round(m.progress * 100) + '%'; } }
+      });
+      A.leyendo = false;
+      procesarAsistencia(r.data.text);
+    } catch (e) {
+      A.leyendo = false;
+      render();
+      UI.toast('No pude leer la captura: ' + e.message, { error: true });
+    }
+  },
+  asisHora(el) {
+    const f = S.asis.filas[el.dataset.clave];
+    f.hora = el.value;
+    f.estado = estadoPorHora(el.value);
+    render();
+  },
+  asisAsignar(el) {
+    const x = S.asis.extras[+el.dataset.i];
+    const k = el.value;
+    if (!k) return;
+    const f = S.asis.filas[k];
+    if (x.hora) { f.hora = x.hora; f.estado = estadoPorHora(x.hora); }
+    else f.estado = 'F';
+    f.fuente = 'alta';
+    f.leido = x.nombre;
+    S.asis.extras.splice(+el.dataset.i, 1);
+    render();
+  }
+});
+
+Object.assign(Acciones, {
+  asisPegar() { S.asis.pegar = !S.asis.pegar; render(); setTimeout(() => { const t = $('#asis-texto'); if (t) t.focus(); }, 50); },
+  asisLeerTexto() { const t = $('#asis-texto').value; if (!t.trim()) return UI.toast('Pega primero la lista'); procesarAsistencia(t); },
+  asisManual() {
+    const A = S.asis;
+    A.filas = {};
+    S.st.alumnos.forEach(a => { A.filas[a.clave] = { hora: '', estado: 'P', fuente: '', leido: '' }; });
+    A.extras = [];
+    render();
+  },
+  asisEstado(el) { S.asis.filas[el.dataset.clave].estado = el.dataset.v; render(); },
+  asisCancelar() { S.asis = null; render(); },
+  asisGuardar() {
+    const st = S.st;
+    const A = S.asis;
+    const items = [];
+    Object.entries(A.filas).forEach(([clave, f]) => {
+      if (f.estado === 'N') return;
+      const nombre = ESTADO_CAT[f.estado];
+      const cat = st.categorias.find(c => norm(c.categoria) === norm(nombre));
+      items.push({ clave, categoria: nombre, puntos: cat ? cat.puntos : (f.estado === 'P' ? 1 : -1), nota: f.hora ? 'Ingresó ' + f.hora : 'Sin hora de ingreso' });
+    });
+    if (!items.length) return UI.toast('No hay nada que guardar');
+    const fecha = A.fecha !== st.fecha ? A.fecha : null;
+    enviar('addMovs', [st.curso, 'asistencia', items, fecha]).then(() => { S.asis = null; render(); });
+  }
+});
+
+</script>
+  <script>
+/* js/views/chat.js */
+/* Participación desde el chat de BigBlueButton: cuenta mensajes por persona y sugiere puntos. */
+
+Views.chat = {
+  render() {
+    const st = S.st;
+    const c = st.cursoInfo;
+    if (!S.chat) S.chat = { fecha: st.fecha, filas: null };
+    const C = S.chat;
+    let h = `<div class="seccion-head"><div><h2>Participación del chat</h2>
+      <p class="muted small">Tope: ${c.tope} ${c.tope === 1 ? 'punto' : 'puntos'} de participación por alumno en cada clase</p></div>
+      <label class="campo" style="width:170px">Sesión del<input type="date" value="${C.fecha}" data-chg="chatFecha" max="${st.fecha}"></label></div>`;
+
+    if (!C.filas) {
+      return h + `<div class="card">
+        <p class="small muted" style="margin-top:0">En BigBlueButton abre el chat público, usa <b>⋮ → Copiar</b> (o <b>Guardar</b> y abre el archivo) y pega todo aquí.</p>
+        <textarea id="chat-texto" placeholder="[07:05] Ana Quispe : buenos días profe&#10;[07:06] Diego Núñez : presente"></textarea>
+        <button class="btn primary" style="margin-top:10px" data-act="chatContar">Contar mensajes</button></div>`;
+    }
+
+    const ok = C.filas.filter(f => f.clave);
+    const pend = C.filas.filter(f => !f.clave && !f.ignorado);
+    const total = ok.reduce((s, f) => s + (+f.puntos || 0), 0);
+
+    if (pend.length) {
+      h += `<div class="card"><h3>¿Quién es quién?</h3><p class="muted small">Los asigno una vez y la próxima vez los reconozco solos.</p><div class="lista">`;
+      pend.forEach(f => {
+        h += `<div class="item"><div class="grow"><div class="t">${esc(f.nombre)}</div><div class="s">${f.n} mensajes</div></div>
+          <select style="max-width:200px" data-chg="chatAsignar" data-nombre="${esc(f.nombre)}">
+            <option value="">Elegir…</option><option value="__ignorar">No es alumno (ignorar)</option>
+            ${st.alumnos.slice().sort((x, y) => norm(x.nombres).localeCompare(norm(y.nombres))).map(a => `<option value="${esc(a.clave)}">${esc(nombreCompleto(a))}</option>`).join('')}
+          </select></div>`;
+      });
+      h += '</div></div>';
+    }
+
+    h += `<div class="card revision"><h3>Escribieron en el chat (${ok.length})</h3>
+      <p class="muted small" style="margin:4px 0 8px">Puntos sugeridos según el tope y lo que ya tiene hoy. Puedes cambiarlos.</p><div class="lista">`;
+    ok.sort((x, y) => y.n - x.n).forEach(f => {
+      const a = alumnoDe(f.clave);
+      h += `<div class="item"><span class="conf ${f.conf}"></span>${avatarHTML(a, colorEq(a.equipo), 34)}
+        <div class="grow"><div class="t">${esc(nombreCompleto(a))}</div>
+          <div class="s">${f.n} mensajes${norm(f.nombre) !== norm(a.nombres + ' ' + a.apellidos) ? ' · como «' + esc(f.nombre) + '»' : ''}${f.ya ? ' · ya tiene ' + f.ya + ' hoy' : ''}</div></div>
+        <input type="number" class="pts-in" min="0" step="1" value="${f.puntos}" data-chg="chatPuntos" data-clave="${esc(f.clave)}"></div>`;
+    });
+    if (!ok.length) h += '<p class="muted small">Nadie identificado todavía.</p>';
+    h += '</div></div>';
+
+    const sinEscribir = st.alumnos.filter(a => !ok.some(f => f.clave === a.clave));
+    if (sinEscribir.length && ok.length) {
+      h += `<div class="card"><h3>No escribieron (${sinEscribir.length})</h3><div class="chips" style="margin-top:8px">
+        ${sinEscribir.map(a => `<span class="miembro">${avatarHTML(a, colorEq(a.equipo), 24)}${esc(nombreCorto(a))}</span>`).join('')}</div></div>`;
+    }
+
+    h += `<div class="confirmar-bar"><div class="grow">+${total} de participación · ${esc(fmtFecha(C.fecha))}</div>
+      <button class="btn" data-act="chatCancelar">Cancelar</button>
+      <button class="btn primary" data-act="chatGuardar" ${pend.length ? 'title="Hay nombres sin asignar"' : ''}>${ICON.check}Guardar</button></div>`;
+    return h;
+  }
+};
+
+/** Devuelve Map(nombre → cantidad de mensajes). Acepta varios formatos de copia del chat. */
+function parseChat(texto) {
+  const lineas = texto.split(/\r?\n/);
+  const cuenta = new Map();
+  const add = n => {
+    n = n.replace(/\s+/g, ' ').trim();
+    if (!n || n.length > 60 || !/[a-zÀ-ÿ]/i.test(n)) return;
+    cuenta.set(n, (cuenta.get(n) || 0) + 1);
+  };
+  const HORA = '\\d{1,2}:\\d{2}(?::\\d{2})?\\s*(?:[ap]\\.?\\s?m\\.?)?';
+  // [07:05] Nombre : mensaje   |   07:05 Nombre: mensaje
+  const reA = new RegExp(`^\\s*[\\[(]?\\s*${HORA}\\s*[\\])]?\\s*[-–]?\\s*([^:\\[\\]]{2,60}?)\\s*:\\s(.*)$`, 'i');
+  let hits = 0;
+  lineas.forEach(l => { const m = l.match(reA); if (m) { hits++; add(m[1]); } });
+  if (hits) return cuenta;
+  // Copiado de pantalla: "Nombre 07:05" y debajo los mensajes
+  const reB = new RegExp(`^\\s*(.{2,60}?)\\s+${HORA}\\s*$`, 'i');
+  let actual = null;
+  lineas.forEach(l => {
+    const m = l.match(reB);
+    if (m) actual = m[1];
+    else if (l.trim() && actual) add(actual);
+  });
+  if (cuenta.size) return cuenta;
+  // Nombre: mensaje
+  lineas.forEach(l => { const m = l.match(/^\s*([^:]{2,40}?)\s*:\s+(.+)$/); if (m) add(m[1]); });
+  return cuenta;
+}
+
+function armarFilasChat(cuenta) {
+  const st = S.st;
+  const C = S.chat;
+  const tope = st.cursoInfo.tope;
+  const ignorar = new Set(st.config.chatIgnorar.map(norm));
+  const ya = {};
+  st.movs.filter(m => m.fecha === C.fecha && norm(m.categoria) === 'PARTICIPACION').forEach(m => { ya[m.clave] = (ya[m.clave] || 0) + m.puntos; });
+  const porClave = {};
+  const filas = [];
+  cuenta.forEach((n, nombre) => {
+    if (ignorar.has(norm(nombre))) return;
+    const m = matchNombre(nombre, st.alumnos);
+    if (m) {
+      const k = m.alumno.clave;
+      if (porClave[k]) { porClave[k].n += n; return; }
+      porClave[k] = { nombre, n, clave: k, conf: m.conf };
+      filas.push(porClave[k]);
+    } else filas.push({ nombre, n, clave: null, conf: 'ninguna' });
+  });
+  filas.forEach(f => {
+    if (!f.clave) return;
+    f.ya = ya[f.clave] || 0;
+    f.puntos = Math.max(0, Math.min(f.n, tope - f.ya));
+  });
+  return filas;
+}
+
+Object.assign(Cambios, {
+  chatFecha(el) { S.chat.fecha = el.value || S.st.fecha; S.chat.filas = null; render(); },
+  chatPuntos(el) { const f = S.chat.filas.find(x => x.clave === el.dataset.clave); if (f) f.puntos = Math.max(0, +el.value || 0); render(); },
+  chatAsignar(el) {
+    const nombre = el.dataset.nombre;
+    const f = S.chat.filas.find(x => x.nombre === nombre && !x.clave);
+    if (!f || !el.value) return;
+    if (el.value === '__ignorar') {
+      f.ignorado = true;
+      S.st.config.chatIgnorar.push(nombre);
+      enviar('ignorarChat', [S.st.curso, nombre], { silencio: true });
+    } else {
+      const a = alumnoDe(el.value);
+      a.apodos.push(nombre);
+      enviar('saveApodo', [S.st.curso, a.clave, nombre], { silencio: true });
+      // Recalcula para juntar con mensajes que ya tuviera con otro nombre
+      const cuenta = new Map(S.chat.filas.filter(x => !x.ignorado).map(x => [x.nombre, x.n]));
+      S.chat.filas = armarFilasChat(cuenta);
+      UI.toast(`«${nombre}» guardado como ${nombreCorto(a)}`);
+    }
+    render();
+  }
+});
+
+Object.assign(Acciones, {
+  chatContar() {
+    const t = $('#chat-texto').value;
+    if (!t.trim()) return UI.toast('Pega primero el chat');
+    const cuenta = parseChat(t);
+    if (!cuenta.size) return UI.toast('No encontré mensajes con nombre. Revisa el formato.', { error: true });
+    S.chat.filas = armarFilasChat(cuenta);
+    render();
+  },
+  chatCancelar() { S.chat = null; render(); },
+  chatGuardar() {
+    const st = S.st;
+    const items = S.chat.filas.filter(f => f.clave && +f.puntos > 0)
+      .map(f => ({ clave: f.clave, categoria: 'Participación', puntos: +f.puntos, nota: f.n + (f.n === 1 ? ' mensaje' : ' mensajes') + ' en el chat' }));
+    if (!items.length) return UI.toast('No hay puntos que guardar');
+    const fecha = S.chat.fecha !== st.fecha ? S.chat.fecha : null;
+    enviar('addMovs', [st.curso, 'chat', items, fecha]).then(() => { S.chat = null; render(); });
+  }
+});
+
+</script>
+  <script>
+/* js/views/sesiones.js */
+/* Sesiones: histórico de cada clase, con sus movimientos, corrección y deshacer. */
+
+const ORIGEN_TXT = { manual: 'Puntos a mano', asistencia: 'Asistencia', chat: 'Chat' };
+
+Views.sesiones = {
+  render() {
+    return S.sesSel ? detalleSesion(S.sesSel) : listaSesiones();
+  }
+};
+
+function listaSesiones() {
+  const st = S.st;
+  const hayHoy = st.sesiones.some(s => s.fecha === st.fecha);
+  let h = `<div class="seccion-head"><div><h2>Sesiones</h2><p class="muted small">${st.sesiones.length} clases registradas</p></div>
+    ${hayHoy ? '' : `<button class="btn primary" data-act="iniciarSesion">${ICON.mas}Iniciar sesión de hoy</button>`}</div>`;
+  if (!st.sesiones.length) return h + `<div class="card vacio">${ICON.sesiones}<p>Aún no hay sesiones. Se crean solas al dar el primer punto del día.</p></div>`;
+  h += '<div class="stack">';
+  st.sesiones.slice().reverse().forEach(s => {
+    const ms = st.movs.filter(m => m.fecha === s.fecha);
+    const mas = ms.filter(m => m.puntos > 0).reduce((t, m) => t + m.puntos, 0);
+    const menos = ms.filter(m => m.puntos < 0).reduce((t, m) => t + m.puntos, 0);
+    h += `<button class="card sesion-card" data-act="verSesion" data-fecha="${s.fecha}">
+      <div class="sesion-num"><b>${s.n}</b>sesión</div>
+      <div class="grow" style="flex:1;min-width:0"><div class="t" style="font-weight:800">${esc(fmtFecha(s.fecha))}${s.fecha === st.fecha ? ' · hoy' : ''}</div>
+        <div class="muted small">${esc(s.tema || 'Sin tema')}</div>
+        <div class="chips" style="margin-top:6px"><span class="badge pos">+${mas}</span><span class="badge neg">${menos}</span>
+          ${s.tarea ? '<span class="badge accent">Tarea</span>' : ''}<span class="badge">${ms.length} mov.</span></div></div>
+    </button>`;
+  });
+  return h + '</div>';
+}
+
+function detalleSesion(fecha) {
+  const st = S.st;
+  const s = st.sesiones.find(x => x.fecha === fecha) || { n: '—', fecha, tema: '', tarea: false, comentario: '' };
+  const ms = st.movs.filter(m => m.fecha === fecha);
+  const asis = { P: 0, T: 0, F: 0 };
+  ms.forEach(m => { const e = estadoAsis(m); if (e) asis[e]++; });
+
+  let h = `<div class="seccion-head"><div><button class="btn ghost" style="padding-left:0" data-act="volverSesiones">← Sesiones</button>
+      <h2>Sesión ${s.n} · ${esc(fmtFecha(fecha))}</h2></div>
+    <div class="chips">
+      ${fecha === st.fecha ? `<button class="btn" data-act="deshacer">${ICON.deshacer}Deshacer último</button>` : ''}
+      <button class="btn primary" data-act="agregarEnSesion" data-fecha="${fecha}">${ICON.mas}Agregar puntos</button>
+    </div></div>
+    <div class="card"><div class="grid2">
+      <label class="campo">Tema<input type="text" id="ses-tema" value="${esc(s.tema)}" placeholder="Ej. Proposiciones lógicas"></label>
+      <label class="campo">Comentario<input type="text" id="ses-com" value="${esc(s.comentario)}" placeholder="Opcional"></label></div>
+      <label class="fila small" style="margin-top:12px;font-weight:800"><input type="checkbox" id="ses-tarea" ${s.tarea ? 'checked' : ''} style="width:20px;height:20px">
+        Hubo tarea en esta sesión (cuenta para la nota de Tareas)</label>
+      <div class="fila" style="margin-top:12px;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div class="chips"><span class="badge pos">Puntual ${asis.P}</span><span class="badge warn">Tardanza ${asis.T}</span><span class="badge neg">Falta ${asis.F}</span></div>
+        <button class="btn" data-act="guardarSesion" data-fecha="${fecha}">Guardar</button></div></div>`;
+
+  // Movimientos agrupados por lote (cada toque o cada confirmación)
+  const lotes = [];
+  const idx = {};
+  ms.forEach(m => {
+    if (!(m.lote in idx)) { idx[m.lote] = lotes.length; lotes.push({ lote: m.lote, origen: m.origen, hora: m.hora, movs: [] }); }
+    lotes[idx[m.lote]].movs.push(m);
+  });
+  h += `<div class="card"><h3>Movimientos (${ms.length})</h3>`;
+  if (!lotes.length) h += '<p class="muted small">Sin movimientos en esta sesión.</p>';
+  lotes.reverse().forEach(l => {
+    const sum = l.movs.reduce((t, m) => t + m.puntos, 0);
+    h += `<div class="lote"><div class="lote-head"><span class="grow">${esc(ORIGEN_TXT[l.origen] || l.origen)} · ${esc(l.hora.slice(0, 5))}</span>
+      <span>${l.movs.length}</span><span class="badge ${sum < 0 ? 'neg' : 'pos'}">${signo(sum)}</span></div>`;
+    l.movs.forEach(m => {
+      const a = alumnoDe(m.clave);
+      h += `<div class="mov">${a ? avatarHTML(a, colorEq(a.equipo), 28) : ''}
+        <div class="grow"><b>${esc(a ? nombreCorto(a) : m.alumno)}</b> · ${esc(m.categoria)}${m.nota ? ` <span class="muted small">· ${esc(m.nota)}</span>` : ''}</div>
+        <span class="badge ${m.puntos < 0 ? 'neg' : 'pos'}">${signo(m.puntos)}</span>
+        ${m.regId !== 'tmp' ? `<button class="x" data-act="borrarMov" data-reg="${esc(m.regId)}" aria-label="Borrar">${ICON.x}</button>` : ''}</div>`;
+    });
+    h += '</div>';
+  });
+  return h + '</div>';
+}
+
+Object.assign(Acciones, {
+  verSesion(el) { S.sesSel = el.dataset.fecha; render(); window.scrollTo(0, 0); },
+  volverSesiones() { S.sesSel = null; render(); },
+  iniciarSesion() { enviar('saveSesion', [S.st.curso, S.st.fecha, {}]); },
+  guardarSesion(el) {
+    enviar('saveSesion', [S.st.curso, el.dataset.fecha, { tema: $('#ses-tema').value.trim(), comentario: $('#ses-com').value.trim(), tarea: $('#ses-tarea').checked }]);
+  },
+  agregarEnSesion(el) {
+    const fecha = el.dataset.fecha;
+    const lista = S.st.alumnos.slice().sort((x, y) => norm(x.nombres).localeCompare(norm(y.nombres)));
+    UI.hoja(`<div class="hoja-head"><div class="grow"><h3>¿A quién?</h3><p class="muted small">Sesión del ${esc(fmtFecha(fecha))}</p></div>
+      <button class="icon-btn" data-act="cerrar">${ICON.x}</button></div>
+      <button class="btn block" data-act="puntosSesionTodos" data-fecha="${fecha}">Toda la clase</button>
+      <div class="lista" style="margin-top:8px">${lista.map(a => `<button class="item" data-act="corregir" data-clave="${esc(a.clave)}" data-fecha="${fecha}">
+        ${avatarHTML(a, colorEq(a.equipo), 36)}<div class="grow"><div class="t">${esc(nombreCompleto(a))}</div></div></button>`).join('')}</div>`);
+  },
+  puntosSesionTodos(el) { abrirPuntos(S.st.alumnos.map(a => a.clave), { fecha: el.dataset.fecha }); }
+});
+
+</script>
+  <script>
+/* js/views/ajustes.js */
+/* Ajustes: calificación (pesos), avatares, página de notas e importación de alumnos. */
+
+Views.ajustes = {
+  render() {
+    const st = S.st;
+    const c = st.cursoInfo;
+    if (!S.cal || S.cal.curso !== st.curso) S.cal = nuevoBorradorCal();
+    const K = S.cal;
+    const sumaPesos = K.comps.reduce((s, x) => s + (+x.peso || 0), 0);
+    const urlNotas = st.urlApp ? st.urlApp + '?v=notas' : '';
+
+    let h = `<div class="seccion-head"><div><h2>Ajustes</h2><p class="muted small">${esc(c.nombre)} · ${esc(c.seccion)}</p></div></div><div class="stack">`;
+
+    // Curso
+    h += `<div class="card"><h3>Curso</h3>
+      <p class="small" style="line-height:1.7;margin:8px 0 0">
+        <b>Días:</b> ${esc(c.dias || '—')} · <b>Inicio:</b> ${esc(c.hora)} · <b>Tolerancia:</b> ${c.tolerancia} min<br>
+        <b>Tope de participación:</b> ${c.tope} por clase · <b>Modalidad:</b> ${esc(c.modalidad || '—')}${c.plataforma ? ' (' + esc(c.plataforma) + ')' : ''}${c.nrc ? ' · <b>NRC</b> ' + esc(c.nrc) : ''}</p>
+      <p class="muted small">Para cambiar estos datos o agregar cursos, edita la hoja <b>Cursos</b> del Sheets.</p></div>`;
+
+    // Calificación
+    h += `<div class="card"><h3>Calificación</h3>
+      <p class="muted small" style="margin:6px 0 0">Cada componente vale su peso. Su logro es: puntos obtenidos ÷ (máximo por sesión × sesiones que cuentan).</p>
+      <div class="comp-edit head"><span>Componente</span><span>Peso %</span><span>Máx/ses.</span><span class="ses">Cuenta en</span><span class="del"></span></div>`;
+    K.comps.forEach((x, i) => {
+      h += `<div class="comp-edit">
+        <input type="text" value="${esc(x.componente)}" data-chg="calComp" data-i="${i}" data-f="componente">
+        <input type="number" min="0" value="${x.peso}" data-chg="calComp" data-i="${i}" data-f="peso">
+        <input type="number" min="0" step="0.5" value="${x.max}" data-chg="calComp" data-i="${i}" data-f="max">
+        <select class="ses" data-chg="calComp" data-i="${i}" data-f="sesiones">
+          <option ${x.sesiones === 'Todas' ? 'selected' : ''}>Todas</option><option ${x.sesiones === 'Con tarea' ? 'selected' : ''}>Con tarea</option></select>
+        <button class="icon-btn del" data-act="calQuitar" data-i="${i}" aria-label="Quitar">${ICON.x}</button></div>`;
+    });
+    h += `<button class="btn ghost" style="margin-top:6px" data-act="calAgregar">${ICON.mas}Agregar componente</button>
+      <div class="formula">Nota = ${st.config.escala} × (${K.comps.map(x => `${+x.peso || 0}% × ${esc(x.componente)}`).join(' + ') || '…'}) ÷ ${sumaPesos}%
+        ${sumaPesos !== 100 ? `<br><span class="neg small">Los pesos suman ${sumaPesos}%. Se reparten en proporción, pero conviene que sumen 100.</span>` : ''}</div>
+      <h3 style="margin-top:16px">Cada categoría suma en…</h3><div class="lista">`;
+    st.categorias.forEach(cat => {
+      h += `<div class="item"><span class="badge ${cat.puntos < 0 ? 'neg' : 'pos'}">${signo(cat.puntos)}</span><div class="grow t">${esc(cat.categoria)}</div>
+        <select style="max-width:170px" data-chg="calCat" data-cat="${esc(cat.categoria)}">
+          <option value="">No cuenta en la nota</option>
+          ${K.comps.map(x => `<option ${K.cats[cat.categoria] === x.componente ? 'selected' : ''}>${esc(x.componente)}</option>`).join('')}
+        </select></div>`;
+    });
+    h += `</div><label class="fila small" style="margin-top:12px;font-weight:800">
+        <input type="checkbox" ${K.solo ? 'checked' : ''} data-chg="calSolo" style="width:20px;height:20px">
+        Usar estos pesos solo en este curso (si no, cambian los de todos los cursos sin pesos propios)</label>
+      <div class="grid2" style="margin-top:12px">
+        <label class="campo">Nota máxima<input type="number" value="${st.config.escala}" data-chg="cfg" data-k="escala_nota"></label>
+        <label class="campo">Nota aprobatoria<input type="number" value="${st.config.aprobatoria}" data-chg="cfg" data-k="nota_aprobatoria"></label>
+      </div>
+      <button class="btn primary block" style="margin-top:12px" data-act="calGuardar">Guardar calificación</button></div>`;
+
+    // Avatares
+    h += `<div class="card"><h3>Avatares</h3><p class="muted small" style="margin:6px 0 10px">Estilo para los alumnos sin avatar elegido. Cada uno se cambia desde su perfil.</p>
+      <div class="chips">${ESTILOS.concat([{ id: 'iniciales', nombre: 'Iniciales' }]).map(e =>
+        `<button class="chip ${st.config.avatarEstilo === e.id ? 'on' : ''}" data-act="estiloDef" data-v="${e.id}">${e.nombre}</button>`).join('')}</div>
+      <div class="fila" style="margin-top:12px;gap:6px;flex-wrap:wrap">${st.alumnos.slice(0, 8).map(a => avatarHTML(a, colorEq(a.equipo), 40)).join('')}</div></div>`;
+
+    // Página de notas
+    h += `<div class="card"><h3>Página de notas para alumnos</h3>
+      <p class="muted small" style="margin:6px 0 10px">Cada alumno entra con su DNI y ve su nota, su avance y su línea de tiempo. Solo ve lo suyo.
+        ${st.alumnos.filter(a => !a.dni).length ? `<br><b>${st.alumnos.filter(a => !a.dni).length} alumnos aún no tienen DNI</b>: cárgalo al importar o desde su perfil.` : ''}</p>
+      ${urlNotas ? `<input type="text" readonly value="${esc(urlNotas)}" onclick="this.select()">
+      <div class="chips" style="margin-top:8px"><button class="btn" data-act="copiar" data-v="${esc(urlNotas)}">${ICON.enlace}Copiar enlace</button>
+        <a class="btn ghost" href="${esc(urlNotas)}" target="_blank" rel="noopener">Abrir</a></div>` : '<p class="small">El enlace aparece cuando publicas la app.</p>'}</div>`;
+
+    // Importar
+    h += `<div class="card"><h3>Importar alumnos a este curso</h3>
+      <p class="muted small" style="margin:6px 0 10px">Copia desde Excel las filas con cabecera (ID, DNI, Apellidos, Nombres, Correo) y pégalas. Si el alumno ya existe, se actualizan su ID, DNI y correo.</p>`;
+    if (!S.imp) {
+      h += `<textarea id="imp-texto" placeholder="ID&#9;DNI&#9;Apellidos&#9;Nombres&#9;Correo"></textarea>
+        <button class="btn primary" style="margin-top:10px" data-act="impRevisar">Revisar</button>`;
+    } else {
+      const n = S.imp.filter(r => r.incluir).length;
+      h += `<div class="lista">${S.imp.map((r, i) => `<label class="item">
+          <input type="checkbox" ${r.incluir ? 'checked' : ''} data-chg="impIncluir" data-i="${i}" style="width:20px;height:20px">
+          <div class="grow"><div class="t">${esc(tc(r.apellidos))}, ${esc(tc(r.nombres))}</div>
+          <div class="s">${esc([r.id && 'ID ' + r.id, r.dni && 'DNI ' + r.dni, r.correo, r.rol].filter(Boolean).join(' · ') || 'Sin datos extra')}</div></div></label>`).join('')}</div>
+        <div class="chips" style="margin-top:10px"><button class="btn" data-act="impCancelar">Cancelar</button>
+        <button class="btn primary" data-act="impGuardar" ${n ? '' : 'disabled'}>Importar ${n}</button></div>`;
+    }
+    h += '</div>';
+
+    // Cuenta
+    h += `<div class="card"><h3>Sesión</h3><div class="chips" style="margin-top:10px">
+      <button class="btn" data-act="recargar">Recargar datos</button>
+      <button class="btn neg" data-act="salir">${ICON.salir}Salir de este equipo</button>
+      ${window.devDemo ? `<button class="btn" data-act="devDemo">Cargar datos de prueba</button><button class="btn" data-act="devReset">Borrar datos de prueba</button>` : ''}
+    </div><p class="muted small">Salir borra el PIN guardado en este navegador.</p></div>`;
+
+    return h + '</div>';
+  }
+};
+
+function nuevoBorradorCal() {
+  const st = S.st;
+  const cats = {};
+  st.categorias.forEach(c => { cats[c.categoria] = c.componente; });
+  return { curso: st.curso, comps: st.componentes.map(c => ({ ...c })), cats, solo: st.componentesPropios };
+}
+
+/** Lee filas pegadas desde Excel. Usa la cabecera si la hay; si no, adivina por el contenido. */
+function parseImport(texto) {
+  const lineas = texto.split(/\r?\n/).filter(l => l.trim());
+  const sep = lineas.some(l => l.includes('\t')) ? '\t' : lineas.some(l => l.includes(';')) ? ';' : null;
+  const celdas = l => sep ? l.split(sep).map(x => x.trim()) : [l.trim()];
+  let cols = null;
+  const out = [];
+  const partir = (s, r) => {
+    if (s.includes(',')) { const [a, ...b] = s.split(','); r.apellidos = a.trim(); r.nombres = b.join(' ').trim(); }
+    else { const t = s.trim().split(/\s+/); r.apellidos = t.slice(0, 2).join(' '); r.nombres = t.slice(2).join(' '); }
+  };
+  lineas.forEach(l => {
+    const c = celdas(l);
+    const nc = c.map(norm);
+    if (!cols && !c.some(x => x.includes('@')) && nc.some(x => /APELLIDO|NOMBRE|CORREO|EMAIL|DNI/.test(x))) {
+      const comp = nc.findIndex(x => /APELLIDOS? Y NOMBRES?|NOMBRE COMPLETO|APELLIDOS NOMBRES|PARTICIPANTE/.test(x));
+      cols = {
+        comp,
+        ape: nc.findIndex((x, i) => i !== comp && /APELLIDO/.test(x)),
+        nom: nc.findIndex((x, i) => i !== comp && /NOMBRE/.test(x) && !/APELLIDO/.test(x)),
+        correo: nc.findIndex(x => /CORREO|EMAIL|MAIL/.test(x)),
+        dni: nc.findIndex(x => /DNI|DOCUMENTO/.test(x)),
+        id: nc.findIndex(x => /^ID\b|CODIGO|^ID /.test(x)),
+        rol: nc.findIndex(x => /ROL/.test(x))
+      };
+      return;
+    }
+    const r = { id: '', dni: '', apellidos: '', nombres: '', correo: '', rol: '' };
+    const v = i => (i >= 0 && c[i]) ? c[i] : '';
+    if (cols) {
+      r.id = v(cols.id); r.dni = v(cols.dni).replace(/\D/g, ''); r.correo = v(cols.correo); r.rol = v(cols.rol);
+      if (cols.comp >= 0) partir(v(cols.comp), r);
+      else { r.apellidos = v(cols.ape); r.nombres = v(cols.nom); }
+    } else {
+      r.correo = c.find(x => x.includes('@')) || '';
+      r.dni = c.find(x => /^\d{8}$/.test(x)) || '';
+      r.id = c.find(x => x !== r.dni && /^[A-Za-z]{0,2}\d{4,}$/.test(x)) || '';
+      const txt = c.filter(x => x && !x.includes('@') && x !== r.id && x !== r.dni && /[A-Za-zÀ-ÿ]{2}/.test(x));
+      if (txt.length >= 2 && !txt[0].includes(',')) { r.apellidos = txt[0]; r.nombres = txt[1]; }
+      else if (txt.length) partir(txt[0], r);
+    }
+    if (!r.apellidos && !r.nombres) return;
+    r.incluir = !/DOCENTE|PROFESOR|INSTRUCTOR|TEACHER|EDITINGTEACHER/.test(norm(r.rol + ' ' + l));
+    out.push(r);
+  });
+  return out;
+}
+
+Object.assign(Cambios, {
+  calComp(el) {
+    const x = S.cal.comps[+el.dataset.i];
+    const f = el.dataset.f;
+    const viejo = x.componente;
+    x[f] = (f === 'peso' || f === 'max') ? (+el.value || 0) : el.value;
+    if (f === 'componente') Object.keys(S.cal.cats).forEach(k => { if (S.cal.cats[k] === viejo) S.cal.cats[k] = el.value; });
+    render();
+  },
+  calCat(el) { S.cal.cats[el.dataset.cat] = el.value; },
+  calSolo(el) { S.cal.solo = el.checked; },
+  cfg(el) { enviar('saveConfig', [S.st.curso, el.dataset.k, +el.value]); },
+  impIncluir(el) { S.imp[+el.dataset.i].incluir = el.checked; render(); }
+});
+
+Object.assign(Acciones, {
+  calAgregar() { S.cal.comps.push({ componente: 'Nuevo', peso: 0, max: 1, sesiones: 'Todas' }); render(); },
+  calQuitar(el) { S.cal.comps.splice(+el.dataset.i, 1); render(); },
+  calGuardar() {
+    const K = S.cal;
+    if (!K.comps.length) return UI.toast('Agrega al menos un componente', { error: true });
+    if (K.comps.some(x => !x.componente.trim())) return UI.toast('Cada componente necesita nombre', { error: true });
+    enviar('saveCalificacion', [S.st.curso, K.comps, K.cats, K.solo]).then(() => { S.cal = null; render(); });
+  },
+  estiloDef(el) { S.st.config.avatarEstilo = el.dataset.v; render(); enviar('saveConfig', [S.st.curso, 'avatar_estilo', el.dataset.v]); },
+  copiar(el) {
+    const v = el.dataset.v;
+    (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject())
+      .then(() => UI.toast('Enlace copiado'), () => UI.toast('Mantén presionado el enlace para copiarlo'));
+  },
+  impRevisar() {
+    const t = $('#imp-texto').value;
+    const filas = parseImport(t);
+    if (!filas.length) return UI.toast('No encontré alumnos en lo pegado', { error: true });
+    S.imp = filas;
+    render();
+  },
+  impCancelar() { S.imp = null; render(); },
+  impGuardar() {
+    const items = S.imp.filter(r => r.incluir).map(({ id, dni, apellidos, nombres, correo }) => ({ id, dni, apellidos, nombres, correo }));
+    enviar('importAlumnos', [S.st.curso, items]).then(() => { S.imp = null; render(); });
+  },
+  recargar: () => recargar(),
+  salir() { if (confirm('¿Salir? Tendrás que escribir tu PIN otra vez.')) { Api.olvidarPin(); location.reload(); } },
+  devDemo() { if (confirm('Crea 8 sesiones pasadas con datos al azar en Pensamiento Lógico 105M.')) window.devDemo(); },
+  devReset() { if (confirm('¿Borrar todos los datos de prueba?')) window.devReset(); }
+});
+
+</script>
+  <script>
+/* js/views/notas.js */
+/* Página pública de notas: el alumno escribe su DNI y ve solo su información. (?v=notas) */
+
+Views.notas = {
+  iniciar() {
+    document.title = 'Mis notas';
+    this.form();
+  },
+
+  form(error = '') {
+    $('#app').innerHTML = `<div class="centro"><form class="caja card" id="f-dni" style="padding:28px 20px">
+      <div class="logo">${ICON.birrete}</div>
+      <h2>Mis notas</h2>
+      <p class="muted">Escribe tu DNI para ver tu avance.</p>
+      <input type="tel" inputmode="numeric" maxlength="8" id="dni" class="pin-in" placeholder="DNI" autocomplete="off" required>
+      ${error ? `<p class="neg small" style="margin:10px 0 0">${esc(error)}</p>` : ''}
+      <button class="btn primary block" style="margin-top:14px">Ver mis notas</button>
+    </form></div>`;
+    const f = $('#f-dni');
+    $('#dni').focus();
+    f.onsubmit = e => {
+      e.preventDefault();
+      const dni = $('#dni').value.replace(/\D/g, '');
+      if (dni.length !== 8) return this.form('El DNI tiene 8 dígitos.');
+      f.querySelector('button').disabled = true;
+      f.querySelector('button').textContent = 'Buscando…';
+      Api.run('consultarNotas', dni)
+        .then(r => r.length ? this.mostrar(r) : this.form('No encontré ese DNI. Consulta con tu docente.'))
+        .catch(err => this.form(err.message));
+    };
+  },
+
+  mostrar(lista) {
+    let h = `<div class="notas-wrap"><div class="fila" style="justify-content:space-between;margin-bottom:14px">
+      <h2>Mis notas</h2><button class="btn" id="otra">Salir</button></div>`;
+    if (lista.length > 1) {
+      h += `<div class="chips" style="margin-bottom:14px">${lista.map((d, i) => `<a class="chip" href="#c${i}">${esc(d.curso.nombre)} · ${esc(d.curso.seccion)}</a>`).join('')}</div>`;
+    }
+    lista.forEach((d, i) => { h += `<section id="c${i}" class="card" style="margin-bottom:16px">${Perfil.html(d, { publico: true })}</section>`; });
+    h += '<p class="muted small" style="text-align:center">Si ves algo que no corresponde, coméntalo con tu docente.</p></div>';
+    $('#app').innerHTML = h;
+    $('#otra').onclick = () => this.form();
+  }
+};
+
+</script>
+  <script>
+/* js/app.js */
+/* Núcleo de la app del docente: estado, envío al servidor, estructura y arranque. */
+
+const S = {
+  st: null,                     // estado que devuelve el servidor
+  tab: store.get('tab', 'clase'),
+  orden: store.get('orden', 'equipo'),
+  multi: false, sel: new Set(),
+  pendientes: 0, ultimo: null,
+  asis: null, chat: null, sesSel: null, cal: null, imp: null, podio: 'nota',
+  puntosCtx: null, perfilAbierto: null
+};
+
+const TABS = [
+  ['clase', 'Clase'], ['panel', 'Panel'], ['equipos', 'Equipos'],
+  ['asistencia', 'Asistencia'], ['chat', 'Chat'], ['sesiones', 'Sesiones']
+];
+
+/* ---------- Ayudas sobre el estado ---------- */
+
+const alumnoDe = k => S.st.alumnos.find(a => a.clave === k);
+const equipoDe = n => S.st.equipos.find(e => e.equipo === n) || { equipo: n, nombre: n ? 'Equipo ' + n : 'Sin equipo', color: '#E5E7EB', total: 0 };
+const colorEq = n => equipoDe(n).color;
+
+/* ---------- Servidor ---------- */
+
+let cola = Promise.resolve();
+
+/**
+ * Envía una acción al servidor en orden. Si hay varias seguidas, solo se pinta
+ * la respuesta de la última, para no pisar lo que ya se ve en pantalla.
+ */
+function enviar(fn, args, { silencio = false } = {}) {
+  S.pendientes++;
+  pintarSync();
+  const p = cola.then(() => Api.call(fn, ...args));
+  cola = p.catch(() => {});
+  return p.then(st => {
+    S.ultimo = st;
+    S.pendientes--;
+    if (S.pendientes === 0) aplicar(st, { silencio });
+    else pintarSync();
+    return st;
+  }).catch(e => {
+    S.pendientes--;
+    pintarSync();
+    if (/PIN/.test(e.message)) { Api.olvidarPin(); return pantallaPin('Tu PIN cambió. Vuelve a entrar.'); }
+    UI.toast(e.message || 'No se pudo guardar', { error: true });
+    recargar();
+    throw e;
+  });
+}
+
+function aplicar(st, { silencio = false } = {}) {
+  const cambioCurso = !S.st || S.st.curso !== st.curso;
+  S.st = st;
+  store.set('curso', st.curso);
+  if (cambioCurso) { S.asis = null; S.chat = null; S.sesSel = null; S.cal = null; S.imp = null; S.sel.clear(); S.multi = false; }
+  if (st.msg && !silencio) UI.toast(st.msg);
+  render();
+}
+
+function recargar() {
+  return Api.call('getState', S.st ? S.st.curso : store.get('curso', '')).then(st => aplicar(st, { silencio: true }))
+    .catch(e => UI.toast(e.message, { error: true }));
+}
+
+/** Curso que toca ahora según el horario (desde 45 min antes hasta 4 h después del inicio). */
+function cursoAhora(cursos) {
+  const d = new Date();
+  const dia = norm(DIAS[d.getDay()]);
+  const ahora = d.getHours() * 60 + d.getMinutes();
+  const hoy = cursos.filter(c => norm(c.dias).split(' ').includes(dia));
+  const c = hoy.find(x => { const m = toMin(x.hora); return ahora >= m - 45 && ahora <= m + 240; });
+  return c ? c.curso : null;
+}
+
+/* ---------- Estructura ---------- */
+
+function pintarSync() {
+  const s = $('#sync');
+  if (s) { s.classList.toggle('on', S.pendientes > 0); s.title = S.pendientes ? 'Guardando…' : 'Todo guardado'; }
+}
+
+function render() {
+  if (!S.st) return;
+  const st = S.st;
+  const y = window.scrollY;
+  const vista = Views[S.tab] || Views.clase;
+  $('#app').innerHTML = `
+    <header class="top"><div class="top-in">
+      <select class="curso-sel" data-chg="curso" aria-label="Curso">
+        ${st.cursos.map(c => `<option value="${esc(c.curso)}" ${c.curso === st.curso ? 'selected' : ''}>${esc(c.nombre)} · ${esc(c.seccion)}</option>`).join('')}
+      </select>
+      <span class="sync" id="sync"></span>
+      <button class="icon-btn" data-act="deshacer" title="Deshacer último" aria-label="Deshacer último">${ICON.deshacer}</button>
+      <button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>
+    </div></header>
+    <main>${vista.render()}</main>
+    <nav class="nav"><div class="nav-in">
+      ${TABS.map(([k, l]) => `<button class="${S.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${ICON[k]}<span>${l}</span></button>`).join('')}
+    </div></nav>`;
+  pintarSync();
+  window.scrollTo(0, y);
+}
+
+/* ---------- Eventos (delegados) ---------- */
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const fn = Acciones[el.dataset.act];
+  if (fn) { e.preventDefault(); fn(el, e); }
+});
+
+document.addEventListener('change', e => {
+  const el = e.target.closest('[data-chg]');
+  if (el && Cambios[el.dataset.chg]) Cambios[el.dataset.chg](el, e);
+});
+
+Object.assign(Acciones, {
+  tab(el) {
+    S.tab = el.dataset.tab;
+    store.set('tab', S.tab);
+    if (S.tab !== 'sesiones') S.sesSel = null;
+    UI.cerrar();
+    render();
+    window.scrollTo(0, 0);
+  }
+});
+
+Cambios.curso = el => {
+  $('#app').querySelector('main').innerHTML = '<div class="cargando"><div class="spinner"></div></div>';
+  Api.call('getState', el.value).then(st => aplicar(st, { silencio: true })).catch(e => UI.toast(e.message, { error: true }));
+};
+
+/* ---------- PIN ---------- */
+
+async function pantallaPin(aviso = '') {
+  let configurado = true;
+  try { configurado = (await Api.run('estadoPin')).configurado; }
+  catch (e) { return pantallaError(e.message); }
+  $('#app').innerHTML = `<div class="centro"><form class="caja card" id="f-pin" style="padding:28px 20px">
+    <div class="logo">${ICON.candado}</div>
+    <h2>${configurado ? 'Hola, profe' : 'Crea tu PIN'}</h2>
+    <p class="muted">${configurado ? 'Escribe tu PIN para entrar.' : 'Lo pedirá la app en cada equipo nuevo. De 4 a 8 dígitos.'}</p>
+    <input type="password" inputmode="numeric" maxlength="8" id="pin1" class="pin-in" placeholder="••••" autocomplete="current-password" required>
+    ${configurado ? '' : '<input type="password" inputmode="numeric" maxlength="8" id="pin2" class="pin-in" placeholder="Repite" style="margin-top:10px" required>'}
+    <p class="neg small" id="pin-err" style="margin:10px 0 0">${esc(aviso)}</p>
+    <button class="btn primary block" style="margin-top:12px">Entrar</button>
+  </form></div>`;
+  $('#pin1').focus();
+  $('#f-pin').onsubmit = async ev => {
+    ev.preventDefault();
+    const p1 = $('#pin1').value.trim();
+    const err = m => { $('#pin-err').textContent = m; };
+    if (!/^\d{4,8}$/.test(p1)) return err('Usa de 4 a 8 dígitos.');
+    try {
+      if (!configurado) {
+        if (p1 !== $('#pin2').value.trim()) return err('Los PIN no coinciden.');
+        await Api.run('crearPin', p1);
+      }
+      Api.setPin(p1);
+      await cargar();
+    } catch (e) {
+      Api.olvidarPin();
+      err(/PIN/.test(e.message) ? 'PIN incorrecto.' : e.message);
+    }
+  };
+}
+
+function pantallaError(msg) {
+  $('#app').innerHTML = `<div class="centro"><div class="caja card" style="padding:28px 20px"><h2>No pude abrir la app</h2>
+    <p class="muted">${esc(msg)}</p><button class="btn primary" onclick="location.reload()">Reintentar</button></div></div>`;
+}
+
+/* ---------- Arranque ---------- */
+
+async function cargar() {
+  let st = await Api.call('getState', store.get('curso', ''));
+  const auto = cursoAhora(st.cursos);
+  if (auto && auto !== st.curso) st = await Api.call('getState', auto);
+  aplicar(st, { silencio: true });
+}
+
+(async function iniciar() {
+  const params = await Api.location();
+  if (params.v === 'notas') return Views.notas.iniciar();
+  if (!Api.pin) return pantallaPin();
+  try { await cargar(); }
+  catch (e) {
+    if (/PIN/.test(e.message)) { Api.olvidarPin(); pantallaPin('Escribe tu PIN otra vez.'); }
+    else pantallaError(e.message);
+  }
+})();
+
+</script>
+</body>
+</html>

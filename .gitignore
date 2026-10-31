@@ -1,0 +1,13 @@
+# Datos reales de cursos y alumnos: nunca a GitHub
+privado/
+*.xlsx
+*.xls
+*.csv
+
+# Configuración local del editor
+.claude/
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
