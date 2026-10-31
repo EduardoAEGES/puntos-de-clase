@@ -109,13 +109,18 @@
     xhr.send();
     return xhr.status === 200 ? xhr.responseText : null;
   }
-  const archivos = window.MOCK_BACKEND || [['../privado/Datos.gs', '../demo/seed-demo.js'], '../apps-script/Code.gs'];
-  const codigo = archivos.map(a => {
-    const opciones = Array.isArray(a) ? a : [a];
-    for (const url of opciones) { const t = leer(url); if (t !== null) return t; }
-    throw new Error('No pude cargar ' + opciones.join(' ni '));
-  }).join('\n;\n');
-  (0, eval)(codigo + '\n;window.__gas = {setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_};');
+  if (typeof window.setup === 'function') {
+    // La demo ya cargó datos y backend con <script>: así abre también con doble clic (file://)
+    window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_ };
+  } else {
+    const archivos = [['../privado/Datos.gs', '../demo/seed-demo.js'], '../apps-script/Code.gs'];
+    const codigo = archivos.map(a => {
+      const opciones = Array.isArray(a) ? a : [a];
+      for (const url of opciones) { const t = leer(url); if (t !== null) return t; }
+      throw new Error('No pude cargar ' + opciones.join(' ni '));
+    }).join('\n;\n');
+    (0, eval)(codigo + '\n;window.__gas = {setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_};');
+  }
   const nueva = !db.orden.length;
   if (nueva) { window.__gas.setup(); guardar(); }
 

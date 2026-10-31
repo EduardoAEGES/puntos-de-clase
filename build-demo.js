@@ -19,7 +19,7 @@ fs.cpSync(path.join(R, 'src', 'js'), path.join(OUT, 'js'), { recursive: true });
 const html = fs.readFileSync(path.join(R, 'src', 'index.html'), 'utf8')
   .replace('<title>Puntos de clase</title>', '<title>Puntos de clase · demo</title>')
   .replace(/<!-- dev:start -->[\s\S]*?<!-- dev:end -->/,
-    `<script>window.MOCK_DEMO = true; window.MOCK_BACKEND = ['demo/datos.js', 'demo/backend.js'];</script>\n  <script src="demo/mock-gas.js"></script>`);
+    `<script>window.MOCK_DEMO = true;</script>\n  <script src="demo/datos.js"></script>\n  <script src="demo/backend.js"></script>\n  <script src="demo/mock-gas.js"></script>`);
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
 
 fs.copyFileSync(path.join(R, 'demo', 'seed-demo.js'), path.join(OUT, 'demo', 'datos.js'));
