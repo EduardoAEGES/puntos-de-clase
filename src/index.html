@@ -16,7 +16,10 @@
   <div id="toasts"></div>
 
   <!-- dev:start -->
-  <!-- Solo en local: datos (reales si existe privado/, si no los inventados), backend y simulador del Sheets -->
+  <!-- Solo en local: datos (reales si existe privado/, si no los inventados), backend y simulador del Sheets.
+       Los cursos sin alumnos se llenan con demo/relleno.js para ver la app con datos. -->
+  <script>window.MOCK_RELLENO = true;</script>
+  <script src="../demo/relleno.js"></script>
   <script src="../privado/Datos.js"></script>
   <script>if (typeof SEED_CURSOS === 'undefined') document.write('<script src="../demo/seed-demo.js"><\/script>');</script>
   <script src="../apps-script/Code.js"></script>

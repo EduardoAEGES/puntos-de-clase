@@ -19,7 +19,8 @@ apps-script/
   Code.js             Backend (hojas, cálculo de notas, PIN) — en Apps Script se llama Code.gs
   Index.html          Generado con `node build.js` — no editar a mano
 dev/mock-gas.js       Simulador del Sheets para probar en local
-demo/seed-demo.js     Curso y alumnos inventados (demo y ejemplo de Datos.js)
+demo/seed-demo.js     Cursos de la demo (y ejemplo del formato de Datos.js)
+demo/relleno.js       Alumnos inventados: llenan la demo y los cursos vacíos de la app local
 privado/Datos.js      Tus cursos y alumnos reales — fuera de Git
 build-demo.js         Arma la demo pública en docs/
 revisar-privacidad.js Busca datos reales en lo que se subiría (correr antes de cada push)

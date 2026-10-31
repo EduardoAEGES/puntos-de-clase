@@ -11,7 +11,19 @@
     try { return JSON.parse(localStorage.getItem(KEY)) || { tz: 'America/Lima', hojas: {}, orden: [] }; }
     catch (e) { return { tz: 'America/Lima', hojas: {}, orden: [] }; }
   }
+  // Firma de los datos iniciales: si cambian (otro Datos.js, más relleno…), se empieza de cero
+  const firma = (() => {
+    const s = JSON.stringify([
+      typeof SEED_CURSOS !== 'undefined' ? SEED_CURSOS : null,
+      typeof SEED_ALUMNOS !== 'undefined' ? SEED_ALUMNOS : null,
+      window.MOCK_RELLENO && typeof RELLENO_ALUMNOS !== 'undefined' ? RELLENO_ALUMNOS : null
+    ]);
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    return String(h);
+  })();
   let db = cargar();
+  if (db.firma !== firma) db = { tz: 'America/Lima', hojas: {}, orden: [], firma };
   function guardar() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { /* sin almacenamiento */ } }
 
   function col(letras) { let n = 0; for (const ch of letras) n = n * 26 + ch.charCodeAt(0) - 64; return n; }
@@ -106,7 +118,7 @@
   if (typeof window.setup !== 'function') {
     throw new Error('Falta cargar apps-script/Code.js antes de mock-gas.js');
   }
-  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_ };
+  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_, importAlumnos_, saveEquipo_ };
   const nueva = !db.orden.length;
   if (nueva) { window.__gas.setup(); guardar(); }
 
@@ -193,5 +205,24 @@
     if (recargar) location.reload();
   };
   window.devReset = () => { localStorage.removeItem(KEY); localStorage.removeItem(PROPS); location.reload(); };
-  if (window.MOCK_DEMO && nueva) { window.devDemo(false); guardar(); }
+  /** App local: cada curso sin alumnos recibe un bloque de demo/relleno.js (con sus equipos). */
+  function rellenar() {
+    if (typeof RELLENO_ALUMNOS === 'undefined') return;
+    let i = 0;
+    window.__gas.getState_('').cursos.forEach(c => {
+      if (window.__gas.getState_(c.curso).alumnos.length) return;
+      const b = RELLENO_ALUMNOS[i++ % RELLENO_ALUMNOS.length];
+      const items = [];
+      b.equipos.forEach((lista, e) => lista.forEach(x => {
+        const [apellidos, nombres] = x.split('|');
+        items.push({ apellidos, nombres, equipo: e + 1 });
+      }));
+      window.__gas.importAlumnos_(c.curso, items);
+      (b.nombresEquipo || []).forEach((n, e) => window.__gas.saveEquipo_(c.curso, e + 1, n));
+    });
+  }
+
+  // Primera vez: datos de prueba (relleno en la app local) e historial de 8 sesiones por curso
+  if (nueva && window.MOCK_RELLENO) rellenar();
+  if (nueva && (window.MOCK_DEMO || window.MOCK_RELLENO)) { window.devDemo(false); guardar(); }
 })();
