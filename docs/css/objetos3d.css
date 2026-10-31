@@ -1,0 +1,157 @@
+/* ===== Objetos 3D animados (CSS puro). Cada uno usa --c1 y --c2 del curso. ===== */
+
+.o3d { position: relative; width: 130px; height: 120px; perspective: 700px; flex: none; }
+.o3d.chico { transform: scale(.62); margin: -22px -24px; }
+.o3d-flota {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  transform-style: preserve-3d; animation: o3d-flota 4.5s ease-in-out infinite;
+}
+.o3d-obj { position: relative; transform-style: preserve-3d; }
+.o3d-obj i, .o3d-obj b, .o3d-obj div, .o3d-obj span { position: absolute; display: block; transform-style: preserve-3d; }
+.o3d-sombra {
+  position: absolute; left: 50%; bottom: 0; width: 64%; height: 14px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c1) 60%, transparent), transparent);
+  filter: blur(3px); animation: o3d-sombra 4.5s ease-in-out infinite;
+}
+@keyframes o3d-flota { 50% { transform: translateY(-9px); } }
+@keyframes o3d-sombra { 50% { transform: translateX(-50%) scale(.75); opacity: .55; } }
+@keyframes o3d-giraY { to { transform: rotateX(var(--rx, -20deg)) rotateY(360deg); } }
+
+/* Cara de vidrio neón reutilizable */
+.cubo .cara, .piramide i {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c1) 45%, transparent), color-mix(in srgb, var(--c2) 22%, transparent));
+}
+
+/* --- Cubo (Pensamiento Lógico) --- */
+.cubo { width: 62px; height: 62px; --rx: -22deg; transform: rotateX(-22deg) rotateY(30deg); animation: o3d-giraY 12s linear infinite; }
+.cubo .cara {
+  inset: 0; display: grid; place-items: center; border: 1.5px solid var(--c1);
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--c1) 50%, transparent), 0 0 14px color-mix(in srgb, var(--c1) 35%, transparent);
+  font: 700 26px var(--display, sans-serif); color: #fff; text-shadow: 0 0 10px var(--c1);
+}
+.cubo .cara span { position: static; }
+.cubo .c0 { transform: translateZ(31px); }
+.cubo .c1 { transform: rotateY(90deg) translateZ(31px); }
+.cubo .c2 { transform: rotateY(180deg) translateZ(31px); }
+.cubo .c3 { transform: rotateY(-90deg) translateZ(31px); }
+.cubo .c4 { transform: rotateX(90deg) translateZ(31px); }
+.cubo .c5 { transform: rotateX(-90deg) translateZ(31px); }
+
+/* --- Moneda (Contabilidad) --- */
+.moneda { width: 84px; height: 84px; transform: rotateY(25deg); animation: o3d-moneda 5s linear infinite; }
+.moneda i { inset: 0; border-radius: 50%; background: color-mix(in srgb, var(--c2) 55%, #1a1004); transform: translateZ(calc((var(--z) - 4) * 1.4px)); }
+.moneda b {
+  inset: 0; border-radius: 50%; display: grid; place-items: center;
+  font: 800 26px var(--display, sans-serif); color: #fff; text-shadow: 0 2px 0 color-mix(in srgb, var(--c2) 60%, #000);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .7), transparent 38%), linear-gradient(135deg, var(--c1), var(--c2));
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .35), inset 0 0 0 9px color-mix(in srgb, var(--c2) 40%, transparent), 0 0 26px color-mix(in srgb, var(--c1) 55%, transparent);
+}
+.moneda .frente { transform: translateZ(6px); }
+.moneda .dorso { transform: rotateY(180deg) translateZ(6px); }
+@keyframes o3d-moneda { to { transform: rotateY(385deg); } }
+
+/* --- Barras (Análisis de Costos) --- */
+.barras { width: 20px; height: 80px; transform: rotateX(-18deg) rotateY(-32deg); animation: o3d-balanceo 7s ease-in-out infinite; }
+.barra3d { bottom: 0; left: 0; width: 18px; height: var(--h); transform: translateX(var(--x)); transform-origin: bottom; animation: o3d-crece 3.2s ease-in-out var(--d) infinite; }
+.barra3d i { width: 18px; }
+.barra3d .f, .barra3d .b { top: 0; height: 100%; background: linear-gradient(var(--c1), var(--c2)); box-shadow: 0 0 12px color-mix(in srgb, var(--c1) 45%, transparent); }
+.barra3d .f { transform: translateZ(9px); }
+.barra3d .b { transform: rotateY(180deg) translateZ(9px); }
+.barra3d .l, .barra3d .r { top: 0; height: 100%; background: linear-gradient(color-mix(in srgb, var(--c1) 60%, #000), color-mix(in srgb, var(--c2) 55%, #000)); }
+.barra3d .l { transform: rotateY(-90deg) translateZ(9px); }
+.barra3d .r { transform: rotateY(90deg) translateZ(9px); }
+.barra3d .t { top: -9px; height: 18px; background: color-mix(in srgb, var(--c1) 70%, #fff); transform: rotateX(90deg); }
+@keyframes o3d-crece { 0%, 100% { transform: translateX(var(--x)) scaleY(1); } 50% { transform: translateX(var(--x)) scaleY(.62); } }
+@keyframes o3d-balanceo { 50% { transform: rotateX(-18deg) rotateY(28deg); } }
+
+/* --- Gráfico circular 3D (Costos y Presupuestos) --- */
+.pastel { width: 96px; height: 96px; transform: rotateX(60deg) rotateZ(0); animation: o3d-pastel 10s linear infinite; }
+.pastel i, .pastel b { inset: 0; border-radius: 50%; }
+.pastel i { background: conic-gradient(var(--c1) 0 38%, var(--c2) 38% 66%, #F472B6 66% 84%, #FBBF24 84% 100%); filter: brightness(.45); transform: translateZ(calc(var(--z) * -2px)); }
+.pastel b {
+  background: conic-gradient(var(--c1) 0 38%, var(--c2) 38% 66%, #F472B6 66% 84%, #FBBF24 84% 100%);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--c1) 55%, transparent), inset 0 0 0 2px rgba(255, 255, 255, .25);
+}
+.pastel b::after { content: ''; position: absolute; inset: 30%; border-radius: 50%; background: #0B1022; box-shadow: inset 0 0 12px color-mix(in srgb, var(--c1) 60%, transparent); }
+@keyframes o3d-pastel { to { transform: rotateX(60deg) rotateZ(360deg); } }
+
+/* --- Átomo (Investigación Cuantitativa) --- */
+.atomo { width: 110px; height: 110px; animation: o3d-giraY 16s linear infinite; --rx: 0deg; }
+.atomo .nucleo, .giro .nucleo {
+  left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, var(--c1) 45%, var(--c2));
+  box-shadow: 0 0 20px var(--c1), 0 0 44px var(--c2);
+}
+.orbita { inset: 0; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--c1) 75%, transparent); transform: rotateZ(var(--r)) rotateX(72deg); box-shadow: 0 0 10px color-mix(in srgb, var(--c1) 35%, transparent); }
+.orbita i { inset: 0; animation: o3d-orbita var(--t) linear infinite; }
+.orbita i::after { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px var(--c2), 0 0 20px var(--c2); }
+@keyframes o3d-orbita { to { transform: rotateZ(360deg); } }
+
+/* --- Pirámide (Matemática Aplicada) --- */
+.piramide { width: 80px; height: 80px; margin-top: 18px; transform: rotateX(-14deg) rotateY(20deg); --rx: -14deg; animation: o3d-giraY 11s linear infinite; }
+.piramide i {
+  left: 0; top: 0; width: 80px; height: 80px; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform-origin: 50% 100%; transform: rotateY(var(--r)) translateZ(40px) rotateX(30deg);
+  background: linear-gradient(to top, color-mix(in srgb, var(--c1) 75%, transparent), color-mix(in srgb, var(--c2) 35%, transparent));
+}
+.piramide .base { left: 0; top: 40px; width: 80px; height: 80px; transform: rotateX(90deg); background: color-mix(in srgb, var(--c2) 40%, #000); box-shadow: 0 0 30px color-mix(in srgb, var(--c1) 50%, transparent); }
+.piramide .pi { left: 50%; top: -22px; transform: translateX(-50%); font: 700 26px var(--display, sans-serif); color: #fff; text-shadow: 0 0 12px var(--c1), 0 0 24px var(--c2); }
+
+/* --- Giroscopio (Experiencia Formativa) --- */
+.giro { width: 104px; height: 104px; }
+.giro .anillo { border-radius: 50%; border: 3px solid transparent; }
+.giro .a1 { inset: 0; border-top-color: var(--c1); border-bottom-color: var(--c1); box-shadow: 0 0 14px color-mix(in srgb, var(--c1) 45%, transparent); animation: o3d-giroA 4s linear infinite; }
+.giro .a2 { inset: 12px; border-left-color: var(--c2); border-right-color: var(--c2); box-shadow: 0 0 14px color-mix(in srgb, var(--c2) 45%, transparent); animation: o3d-giroB 5.5s linear infinite; }
+.giro .a3 { inset: 24px; border-color: color-mix(in srgb, #fff 70%, var(--c1)); border-left-color: transparent; animation: o3d-giroC 3s linear infinite; }
+@keyframes o3d-giroA { from { transform: rotateX(70deg) rotateZ(0); } to { transform: rotateX(70deg) rotateZ(360deg); } }
+@keyframes o3d-giroB { from { transform: rotateY(65deg) rotateZ(0); } to { transform: rotateY(65deg) rotateZ(-360deg); } }
+@keyframes o3d-giroC { from { transform: rotate3d(1, 1, 0, 0deg); } to { transform: rotate3d(1, 1, 0, 360deg); } }
+
+/* Sin animaciones si el sistema lo pide: quedan en una pose fija */
+@media (prefers-reduced-motion: reduce) {
+  .o3d *, .o3d { animation: none !important; }
+}
+
+/* ===== Portadas: tarjetas de curso y cabecera del curso ===== */
+.cc-portada {
+  position: relative; height: 156px; margin: -18px -16px 0; overflow: hidden;
+  display: grid; place-items: center; border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--c1) 38%, transparent), transparent 58%),
+    linear-gradient(160deg, color-mix(in srgb, var(--c2) 26%, #0B1024), #070B18 75%);
+}
+/* Piso en perspectiva tipo "tron" */
+.cc-portada::before, .curso-hero::before {
+  content: ''; position: absolute; left: -50%; right: -50%; bottom: -60%; height: 120%;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--c1) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--c1) 45%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  transform: perspective(260px) rotateX(62deg);
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 70%);
+  mask-image: linear-gradient(to top, #000 10%, transparent 70%);
+  opacity: .55; animation: cc-piso 3s linear infinite;
+}
+@keyframes cc-piso { to { background-position: 0 28px, 0 0; } }
+.cc-portada .o3d { z-index: 1; }
+.cc-num { position: absolute; left: 14px; top: 10px; font: 700 12px var(--display); letter-spacing: .15em; color: color-mix(in srgb, var(--c1) 80%, #fff); opacity: .8; }
+.cc-estado {
+  position: absolute; right: 12px; top: 10px; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .35);
+  border: 1px solid color-mix(in srgb, var(--c1) 60%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.cc-estado.vivo { color: var(--pos); border-color: var(--pos-line); box-shadow: 0 0 14px var(--pos-bg); }
+.curso-card:hover .cc-portada .o3d-flota { animation-duration: 2.2s; }
+
+/* Cabecera dentro de un curso */
+.curso-hero {
+  position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; margin-bottom: 14px; border-radius: 20px; border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 12% 60%, color-mix(in srgb, var(--c1) 35%, transparent), transparent 45%),
+    linear-gradient(120deg, color-mix(in srgb, var(--c2) 22%, #0B1024), #070B18 80%);
+}
+.curso-hero > * { position: relative; }
+.curso-hero .grow { flex: 1; min-width: 0; }
+.curso-hero h2 { font-size: 18px; }
+.curso-hero p { margin: 4px 0 0; }

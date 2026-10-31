@@ -402,13 +402,12 @@ label.campo > * { margin-top: 6px; }
   box-shadow: var(--shadow); padding: 18px 16px 14px; overflow: hidden;
   display: flex; flex-direction: column; gap: 12px; transition: transform .12s ease, box-shadow .12s ease;
 }
-.curso-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cc); }
 .curso-card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(30, 34, 53, .06), 0 10px 26px rgba(30, 34, 53, .1); }
 .curso-card:active { transform: scale(.98); }
 .cc-top { display: flex; align-items: flex-start; gap: 10px; }
 .cc-tit { flex: 1; min-width: 0; }
 .cc-tit b { display: block; font-size: 17px; font-weight: 900; line-height: 1.2; }
-.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--cc); }
+.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--c1, var(--accent)); }
 .cc-meta { font-size: 13px; color: var(--muted); font-weight: 700; margin-top: -6px; }
 .cc-avatares { display: flex; align-items: center; min-height: 40px; }
 .cc-avatares .av { border: 2px solid var(--surface); margin-left: -8px; }

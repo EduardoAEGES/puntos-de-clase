@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Puntos de clase</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
 /* ===== Tokens ===== */
 :root {
@@ -411,13 +411,12 @@ label.campo > * { margin-top: 6px; }
   box-shadow: var(--shadow); padding: 18px 16px 14px; overflow: hidden;
   display: flex; flex-direction: column; gap: 12px; transition: transform .12s ease, box-shadow .12s ease;
 }
-.curso-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cc); }
 .curso-card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(30, 34, 53, .06), 0 10px 26px rgba(30, 34, 53, .1); }
 .curso-card:active { transform: scale(.98); }
 .cc-top { display: flex; align-items: flex-start; gap: 10px; }
 .cc-tit { flex: 1; min-width: 0; }
 .cc-tit b { display: block; font-size: 17px; font-weight: 900; line-height: 1.2; }
-.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--cc); }
+.cc-tit span { display: inline-block; margin-top: 4px; font-size: 13px; font-weight: 800; color: var(--c1, var(--accent)); }
 .cc-meta { font-size: 13px; color: var(--muted); font-weight: 700; margin-top: -6px; }
 .cc-avatares { display: flex; align-items: center; min-height: 40px; }
 .cc-avatares .av { border: 2px solid var(--surface); margin-left: -8px; }
@@ -434,6 +433,281 @@ label.campo > * { margin-top: 6px; }
 .mini-nota { font-size: 11.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; background: var(--pos-bg); color: var(--pos); }
 .mini-nota.neg { background: var(--neg-bg); color: var(--neg); }
 .mini-nota.na { background: var(--surface-2); color: var(--muted); }
+
+</style>
+  <style>
+/* ===== Tema futurista (oscuro, neón y vidrio) — se carga después de styles.css ===== */
+:root {
+  color-scheme: dark;
+  --bg: #060914;
+  --surface: rgba(255, 255, 255, .045);
+  --surface-2: rgba(255, 255, 255, .075);
+  --panel: #0D1328;                       /* sólido: hojas, avisos, barras */
+  --ink: #E8ECFF;
+  --muted: #8C94BA;
+  --line: rgba(148, 163, 255, .16);
+  --accent: #7C83FF;
+  --accent-2: #22D3EE;
+  --accent-soft: rgba(124, 131, 255, .16);
+  --pos: #34D399;
+  --pos-bg: rgba(52, 211, 153, .13);
+  --pos-line: rgba(52, 211, 153, .6);
+  --neg: #FB7185;
+  --neg-bg: rgba(251, 113, 133, .13);
+  --neg-line: rgba(251, 113, 133, .6);
+  --warn: #FBBF24;
+  --warn-bg: rgba(251, 191, 36, .13);
+  --oro: #FACC15;
+  --plata: #94A3B8;
+  --bronce: #F97316;
+  --shadow: 0 0 0 1px var(--line), 0 12px 32px rgba(0, 0, 0, .35);
+  --glow: 0 0 22px rgba(124, 131, 255, .45);
+  --font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: 'Orbitron', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(1100px 600px at 0% -10%, rgba(124, 131, 255, .2), transparent 60%),
+    radial-gradient(900px 520px at 110% 0%, rgba(34, 211, 238, .13), transparent 60%),
+    radial-gradient(800px 600px at 50% 120%, rgba(232, 121, 249, .1), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+/* Rejilla de fondo que se desvanece */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background-image:
+    linear-gradient(rgba(148, 163, 255, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 255, .06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 75%);
+}
+
+h2, h3, .kpi .v, .nota-grande .v, .equipo-card .pts, .marca b, .cc-tit b, .podio .base, .sesion-num b { font-family: var(--display); letter-spacing: .02em; }
+h2 { font-weight: 800; }
+h3 { font-weight: 700; font-size: 15px; }
+.kpi .v { font-weight: 800; text-shadow: 0 0 18px rgba(124, 131, 255, .45); }
+.kpi .v.neg { text-shadow: 0 0 18px rgba(251, 113, 133, .45); }
+
+/* Vidrio */
+.card, .kpi, .tarjeta, .curso-card, .equipo-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .35);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.top, .nav { background: rgba(6, 9, 20, .72); border-color: var(--line); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.nav button.on { color: #fff; background: linear-gradient(135deg, rgba(124, 131, 255, .35), rgba(34, 211, 238, .2)); box-shadow: inset 0 0 0 1px rgba(124, 131, 255, .5); }
+.nav button.on svg { filter: drop-shadow(0 0 6px var(--accent-2)); }
+
+/* Botones y controles */
+.btn { border: 1px solid var(--line); }
+.btn.primary { border: 0; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: var(--glow); }
+.btn.pos, .btn.neg { border-color: transparent; }
+.icon-btn { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.icon-btn.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+.chip { background: var(--surface); border-color: var(--line); }
+.chip.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; color: #fff; }
+.seg { background: rgba(0, 0, 0, .25); border-color: var(--line); }
+.seg button.on { background: var(--accent-soft); color: #fff; box-shadow: inset 0 0 0 1px rgba(124, 131, 255, .6); }
+.curso-sel { background-color: var(--accent-soft); color: var(--ink); border: 1px solid rgba(124, 131, 255, .4); }
+input[type=text], input[type=number], input[type=time], input[type=date], input[type=password], input[type=tel], select, textarea {
+  background: rgba(0, 0, 0, .25); border-color: var(--line); color: var(--ink);
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 131, 255, .25); }
+option { background: var(--panel); color: var(--ink); }
+
+/* Piezas que antes usaban el color de texto como fondo */
+.toast { background: var(--panel); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(0, 0, 0, .5), var(--glow); }
+.toast.error { background: #2A0D18; border-color: var(--neg-line); }
+.toast button { background: var(--accent-soft); color: #fff; }
+.barra-multi { background: var(--panel); border: 1px solid rgba(124, 131, 255, .4); box-shadow: 0 10px 40px rgba(0, 0, 0, .5), var(--glow); }
+.estado-seg button { background: var(--surface); border-color: var(--line); }
+.estado-seg button.on.N { background: var(--accent); border-color: var(--accent); color: #fff; }
+.hoja { background: var(--panel); border: 1px solid var(--line); box-shadow: 0 -20px 60px rgba(0, 0, 0, .5); }
+#capa .fondo { background: rgba(2, 4, 12, .65); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.confirmar-bar { background: var(--panel); border: 1px solid var(--line); }
+.flota { text-shadow: 0 0 14px currentColor; }
+.fuente { background: var(--surface); border-color: rgba(124, 131, 255, .35); }
+.cc-avatares .av { border-color: var(--bg); }
+
+/* Detalles con brillo */
+.tarjeta:hover, .curso-card:hover { box-shadow: 0 12px 32px rgba(0, 0, 0, .35), 0 0 0 1px rgba(124, 131, 255, .45), var(--glow); }
+.tarjeta .total { box-shadow: 0 0 12px rgba(52, 211, 153, .35); }
+.tarjeta .total.neg { box-shadow: 0 0 12px rgba(251, 113, 133, .35); }
+.podio .base { box-shadow: 0 0 24px currentColor; color: #0A0E1F; }
+.podio .p1 .base { box-shadow: 0 0 28px rgba(250, 204, 21, .55); }
+.podio .p2 .base { box-shadow: 0 0 22px rgba(148, 163, 184, .45); }
+.podio .p3 .base { box-shadow: 0 0 22px rgba(249, 115, 22, .45); }
+.barra i { background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 0 10px rgba(34, 211, 238, .5); }
+.nota-grande { box-shadow: inset 0 0 0 1px currentColor, 0 0 28px var(--pos-bg); }
+.nota-grande.neg { box-shadow: inset 0 0 0 1px currentColor, 0 0 28px var(--neg-bg); }
+.marca svg { color: var(--accent-2); filter: drop-shadow(0 0 8px var(--accent-2)); }
+.spinner { border-color: var(--line); border-top-color: var(--accent-2); }
+.demo-aviso { background: linear-gradient(90deg, rgba(251, 191, 36, .16), rgba(244, 114, 182, .14)); color: #FDE68A; }
+::selection { background: rgba(124, 131, 255, .45); }
+
+</style>
+  <style>
+/* ===== Objetos 3D animados (CSS puro). Cada uno usa --c1 y --c2 del curso. ===== */
+
+.o3d { position: relative; width: 130px; height: 120px; perspective: 700px; flex: none; }
+.o3d.chico { transform: scale(.62); margin: -22px -24px; }
+.o3d-flota {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  transform-style: preserve-3d; animation: o3d-flota 4.5s ease-in-out infinite;
+}
+.o3d-obj { position: relative; transform-style: preserve-3d; }
+.o3d-obj i, .o3d-obj b, .o3d-obj div, .o3d-obj span { position: absolute; display: block; transform-style: preserve-3d; }
+.o3d-sombra {
+  position: absolute; left: 50%; bottom: 0; width: 64%; height: 14px; transform: translateX(-50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c1) 60%, transparent), transparent);
+  filter: blur(3px); animation: o3d-sombra 4.5s ease-in-out infinite;
+}
+@keyframes o3d-flota { 50% { transform: translateY(-9px); } }
+@keyframes o3d-sombra { 50% { transform: translateX(-50%) scale(.75); opacity: .55; } }
+@keyframes o3d-giraY { to { transform: rotateX(var(--rx, -20deg)) rotateY(360deg); } }
+
+/* Cara de vidrio neón reutilizable */
+.cubo .cara, .piramide i {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--c1) 45%, transparent), color-mix(in srgb, var(--c2) 22%, transparent));
+}
+
+/* --- Cubo (Pensamiento Lógico) --- */
+.cubo { width: 62px; height: 62px; --rx: -22deg; transform: rotateX(-22deg) rotateY(30deg); animation: o3d-giraY 12s linear infinite; }
+.cubo .cara {
+  inset: 0; display: grid; place-items: center; border: 1.5px solid var(--c1);
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--c1) 50%, transparent), 0 0 14px color-mix(in srgb, var(--c1) 35%, transparent);
+  font: 700 26px var(--display, sans-serif); color: #fff; text-shadow: 0 0 10px var(--c1);
+}
+.cubo .cara span { position: static; }
+.cubo .c0 { transform: translateZ(31px); }
+.cubo .c1 { transform: rotateY(90deg) translateZ(31px); }
+.cubo .c2 { transform: rotateY(180deg) translateZ(31px); }
+.cubo .c3 { transform: rotateY(-90deg) translateZ(31px); }
+.cubo .c4 { transform: rotateX(90deg) translateZ(31px); }
+.cubo .c5 { transform: rotateX(-90deg) translateZ(31px); }
+
+/* --- Moneda (Contabilidad) --- */
+.moneda { width: 84px; height: 84px; transform: rotateY(25deg); animation: o3d-moneda 5s linear infinite; }
+.moneda i { inset: 0; border-radius: 50%; background: color-mix(in srgb, var(--c2) 55%, #1a1004); transform: translateZ(calc((var(--z) - 4) * 1.4px)); }
+.moneda b {
+  inset: 0; border-radius: 50%; display: grid; place-items: center;
+  font: 800 26px var(--display, sans-serif); color: #fff; text-shadow: 0 2px 0 color-mix(in srgb, var(--c2) 60%, #000);
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .7), transparent 38%), linear-gradient(135deg, var(--c1), var(--c2));
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .35), inset 0 0 0 9px color-mix(in srgb, var(--c2) 40%, transparent), 0 0 26px color-mix(in srgb, var(--c1) 55%, transparent);
+}
+.moneda .frente { transform: translateZ(6px); }
+.moneda .dorso { transform: rotateY(180deg) translateZ(6px); }
+@keyframes o3d-moneda { to { transform: rotateY(385deg); } }
+
+/* --- Barras (Análisis de Costos) --- */
+.barras { width: 20px; height: 80px; transform: rotateX(-18deg) rotateY(-32deg); animation: o3d-balanceo 7s ease-in-out infinite; }
+.barra3d { bottom: 0; left: 0; width: 18px; height: var(--h); transform: translateX(var(--x)); transform-origin: bottom; animation: o3d-crece 3.2s ease-in-out var(--d) infinite; }
+.barra3d i { width: 18px; }
+.barra3d .f, .barra3d .b { top: 0; height: 100%; background: linear-gradient(var(--c1), var(--c2)); box-shadow: 0 0 12px color-mix(in srgb, var(--c1) 45%, transparent); }
+.barra3d .f { transform: translateZ(9px); }
+.barra3d .b { transform: rotateY(180deg) translateZ(9px); }
+.barra3d .l, .barra3d .r { top: 0; height: 100%; background: linear-gradient(color-mix(in srgb, var(--c1) 60%, #000), color-mix(in srgb, var(--c2) 55%, #000)); }
+.barra3d .l { transform: rotateY(-90deg) translateZ(9px); }
+.barra3d .r { transform: rotateY(90deg) translateZ(9px); }
+.barra3d .t { top: -9px; height: 18px; background: color-mix(in srgb, var(--c1) 70%, #fff); transform: rotateX(90deg); }
+@keyframes o3d-crece { 0%, 100% { transform: translateX(var(--x)) scaleY(1); } 50% { transform: translateX(var(--x)) scaleY(.62); } }
+@keyframes o3d-balanceo { 50% { transform: rotateX(-18deg) rotateY(28deg); } }
+
+/* --- Gráfico circular 3D (Costos y Presupuestos) --- */
+.pastel { width: 96px; height: 96px; transform: rotateX(60deg) rotateZ(0); animation: o3d-pastel 10s linear infinite; }
+.pastel i, .pastel b { inset: 0; border-radius: 50%; }
+.pastel i { background: conic-gradient(var(--c1) 0 38%, var(--c2) 38% 66%, #F472B6 66% 84%, #FBBF24 84% 100%); filter: brightness(.45); transform: translateZ(calc(var(--z) * -2px)); }
+.pastel b {
+  background: conic-gradient(var(--c1) 0 38%, var(--c2) 38% 66%, #F472B6 66% 84%, #FBBF24 84% 100%);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--c1) 55%, transparent), inset 0 0 0 2px rgba(255, 255, 255, .25);
+}
+.pastel b::after { content: ''; position: absolute; inset: 30%; border-radius: 50%; background: #0B1022; box-shadow: inset 0 0 12px color-mix(in srgb, var(--c1) 60%, transparent); }
+@keyframes o3d-pastel { to { transform: rotateX(60deg) rotateZ(360deg); } }
+
+/* --- Átomo (Investigación Cuantitativa) --- */
+.atomo { width: 110px; height: 110px; animation: o3d-giraY 16s linear infinite; --rx: 0deg; }
+.atomo .nucleo, .giro .nucleo {
+  left: 50%; top: 50%; width: 28px; height: 28px; margin: -14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, var(--c1) 45%, var(--c2));
+  box-shadow: 0 0 20px var(--c1), 0 0 44px var(--c2);
+}
+.orbita { inset: 0; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--c1) 75%, transparent); transform: rotateZ(var(--r)) rotateX(72deg); box-shadow: 0 0 10px color-mix(in srgb, var(--c1) 35%, transparent); }
+.orbita i { inset: 0; animation: o3d-orbita var(--t) linear infinite; }
+.orbita i::after { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px var(--c2), 0 0 20px var(--c2); }
+@keyframes o3d-orbita { to { transform: rotateZ(360deg); } }
+
+/* --- Pirámide (Matemática Aplicada) --- */
+.piramide { width: 80px; height: 80px; margin-top: 18px; transform: rotateX(-14deg) rotateY(20deg); --rx: -14deg; animation: o3d-giraY 11s linear infinite; }
+.piramide i {
+  left: 0; top: 0; width: 80px; height: 80px; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform-origin: 50% 100%; transform: rotateY(var(--r)) translateZ(40px) rotateX(30deg);
+  background: linear-gradient(to top, color-mix(in srgb, var(--c1) 75%, transparent), color-mix(in srgb, var(--c2) 35%, transparent));
+}
+.piramide .base { left: 0; top: 40px; width: 80px; height: 80px; transform: rotateX(90deg); background: color-mix(in srgb, var(--c2) 40%, #000); box-shadow: 0 0 30px color-mix(in srgb, var(--c1) 50%, transparent); }
+.piramide .pi { left: 50%; top: -22px; transform: translateX(-50%); font: 700 26px var(--display, sans-serif); color: #fff; text-shadow: 0 0 12px var(--c1), 0 0 24px var(--c2); }
+
+/* --- Giroscopio (Experiencia Formativa) --- */
+.giro { width: 104px; height: 104px; }
+.giro .anillo { border-radius: 50%; border: 3px solid transparent; }
+.giro .a1 { inset: 0; border-top-color: var(--c1); border-bottom-color: var(--c1); box-shadow: 0 0 14px color-mix(in srgb, var(--c1) 45%, transparent); animation: o3d-giroA 4s linear infinite; }
+.giro .a2 { inset: 12px; border-left-color: var(--c2); border-right-color: var(--c2); box-shadow: 0 0 14px color-mix(in srgb, var(--c2) 45%, transparent); animation: o3d-giroB 5.5s linear infinite; }
+.giro .a3 { inset: 24px; border-color: color-mix(in srgb, #fff 70%, var(--c1)); border-left-color: transparent; animation: o3d-giroC 3s linear infinite; }
+@keyframes o3d-giroA { from { transform: rotateX(70deg) rotateZ(0); } to { transform: rotateX(70deg) rotateZ(360deg); } }
+@keyframes o3d-giroB { from { transform: rotateY(65deg) rotateZ(0); } to { transform: rotateY(65deg) rotateZ(-360deg); } }
+@keyframes o3d-giroC { from { transform: rotate3d(1, 1, 0, 0deg); } to { transform: rotate3d(1, 1, 0, 360deg); } }
+
+/* Sin animaciones si el sistema lo pide: quedan en una pose fija */
+@media (prefers-reduced-motion: reduce) {
+  .o3d *, .o3d { animation: none !important; }
+}
+
+/* ===== Portadas: tarjetas de curso y cabecera del curso ===== */
+.cc-portada {
+  position: relative; height: 156px; margin: -18px -16px 0; overflow: hidden;
+  display: grid; place-items: center; border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 62%, color-mix(in srgb, var(--c1) 38%, transparent), transparent 58%),
+    linear-gradient(160deg, color-mix(in srgb, var(--c2) 26%, #0B1024), #070B18 75%);
+}
+/* Piso en perspectiva tipo "tron" */
+.cc-portada::before, .curso-hero::before {
+  content: ''; position: absolute; left: -50%; right: -50%; bottom: -60%; height: 120%;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--c1) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--c1) 45%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  transform: perspective(260px) rotateX(62deg);
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 70%);
+  mask-image: linear-gradient(to top, #000 10%, transparent 70%);
+  opacity: .55; animation: cc-piso 3s linear infinite;
+}
+@keyframes cc-piso { to { background-position: 0 28px, 0 0; } }
+.cc-portada .o3d { z-index: 1; }
+.cc-num { position: absolute; left: 14px; top: 10px; font: 700 12px var(--display); letter-spacing: .15em; color: color-mix(in srgb, var(--c1) 80%, #fff); opacity: .8; }
+.cc-estado {
+  position: absolute; right: 12px; top: 10px; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .35);
+  border: 1px solid color-mix(in srgb, var(--c1) 60%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.cc-estado.vivo { color: var(--pos); border-color: var(--pos-line); box-shadow: 0 0 14px var(--pos-bg); }
+.curso-card:hover .cc-portada .o3d-flota { animation-duration: 2.2s; }
+
+/* Cabecera dentro de un curso */
+.curso-hero {
+  position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; margin-bottom: 14px; border-radius: 20px; border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 12% 60%, color-mix(in srgb, var(--c1) 35%, transparent), transparent 45%),
+    linear-gradient(120deg, color-mix(in srgb, var(--c2) 22%, #0B1024), #070B18 80%);
+}
+.curso-hero > * { position: relative; }
+.curso-hero .grow { flex: 1; min-width: 0; }
+.curso-hero h2 { font-size: 18px; }
+.curso-hero p { margin: 4px 0 0; }
 
 </style>
 </head>
@@ -704,6 +978,65 @@ const Charts = {
 
 </script>
   <script>
+/* js/objetos3d.js */
+/* Objetos 3D animados (solo CSS) para la portada de cada curso. Estilos en css/objetos3d.css. */
+
+/** Pares de color neón por curso, en el orden de la hoja Cursos. */
+const COLOR_CURSO = [
+  ['#7C83FF', '#22D3EE'], ['#F472B6', '#A78BFA'], ['#22D3EE', '#34D399'],
+  ['#A78BFA', '#F472B6'], ['#FBBF24', '#F97316'], ['#34D399', '#22D3EE'],
+  ['#F97316', '#FB7185'], ['#60A5FA', '#A78BFA'], ['#E879F9', '#6366F1']
+];
+
+/** Qué objeto lleva cada materia, según palabras de su nombre. */
+function tipoObjeto(nombre) {
+  const n = norm(nombre);
+  if (n.includes('ANALISIS')) return 'barras';
+  if (n.includes('CONTAB')) return 'moneda';
+  if (n.includes('COSTO') || n.includes('PRESUPUESTO')) return 'pastel';
+  if (n.includes('LOGIC')) return 'cubo';
+  if (n.includes('INVESTIG')) return 'atomo';
+  if (n.includes('MATEM')) return 'piramide';
+  if (n.includes('EXPERIENCIA') || n.includes('FORMATIVA')) return 'giro';
+  return 'cubo';
+}
+
+/** Colores y objeto de un curso. i = posición del curso en la lista. */
+function temaCurso(info, i) {
+  const [c1, c2] = COLOR_CURSO[i % COLOR_CURSO.length];
+  return { c1, c2, tipo: tipoObjeto(info.nombre), estilo: `--c1:${c1};--c2:${c2}` };
+}
+
+const capas = (n, cls = '') => Array.from({ length: n }, (_, i) => `<i class="${cls}" style="--z:${i}"></i>`).join('');
+
+const OBJETOS = {
+  cubo: () => `<div class="o3d-obj cubo">${['∧', '∨', '¬', '→', '↔', '∴']
+    .map((s, i) => `<div class="cara c${i}"><span>${s}</span></div>`).join('')}</div>`,
+
+  moneda: () => `<div class="o3d-obj moneda">${capas(9)}<b class="frente">S/</b><b class="dorso">$</b></div>`,
+
+  barras: () => `<div class="o3d-obj barras">${[34, 56, 44, 76].map((h, i) =>
+    `<div class="barra3d" style="--h:${h}px;--x:${i * 26 - 48}px;--d:${-i * 0.6}s">
+      <i class="f"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="t"></i></div>`).join('')}</div>`,
+
+  pastel: () => `<div class="o3d-obj pastel">${capas(7)}<b></b></div>`,
+
+  atomo: () => `<div class="o3d-obj atomo"><b class="nucleo"></b>${[0, 60, 120].map((r, i) =>
+    `<div class="orbita" style="--r:${r}deg;--t:${2.4 + i * 0.7}s"><i></i></div>`).join('')}</div>`,
+
+  piramide: () => `<div class="o3d-obj piramide">${[0, 90, 180, 270].map(r => `<i style="--r:${r}deg"></i>`).join('')}
+    <b class="base"></b><span class="pi">π</span></div>`,
+
+  giro: () => `<div class="o3d-obj giro"><b class="nucleo"></b><div class="anillo a1"></div><div class="anillo a2"></div><div class="anillo a3"></div></div>`
+};
+
+/** HTML del objeto con su sombra y su flotación. tam: 'grande' (portada) o 'chico' (cabecera). */
+function objeto3D(tipo, tam = 'grande') {
+  return `<div class="o3d ${tam}" aria-hidden="true"><div class="o3d-flota">${(OBJETOS[tipo] || OBJETOS.cubo)()}</div><span class="o3d-sombra"></span></div>`;
+}
+
+</script>
+  <script>
 /* js/ui.js */
 /* Piezas de interfaz compartidas: íconos, hojas, avisos. */
 
@@ -794,9 +1127,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') UI.cerrar();
 </script>
   <script>
 /* js/views/inicio.js */
-/* Inicio: todos los cursos en tarjetas. Al tocar uno se entra a su clase. */
-
-const COLOR_CURSO = ['#5B5BD6', '#0E9F6E', '#E8590C', '#D6336C', '#1C7ED6', '#7048E8', '#2B8A3E', '#C2410C', '#0B7285', '#9C36B5'];
+/* Inicio: todos los cursos en tarjetas con portada 3D. Al tocar uno se entra a su clase. */
 
 Views.inicio = {
   render() {
@@ -825,15 +1156,19 @@ Views.inicio = {
 
     R.cursos.forEach((c, i) => {
       const info = c.info;
-      const color = COLOR_CURSO[i % COLOR_CURSO.length];
+      const t = temaCurso(info, i);
       const eqColor = n => (c.equipos.find(e => e.equipo === n) || {}).color || '#E5E7EB';
       const esHoy = norm(info.dias).split(' ').includes(hoy);
       const lider = c.alumnos.slice().sort((x, y) => y.participacion - x.participacion || (y.nota ?? 0) - (x.nota ?? 0))[0];
       const mejor = c.alumnos.filter(a => a.nota !== null).sort((x, y) => y.nota - x.nota)[0];
-      h += `<button class="curso-card" style="--cc:${color}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+      h += `<button class="curso-card" style="${t.estilo}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+        <div class="cc-portada">
+          ${objeto3D(t.tipo)}
+          <span class="cc-num">${String(i + 1).padStart(2, '0')}</span>
+          ${ahora === info.curso ? '<span class="cc-estado vivo">● En clase</span>' : esHoy ? '<span class="cc-estado">Hoy</span>' : ''}
+        </div>
         <div class="cc-top">
           <div class="cc-tit"><b>${esc(info.nombre)}</b><span>${esc(info.seccion)}</span></div>
-          ${ahora === info.curso ? '<span class="badge pos">Ahora</span>' : esHoy ? '<span class="badge accent">Hoy</span>' : ''}
         </div>
         <div class="cc-meta">${esc(info.modalidad || '')}${info.dias ? ' · ' + esc(info.dias) : ''} · ${esc(info.hora)}</div>
         <div class="cc-avatares">${c.alumnos.slice(0, 6).map(a => avatarHTML(a, eqColor(a.equipo), 40, R.avatarEstilo)).join('')}
@@ -888,10 +1223,12 @@ Views.clase = {
     const menos = hoy.filter(m => m.puntos < 0).reduce((s, m) => s + m.puntos, 0);
     const ses = st.sesiones.find(s => s.fecha === st.fecha);
 
-    let h = `<div class="seccion-head"><div>
-        <h2>${esc(c.nombre)} · ${esc(c.seccion)}</h2>
-        <p class="muted small">${ses ? 'Sesión ' + ses.n + ' · ' : ''}${esc(fmtFecha(st.fecha))} · inicia ${esc(c.hora)}${c.modalidad ? ' · ' + esc(c.modalidad) : ''}</p>
-      </div></div>
+    const t = temaCurso(c, st.cursos.findIndex(x => x.curso === st.curso));
+    let h = `<div class="curso-hero" style="${t.estilo}">
+        ${objeto3D(t.tipo, 'chico')}
+        <div class="grow"><h2>${esc(c.nombre)}</h2>
+        <p class="muted small"><b style="color:${t.c1}">${esc(c.seccion)}</b> · ${ses ? 'Sesión ' + ses.n + ' · ' : ''}${esc(fmtFecha(st.fecha))} · inicia ${esc(c.hora)}${c.modalidad ? ' · ' + esc(c.modalidad) : ''}</p></div>
+      </div>
       <div class="resumen-hoy">
         <span class="badge pos">+${mas} hoy</span><span class="badge neg">${menos} hoy</span>
         <span class="badge">${st.alumnos.length} alumnos</span>

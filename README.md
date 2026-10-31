@@ -7,11 +7,14 @@ App para dar puntos a los alumnos al estilo ClassDojo, con nota calculada, panel
 ```
 src/                  Código fuente (se edita aquí)
   index.html          Estructura de la página
-  css/styles.css      Estilos
+  css/styles.css      Estilos base
+  css/tema.css        Tema futurista (oscuro, neón, vidrio)
+  css/objetos3d.css   Objetos 3D animados de las portadas
   js/util.js          Texto, fechas, coincidencia de nombres
   js/api.js           Conexión con Apps Script
   js/avatar.js        Avatares (DiceBear o iniciales)
   js/charts.js        Gráficos SVG
+  js/objetos3d.js     Qué objeto y colores lleva cada curso
   js/ui.js            Íconos, hojas, avisos
   js/views/*.js       Una pantalla por archivo
   js/app.js           Estado, envío al servidor y arranque

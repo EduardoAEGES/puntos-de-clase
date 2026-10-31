@@ -1,6 +1,4 @@
-/* Inicio: todos los cursos en tarjetas. Al tocar uno se entra a su clase. */
-
-const COLOR_CURSO = ['#5B5BD6', '#0E9F6E', '#E8590C', '#D6336C', '#1C7ED6', '#7048E8', '#2B8A3E', '#C2410C', '#0B7285', '#9C36B5'];
+/* Inicio: todos los cursos en tarjetas con portada 3D. Al tocar uno se entra a su clase. */
 
 Views.inicio = {
   render() {
@@ -29,15 +27,19 @@ Views.inicio = {
 
     R.cursos.forEach((c, i) => {
       const info = c.info;
-      const color = COLOR_CURSO[i % COLOR_CURSO.length];
+      const t = temaCurso(info, i);
       const eqColor = n => (c.equipos.find(e => e.equipo === n) || {}).color || '#E5E7EB';
       const esHoy = norm(info.dias).split(' ').includes(hoy);
       const lider = c.alumnos.slice().sort((x, y) => y.participacion - x.participacion || (y.nota ?? 0) - (x.nota ?? 0))[0];
       const mejor = c.alumnos.filter(a => a.nota !== null).sort((x, y) => y.nota - x.nota)[0];
-      h += `<button class="curso-card" style="--cc:${color}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+      h += `<button class="curso-card" style="${t.estilo}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+        <div class="cc-portada">
+          ${objeto3D(t.tipo)}
+          <span class="cc-num">${String(i + 1).padStart(2, '0')}</span>
+          ${ahora === info.curso ? '<span class="cc-estado vivo">● En clase</span>' : esHoy ? '<span class="cc-estado">Hoy</span>' : ''}
+        </div>
         <div class="cc-top">
           <div class="cc-tit"><b>${esc(info.nombre)}</b><span>${esc(info.seccion)}</span></div>
-          ${ahora === info.curso ? '<span class="badge pos">Ahora</span>' : esHoy ? '<span class="badge accent">Hoy</span>' : ''}
         </div>
         <div class="cc-meta">${esc(info.modalidad || '')}${info.dias ? ' · ' + esc(info.dias) : ''} · ${esc(info.hora)}</div>
         <div class="cc-avatares">${c.alumnos.slice(0, 6).map(a => avatarHTML(a, eqColor(a.equipo), 40, R.avatarEstilo)).join('')}

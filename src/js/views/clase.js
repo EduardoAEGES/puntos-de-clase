@@ -9,10 +9,12 @@ Views.clase = {
     const menos = hoy.filter(m => m.puntos < 0).reduce((s, m) => s + m.puntos, 0);
     const ses = st.sesiones.find(s => s.fecha === st.fecha);
 
-    let h = `<div class="seccion-head"><div>
-        <h2>${esc(c.nombre)} · ${esc(c.seccion)}</h2>
-        <p class="muted small">${ses ? 'Sesión ' + ses.n + ' · ' : ''}${esc(fmtFecha(st.fecha))} · inicia ${esc(c.hora)}${c.modalidad ? ' · ' + esc(c.modalidad) : ''}</p>
-      </div></div>
+    const t = temaCurso(c, st.cursos.findIndex(x => x.curso === st.curso));
+    let h = `<div class="curso-hero" style="${t.estilo}">
+        ${objeto3D(t.tipo, 'chico')}
+        <div class="grow"><h2>${esc(c.nombre)}</h2>
+        <p class="muted small"><b style="color:${t.c1}">${esc(c.seccion)}</b> · ${ses ? 'Sesión ' + ses.n + ' · ' : ''}${esc(fmtFecha(st.fecha))} · inicia ${esc(c.hora)}${c.modalidad ? ' · ' + esc(c.modalidad) : ''}</p></div>
+      </div>
       <div class="resumen-hoy">
         <span class="badge pos">+${mas} hoy</span><span class="badge neg">${menos} hoy</span>
         <span class="badge">${st.alumnos.length} alumnos</span>

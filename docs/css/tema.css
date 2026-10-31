@@ -1,0 +1,112 @@
+/* ===== Tema futurista (oscuro, neón y vidrio) — se carga después de styles.css ===== */
+:root {
+  color-scheme: dark;
+  --bg: #060914;
+  --surface: rgba(255, 255, 255, .045);
+  --surface-2: rgba(255, 255, 255, .075);
+  --panel: #0D1328;                       /* sólido: hojas, avisos, barras */
+  --ink: #E8ECFF;
+  --muted: #8C94BA;
+  --line: rgba(148, 163, 255, .16);
+  --accent: #7C83FF;
+  --accent-2: #22D3EE;
+  --accent-soft: rgba(124, 131, 255, .16);
+  --pos: #34D399;
+  --pos-bg: rgba(52, 211, 153, .13);
+  --pos-line: rgba(52, 211, 153, .6);
+  --neg: #FB7185;
+  --neg-bg: rgba(251, 113, 133, .13);
+  --neg-line: rgba(251, 113, 133, .6);
+  --warn: #FBBF24;
+  --warn-bg: rgba(251, 191, 36, .13);
+  --oro: #FACC15;
+  --plata: #94A3B8;
+  --bronce: #F97316;
+  --shadow: 0 0 0 1px var(--line), 0 12px 32px rgba(0, 0, 0, .35);
+  --glow: 0 0 22px rgba(124, 131, 255, .45);
+  --font: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: 'Orbitron', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(1100px 600px at 0% -10%, rgba(124, 131, 255, .2), transparent 60%),
+    radial-gradient(900px 520px at 110% 0%, rgba(34, 211, 238, .13), transparent 60%),
+    radial-gradient(800px 600px at 50% 120%, rgba(232, 121, 249, .1), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+/* Rejilla de fondo que se desvanece */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background-image:
+    linear-gradient(rgba(148, 163, 255, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 255, .06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 75%);
+}
+
+h2, h3, .kpi .v, .nota-grande .v, .equipo-card .pts, .marca b, .cc-tit b, .podio .base, .sesion-num b { font-family: var(--display); letter-spacing: .02em; }
+h2 { font-weight: 800; }
+h3 { font-weight: 700; font-size: 15px; }
+.kpi .v { font-weight: 800; text-shadow: 0 0 18px rgba(124, 131, 255, .45); }
+.kpi .v.neg { text-shadow: 0 0 18px rgba(251, 113, 133, .45); }
+
+/* Vidrio */
+.card, .kpi, .tarjeta, .curso-card, .equipo-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .35);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.top, .nav { background: rgba(6, 9, 20, .72); border-color: var(--line); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.nav button.on { color: #fff; background: linear-gradient(135deg, rgba(124, 131, 255, .35), rgba(34, 211, 238, .2)); box-shadow: inset 0 0 0 1px rgba(124, 131, 255, .5); }
+.nav button.on svg { filter: drop-shadow(0 0 6px var(--accent-2)); }
+
+/* Botones y controles */
+.btn { border: 1px solid var(--line); }
+.btn.primary { border: 0; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: var(--glow); }
+.btn.pos, .btn.neg { border-color: transparent; }
+.icon-btn { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.icon-btn.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+.chip { background: var(--surface); border-color: var(--line); }
+.chip.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; color: #fff; }
+.seg { background: rgba(0, 0, 0, .25); border-color: var(--line); }
+.seg button.on { background: var(--accent-soft); color: #fff; box-shadow: inset 0 0 0 1px rgba(124, 131, 255, .6); }
+.curso-sel { background-color: var(--accent-soft); color: var(--ink); border: 1px solid rgba(124, 131, 255, .4); }
+input[type=text], input[type=number], input[type=time], input[type=date], input[type=password], input[type=tel], select, textarea {
+  background: rgba(0, 0, 0, .25); border-color: var(--line); color: var(--ink);
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 131, 255, .25); }
+option { background: var(--panel); color: var(--ink); }
+
+/* Piezas que antes usaban el color de texto como fondo */
+.toast { background: var(--panel); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(0, 0, 0, .5), var(--glow); }
+.toast.error { background: #2A0D18; border-color: var(--neg-line); }
+.toast button { background: var(--accent-soft); color: #fff; }
+.barra-multi { background: var(--panel); border: 1px solid rgba(124, 131, 255, .4); box-shadow: 0 10px 40px rgba(0, 0, 0, .5), var(--glow); }
+.estado-seg button { background: var(--surface); border-color: var(--line); }
+.estado-seg button.on.N { background: var(--accent); border-color: var(--accent); color: #fff; }
+.hoja { background: var(--panel); border: 1px solid var(--line); box-shadow: 0 -20px 60px rgba(0, 0, 0, .5); }
+#capa .fondo { background: rgba(2, 4, 12, .65); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.confirmar-bar { background: var(--panel); border: 1px solid var(--line); }
+.flota { text-shadow: 0 0 14px currentColor; }
+.fuente { background: var(--surface); border-color: rgba(124, 131, 255, .35); }
+.cc-avatares .av { border-color: var(--bg); }
+
+/* Detalles con brillo */
+.tarjeta:hover, .curso-card:hover { box-shadow: 0 12px 32px rgba(0, 0, 0, .35), 0 0 0 1px rgba(124, 131, 255, .45), var(--glow); }
+.tarjeta .total { box-shadow: 0 0 12px rgba(52, 211, 153, .35); }
+.tarjeta .total.neg { box-shadow: 0 0 12px rgba(251, 113, 133, .35); }
+.podio .base { box-shadow: 0 0 24px currentColor; color: #0A0E1F; }
+.podio .p1 .base { box-shadow: 0 0 28px rgba(250, 204, 21, .55); }
+.podio .p2 .base { box-shadow: 0 0 22px rgba(148, 163, 184, .45); }
+.podio .p3 .base { box-shadow: 0 0 22px rgba(249, 115, 22, .45); }
+.barra i { background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 0 10px rgba(34, 211, 238, .5); }
+.nota-grande { box-shadow: inset 0 0 0 1px currentColor, 0 0 28px var(--pos-bg); }
+.nota-grande.neg { box-shadow: inset 0 0 0 1px currentColor, 0 0 28px var(--neg-bg); }
+.marca svg { color: var(--accent-2); filter: drop-shadow(0 0 8px var(--accent-2)); }
+.spinner { border-color: var(--line); border-top-color: var(--accent-2); }
+.demo-aviso { background: linear-gradient(90deg, rgba(251, 191, 36, .16), rgba(244, 114, 182, .14)); color: #FDE68A; }
+::selection { background: rgba(124, 131, 255, .45); }
