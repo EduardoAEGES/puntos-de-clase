@@ -1,0 +1,9 @@
+/* Página de inicio local (index.html de la raíz) */
+.inicio { max-width: 560px; margin: 0 auto; padding: 40px 16px; }
+.inicio h1 { font-size: 28px; font-weight: 900; }
+.inicio > p { margin: 8px 0 20px; }
+.opcion { display: block; text-decoration: none; color: var(--ink); margin-top: 12px; border: 2px solid transparent; }
+.opcion:hover { border-color: var(--accent); }
+.opcion b { display: block; font-size: 17px; font-weight: 900; color: var(--accent); }
+.opcion span { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); }
+.opcion code { font-size: 13px; }

@@ -16,6 +16,10 @@
   <div id="toasts"></div>
 
   <!-- dev:start -->
+  <!-- Solo en local: datos (reales si existe privado/, si no los inventados), backend y simulador del Sheets -->
+  <script src="../privado/Datos.js"></script>
+  <script>if (typeof SEED_CURSOS === 'undefined') document.write('<script src="../demo/seed-demo.js"><\/script>');</script>
+  <script src="../apps-script/Code.js"></script>
   <script src="../dev/mock-gas.js"></script>
   <!-- dev:end -->
 

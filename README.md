@@ -16,11 +16,11 @@ src/                  Código fuente (se edita aquí)
   js/views/*.js       Una pantalla por archivo
   js/app.js           Estado, envío al servidor y arranque
 apps-script/
-  Code.gs             Backend (hojas, cálculo de notas, PIN)
+  Code.js             Backend (hojas, cálculo de notas, PIN) — en Apps Script se llama Code.gs
   Index.html          Generado con `node build.js` — no editar a mano
 dev/mock-gas.js       Simulador del Sheets para probar en local
-demo/seed-demo.js     Curso y alumnos inventados (demo y ejemplo de Datos.gs)
-privado/Datos.gs      Tus cursos y alumnos reales — fuera de Git
+demo/seed-demo.js     Curso y alumnos inventados (demo y ejemplo de Datos.js)
+privado/Datos.js      Tus cursos y alumnos reales — fuera de Git
 build-demo.js         Arma la demo pública en docs/
 revisar-privacidad.js Busca datos reales en lo que se subiría (correr antes de cada push)
 build.js              Junta src/ en apps-script/Index.html
@@ -29,10 +29,10 @@ build.js              Junta src/ en apps-script/Index.html
 ## Publicar
 
 1. Crea un Google Sheets nuevo. Ve a **Extensiones → Apps Script**.
-2. Pega `apps-script/Code.gs` en el archivo `Código.gs`.
-3. Crea un segundo archivo de script llamado **Datos** y pega `privado/Datos.gs`. Este archivo tiene tus cursos y alumnos reales; está en `.gitignore` y no se sube a GitHub. Si no lo tienes, copia el formato de `demo/seed-demo.js`.
+2. Pega `apps-script/Code.js` en el archivo `Código.gs`.
+3. Crea un segundo archivo de script llamado **Datos** y pega `privado/Datos.js`. Este archivo tiene tus cursos y alumnos reales; está en `.gitignore` y no se sube a GitHub. Si no lo tienes, copia el formato de `demo/seed-demo.js`.
 4. Crea un archivo HTML llamado **Index** y pega `apps-script/Index.html`.
-5. Elige la función `setup` y pulsa **Ejecutar**. Acepta los permisos. Se crean las hojas con las categorías, los pesos y lo que haya en `Datos.gs`.
+5. Elige la función `setup` y pulsa **Ejecutar**. Acepta los permisos. Se crean las hojas con las categorías, los pesos y lo que haya en el archivo Datos.
 6. Ve a **Implementar → Nueva implementación → Aplicación web**:
    - Ejecutar como: **Yo**
    - Quién tiene acceso: **Cualquier usuario** (lo necesita la página de notas por DNI)

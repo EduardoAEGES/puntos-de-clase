@@ -1,6 +1,6 @@
 /**
  * Simulador local de Apps Script para desarrollo.
- * Carga apps-script/Code.gs tal cual y le da un SpreadsheetApp falso guardado en localStorage.
+ * Carga apps-script/Code.js tal cual y le da un SpreadsheetApp falso guardado en localStorage.
  * El build (build.js) quita este archivo; en Apps Script no existe.
  */
 (function () {
@@ -101,26 +101,12 @@
     }
   };
 
-  // Carga los datos iniciales y el backend real, como hace Apps Script con Datos.gs + Code.gs.
-  // En local usa privado/Datos.gs si existe; si no (o en la demo pública), los datos inventados.
-  function leer(url) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url, false);
-    xhr.send();
-    return xhr.status === 200 ? xhr.responseText : null;
+  // El HTML carga antes, con <script>, los datos (privado/Datos.js o los inventados) y apps-script/Code.js,
+  // igual que Apps Script. Así también abre con doble clic (file://), sin servidor.
+  if (typeof window.setup !== 'function') {
+    throw new Error('Falta cargar apps-script/Code.js antes de mock-gas.js');
   }
-  if (typeof window.setup === 'function') {
-    // La demo ya cargó datos y backend con <script>: así abre también con doble clic (file://)
-    window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_ };
-  } else {
-    const archivos = [['../privado/Datos.gs', '../demo/seed-demo.js'], '../apps-script/Code.gs'];
-    const codigo = archivos.map(a => {
-      const opciones = Array.isArray(a) ? a : [a];
-      for (const url of opciones) { const t = leer(url); if (t !== null) return t; }
-      throw new Error('No pude cargar ' + opciones.join(' ni '));
-    }).join('\n;\n');
-    (0, eval)(codigo + '\n;window.__gas = {setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_};');
-  }
+  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_ };
   const nueva = !db.orden.length;
   if (nueva) { window.__gas.setup(); guardar(); }
 
@@ -128,7 +114,7 @@
   if (window.MOCK_DEMO) {
     const PIN_DEMO = '0000';
     PropertiesService.getScriptProperties().setProperty('PIN', PIN_DEMO);
-    try { localStorage.setItem('pin', JSON.stringify(PIN_DEMO)); } catch (e) { /* sin almacenamiento */ }
+    try { localStorage.setItem('pin-demo', JSON.stringify(PIN_DEMO)); } catch (e) { /* sin almacenamiento */ }
     document.addEventListener('DOMContentLoaded', () => {
       const b = document.createElement('div');
       b.className = 'demo-aviso';

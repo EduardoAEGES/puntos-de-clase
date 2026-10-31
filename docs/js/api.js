@@ -1,7 +1,10 @@
 /* Comunicación con Apps Script (google.script.run). En desarrollo lo atiende dev/mock-gas.js. */
 
+// La demo guarda su PIN aparte para no pisar el de la app real en el mismo navegador
+const PIN_KEY = window.MOCK_DEMO ? 'pin-demo' : 'pin';
+
 const Api = {
-  pin: store.get('pin', ''),
+  pin: store.get(PIN_KEY, ''),
 
   run(fn, ...args) {
     return new Promise((ok, fail) => {
@@ -13,8 +16,8 @@ const Api = {
   /** Acciones del docente: siempre pasan por api(pin, fn, args) en el servidor. */
   call(fn, ...args) { return this.run('api', this.pin, fn, args); },
 
-  setPin(p) { this.pin = p; store.set('pin', p); },
-  olvidarPin() { this.pin = ''; store.del('pin'); },
+  setPin(p) { this.pin = p; store.set(PIN_KEY, p); },
+  olvidarPin() { this.pin = ''; store.del(PIN_KEY); },
 
   location() {
     return new Promise(ok => {

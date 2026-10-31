@@ -23,11 +23,11 @@ const html = fs.readFileSync(path.join(R, 'src', 'index.html'), 'utf8')
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
 
 fs.copyFileSync(path.join(R, 'demo', 'seed-demo.js'), path.join(OUT, 'demo', 'datos.js'));
-fs.copyFileSync(path.join(R, 'apps-script', 'Code.gs'), path.join(OUT, 'demo', 'backend.js'));
+fs.copyFileSync(path.join(R, 'apps-script', 'Code.js'), path.join(OUT, 'demo', 'backend.js'));
 fs.copyFileSync(path.join(R, 'dev', 'mock-gas.js'), path.join(OUT, 'demo', 'mock-gas.js'));
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 
-// Control: ningún dato de privado/Datos.gs puede quedar en docs/ (ver revisar-privacidad.js)
+// Control: ningún dato de privado/Datos.js puede quedar en docs/ (ver revisar-privacidad.js)
 const { revisar, marcas } = require('./revisar-privacidad');
 const archivos = [];
 (function recorrer(d) {
@@ -41,6 +41,6 @@ if (fugas.length) {
   fs.rmSync(OUT, { recursive: true, force: true });
   throw new Error('La demo contenía datos reales y se borró:\n' + fugas.join('\n'));
 }
-if (marcas().length) console.log('Revisado: ningún dato de privado/Datos.gs aparece en docs/');
+if (marcas().length) console.log('Revisado: ningún dato de privado/Datos.js aparece en docs/');
 
 console.log('Listo: docs/ (súbelo a GitHub Pages o ábrelo con un servidor local)');

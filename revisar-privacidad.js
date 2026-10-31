@@ -1,5 +1,5 @@
 /**
- * Busca datos reales de privado/Datos.gs en archivos que se publican.
+ * Busca datos reales de privado/Datos.js en archivos que se publican.
  * Revisa apellidos y nombres completos, "Nombre Apellido" en forma corta,
  * códigos de curso y NRC.
  * Uso: node revisar-privacidad.js            (todo lo que Git versionaría)
@@ -10,7 +10,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const R = __dirname;
-const PRIVADO = path.join(R, 'privado', 'Datos.gs');
+const PRIVADO = path.join(R, 'privado', 'Datos.js');
 
 function marcas() {
   if (!fs.existsSync(PRIVADO)) return [];
