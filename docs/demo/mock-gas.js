@@ -118,7 +118,7 @@
   if (typeof window.setup !== 'function') {
     throw new Error('Falta cargar apps-script/Code.js antes de mock-gas.js');
   }
-  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_, importAlumnos_, saveEquipo_ };
+  window.__gas = { setup, estadoPin, crearPin, verificarClave, guardarAvatar, api, consultarNotas, addMovs_, getState_, updateAlumno_, importAlumnos_, saveEquipo_ };
   const nueva = !db.orden.length;
   if (nueva) { window.__gas.setup(); guardar(); }
 
@@ -199,7 +199,7 @@
           .map(a => azar() < 0.5 ? { clave: a.clave, categoria: 'Buena respuesta', puntos: 2 } : { clave: a.clave, categoria: 'Ayuda a un compañero', puntos: 1 }), f);
       });
       // DNI de prueba correlativos: 70000001, 70000002, ...
-      st.alumnos.forEach(a => window.__gas.updateAlumno_(curso, a.clave, { dni: String(dni++) }));
+      st.alumnos.forEach(a => { const n = String(dni++); if (!a.dni) window.__gas.updateAlumno_(curso, a.clave, { dni: n }); });
     });
     guardar();
     if (recargar) location.reload();

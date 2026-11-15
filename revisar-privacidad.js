@@ -16,12 +16,15 @@ function marcas() {
   if (!fs.existsSync(PRIVADO)) return [];
   const datos = fs.readFileSync(PRIVADO, 'utf8');
   const m = new Set();
-  [...datos.matchAll(/'([^'|]+)\|([^']*)'/g)].forEach(([, ape, nom]) => {
+  [...datos.matchAll(/'([^'|]+)\|([^'|]*)(?:\|(\d{8})(?:\|[HM])?)?'/g)].forEach(([, ape, nom, dni]) => {
+    if (dni) m.add(dni);
     m.add(ape);
-    m.add(nom);
+    if (nom.includes(' ') && ape.includes(' ')) m.add(nom + ' ' + ape);   // nombre completo (el nombre suelto coincide con alumnos inventados)
     m.add(nom.split(' ')[0] + ' ' + ape.split(' ')[0]);   // "Ana Quispe"
     m.add(ape.split(' ')[0] + ' ' + nom.split(' ')[0]);   // "Quispe Ana"
   });
+  // Claves del docente
+  [...datos.matchAll(/CLAVES_MAESTRAS\s*=\s*\[([^\]]*)\]/g)].forEach(([, l]) => [...l.matchAll(/'([^']+)'/g)].forEach(x => m.add(x[1])));
   // Filas de cursos: ['CODIGO', 'Nombre', 'Sección', 'NRC', ...]
   datos.split('\n').forEach(l => {
     const q = [...l.matchAll(/'([^']*)'/g)].map(x => x[1]);

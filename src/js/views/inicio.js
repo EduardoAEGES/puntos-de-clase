@@ -71,7 +71,7 @@ function cargarResumen() {
 Object.assign(Acciones, {
   abrirCurso(el) {
     const curso = el.dataset.curso;
-    S.tab = 'clase';
+    S.tab = 'semana';
     store.set('tab', S.tab);
     if (S.st && S.st.curso === curso) { render(); window.scrollTo(0, 0); return; }
     $('#app').innerHTML = '<div class="cargando"><div class="spinner"></div><p>Abriendo curso…</p></div>';

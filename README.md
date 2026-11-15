@@ -53,7 +53,7 @@ Si olvidas el PIN, ejecuta `resetPin` en el editor y crea uno nuevo al abrir la 
 python dev/servidor.py
 ```
 
-Abre `http://localhost:5500/src/index.html`. En **Ajustes → Cargar datos de prueba** se crean 8 sesiones al azar y los DNI 70000001 a 70000030.
+Abre `http://localhost:5500/src/index.html` (o `index.html` con doble clic). Entra con una clave del docente (`CLAVES_MAESTRAS` de `privado/Datos.js`) o con el DNI de un alumno. En **Ajustes → Cargar datos de prueba** se crean 8 sesiones al azar y los DNI 70000001 a 70000030.
 
 ## Demo pública (GitHub Pages)
 

@@ -12,7 +12,7 @@ const S = {
 };
 
 const TABS = [
-  ['clase', 'Clase'], ['panel', 'Panel'], ['equipos', 'Equipos'],
+  ['semana', 'Semana'], ['clase', 'Clase'], ['panel', 'Panel'], ['equipos', 'Equipos'],
   ['asistencia', 'Asistencia'], ['chat', 'Chat'], ['sesiones', 'Sesiones']
 ];
 
@@ -45,7 +45,7 @@ function enviar(fn, args, { silencio = false } = {}) {
   }).catch(e => {
     S.pendientes--;
     pintarSync();
-    if (/PIN/.test(e.message)) { Api.olvidarPin(); return pantallaPin('Tu PIN cambió. Vuelve a entrar.'); }
+    if (/PIN/.test(e.message)) return Views.entrada.iniciar('Tu clave cambió. Vuelve a entrar.');
     UI.toast(e.message || 'No se pudo guardar', { error: true });
     recargar();
     throw e;
@@ -89,11 +89,12 @@ function render() {
   const y = window.scrollY;
   const vista = Views[S.tab] || Views.clase;
   const enInicio = S.tab === 'inicio';
+  const cerrar = `<button class="icon-btn" data-act="salir" title="Cerrar sesión" aria-label="Cerrar sesión">${ICON.salir}</button>`;
   const ajustes = `<button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>`;
   $('#app').innerHTML = (enInicio ? `
     <header class="top"><div class="top-in">
       <div class="marca">${ICON.birrete}<b>Puntos de clase</b></div>
-      <span class="sync" id="sync"></span>${ajustes}
+      <span class="sync" id="sync"></span>${ajustes}${cerrar}
     </div></header>` : `
     <header class="top"><div class="top-in">
       <button class="icon-btn" data-act="tab" data-tab="inicio" title="Mis cursos" aria-label="Volver a mis cursos">${ICON.atras}</button>
@@ -102,7 +103,7 @@ function render() {
       </select>
       <span class="sync" id="sync"></span>
       <button class="icon-btn" data-act="deshacer" title="Deshacer último" aria-label="Deshacer último">${ICON.deshacer}</button>
-      ${ajustes}
+      ${ajustes}${cerrar}
     </div></header>`) + `
     <main>${vista.render()}</main>` + (enInicio ? '' : `
     <nav class="nav"><div class="nav-in">
@@ -192,12 +193,5 @@ async function cargar() {
 }
 
 (async function iniciar() {
-  const params = await Api.location();
-  if (params.v === 'notas') return Views.notas.iniciar();
-  if (!Api.pin) return pantallaPin();
-  try { await cargar(); }
-  catch (e) {
-    if (/PIN/.test(e.message)) { Api.olvidarPin(); pantallaPin('Escribe tu PIN otra vez.'); }
-    else pantallaError(e.message);
-  }
+  Views.entrada.iniciar();
 })();

@@ -120,7 +120,7 @@ function darPuntos(claves, cat, fecha) {
   render();
   claves.forEach(k => UI.flotar($(`.tarjeta[data-clave="${CSS.escape(k)}"]`), signo(cat.puntos), cat.puntos > 0));
   const quien = claves.length === 1 ? nombreCorto(alumnoDe(claves[0])) : claves.length + ' alumnos';
-  UI.toast(`${quien} ${signo(cat.puntos)} ${cat.categoria}`, { accion: 'Deshacer', fn: deshacer });
+  UI.toast(`${quien} ${signo(cat.puntos)} ${cat.categoria}`, !fecha || fecha === st.fecha ? { accion: 'Deshacer', fn: deshacer } : {});
   enviar('addMovs', [st.curso, 'manual', claves.map(k => ({ clave: k, categoria: cat.categoria, puntos: cat.puntos })), fecha || null], { silencio: true });
 }
 

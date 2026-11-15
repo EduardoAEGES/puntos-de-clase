@@ -85,7 +85,7 @@ Views.ajustes = {
     // Cuenta
     h += `<div class="card"><h3>Sesión</h3><div class="chips" style="margin-top:10px">
       <button class="btn" data-act="recargar">Recargar datos</button>
-      <button class="btn neg" data-act="salir">${ICON.salir}Salir de este equipo</button>
+      <button class="btn neg" data-act="salir">${ICON.salir}Cerrar sesión</button>
       ${window.devDemo ? `<button class="btn" data-act="devDemo">Cargar datos de prueba</button><button class="btn" data-act="devReset">Borrar datos de prueba</button>` : ''}
     </div><p class="muted small">Salir borra el PIN guardado en este navegador.</p></div>`;
 
@@ -191,7 +191,7 @@ Object.assign(Acciones, {
     enviar('importAlumnos', [S.st.curso, items]).then(() => { S.imp = null; render(); });
   },
   recargar: () => recargar(),
-  salir() { if (confirm('¿Salir? Tendrás que escribir tu PIN otra vez.')) { Api.olvidarPin(); location.reload(); } },
+  salir() { if (confirm('¿Cerrar sesión? Tendrás que escribir tu clave otra vez.')) { S.st = null; S.tab = 'inicio'; Views.entrada.iniciar(); } },
   devDemo() { if (confirm('Crea 8 sesiones pasadas con datos al azar en Pensamiento Lógico 105M.')) window.devDemo(); },
   devReset() { if (confirm('¿Borrar todos los datos de prueba?')) window.devReset(); }
 });

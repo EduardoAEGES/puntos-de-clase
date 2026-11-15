@@ -1,0 +1,37 @@
+/* Pantalla Semana: estilo Duolingo (botones gruesos con "suelo", verde/rojo, ruta de nodos) */
+.dl-stats { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 14px; }
+.dl-stat { border: 2px solid rgba(255,255,255,.14); border-radius: 14px; padding: 6px 12px; font-size: 13px; background: var(--surface); color: inherit; font-family: inherit; }
+.dl-stat b { font-weight: 800; }
+.dl-link { cursor: pointer; opacity: .8; }
+.dl-ruta { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scroll-snap-type: x proximity; }
+.dl-nodo { flex: none; display: grid; justify-items: center; gap: 4px; background: none; border: 0; color: inherit; font-family: inherit; scroll-snap-align: center; cursor: pointer; }
+.dl-nodo span { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px;
+  background: #3a3f55; color: #cfd3e6; box-shadow: 0 5px 0 #262a3c; transition: transform .1s; }
+.dl-nodo:active span { transform: translateY(3px); box-shadow: 0 2px 0 #262a3c; }
+.dl-nodo small { font-size: 11px; opacity: .7; }
+.dl-nodo.hecha span { background: #58cc02; color: #fff; box-shadow: 0 5px 0 #46a302; }
+.dl-nodo.sel span { background: #1cb0f6; color: #fff; box-shadow: 0 5px 0 #1899d6; width: 62px; height: 62px; animation: dl-pulso 1.8s ease-in-out infinite; }
+@keyframes dl-pulso { 50% { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) { .dl-nodo.sel span { animation: none; } }
+.dl-sub { font-weight: 800; margin: 2px 0 10px; }
+.dl-dias { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.dl-dia { border: 2px solid #3a3f55; border-bottom-width: 4px; border-radius: 14px; background: var(--surface); color: inherit; padding: 8px 14px; font-weight: 700; font-family: inherit; cursor: pointer; }
+.dl-dia.on { border-color: #1cb0f6; color: #1cb0f6; }
+.dl-prog { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+.dl-barra { flex: 1; height: 14px; border-radius: 9px; background: #2a2e42; overflow: hidden; }
+.dl-barra i { display: block; height: 100%; background: #58cc02; border-radius: 9px; transition: width .4s; box-shadow: inset 0 -4px 0 rgba(0,0,0,.15); }
+.pips { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+.pip { font-style: normal; font-size: 12px; opacity: .25; filter: grayscale(1); }
+.pip.p { opacity: 1; filter: none; }
+.pip.n { opacity: 1; filter: none; outline: 2px solid #ff4b4b; border-radius: 6px; }
+.dl-filas { display: grid; gap: 12px; margin-top: 12px; }
+.dl-fila { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; }
+.dl-cat { display: flex; gap: 10px; align-items: center; text-align: left; }
+.dl-cat small { display: block; }
+.dl-emo { font-size: 26px; }
+.dl-btn { min-width: 74px; border: 0; border-radius: 16px; padding: 12px 10px; font-size: 22px; font-weight: 800; color: #fff; cursor: pointer; font-family: inherit;
+  display: grid; justify-items: center; line-height: 1.1; transition: transform .08s; }
+.dl-btn span { font-size: 13px; }
+.dl-btn.favor { background: #58cc02; box-shadow: 0 5px 0 #46a302; }
+.dl-btn.contra { background: #ff4b4b; box-shadow: 0 5px 0 #d33a3a; }
+.dl-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }

@@ -105,6 +105,28 @@ function setup() {
   });
 }
 
+/** Categorías de la pantalla Semana que no vienen en el semillero (se crean si faltan; sirve también a hojas ya existentes). */
+const CATEGORIAS_SEMANA = [
+  ['Falta de participación', -1, 'Negativo', 'Participación'],
+  ['Proyecto', 1, 'Positivo', 'Proyecto'],
+  ['Proyecto sin avance', -1, 'Negativo', 'Proyecto']
+];
+
+function asegurarCategorias_() {
+  const hay = {};
+  read_('Categorias').forEach(function (r) { hay[norm_(r[0])] = true; });
+  const faltan = CATEGORIAS_SEMANA.filter(function (c) { return !hay[norm_(c[0])]; });
+  if (faltan.length) append_('Categorias', faltan);
+}
+
+/** Avatar de partida según el sexo (H o M); el alumno lo cambia después. Sin dato: vacío (estilo por defecto). */
+function avatarInicial_(clave, nombres, sexo) {
+  const base = 'avataaars:' + clave + ' ' + nombres + '|facialHairProbability=0&accessoriesProbability=0&';
+  if (sexo === 'M') return base + 'top=straight01&clothing=shirtScoopNeck&clothesColor=ff488e';
+  if (sexo === 'H') return base + 'top=shortFlat&clothing=shirtCrewNeck&clothesColor=25557c';
+  return '';
+}
+
 /** SEED_ALUMNOS puede ser un curso {curso, nombresEquipo, equipos} o una lista de ellos. */
 function seedAlumnos_() {
   const seed = semilla_().alumnos;
@@ -117,7 +139,7 @@ function seedAlumnos_() {
       equipos.push([s.curso, i + 1, (s.nombresEquipo || [])[i] || ('Equipo ' + (i + 1)), COLORES[i % COLORES.length]]);
       lista.forEach(function (x) {
         const p = x.split('|');
-        alumnos.push([clave_(n++), '', '', p[0], p[1], '', s.curso, i + 1, '', '']);
+        alumnos.push([clave_(n), '', String(p[2] || ''), p[0], p[1], '', s.curso, i + 1, avatarInicial_(clave_(n++), p[1], p[3]), '']);
       });
     });
   });
@@ -127,14 +149,29 @@ function seedAlumnos_() {
 
 /* ---------- Acceso ---------- */
 
-/** El docente entra con un PIN. Se crea la primera vez que se abre la app. */
+/**
+ * El docente entra con un PIN (se crea la primera vez) o con una clave maestra.
+ * Las claves maestras viven en Datos.js (CLAVES_MAESTRAS), fuera de GitHub.
+ */
+function clavesDocente_() {
+  const l = typeof CLAVES_MAESTRAS === 'undefined' ? [] : [].concat(CLAVES_MAESTRAS).map(String);
+  const pin = PropertiesService.getScriptProperties().getProperty('PIN');
+  if (pin) l.push(String(pin));
+  return l;
+}
+
 function estadoPin() {
-  return { configurado: !!PropertiesService.getScriptProperties().getProperty('PIN') };
+  return { configurado: clavesDocente_().length > 0 };
+}
+
+/** true si es una clave del docente. No lanza error: la usa la pantalla de entrada. */
+function verificarClave(clave) {
+  return clavesDocente_().indexOf(String(clave || '').trim()) >= 0;
 }
 
 function crearPin(pin) {
   const p = PropertiesService.getScriptProperties();
-  if (p.getProperty('PIN')) throw new Error('El PIN ya existe.');
+  if (clavesDocente_().length) throw new Error('El PIN ya existe.');
   if (!/^\d{4,8}$/.test(String(pin))) throw new Error('El PIN debe tener de 4 a 8 dígitos.');
   p.setProperty('PIN', String(pin));
   return true;
@@ -154,8 +191,7 @@ const API = {
 
 /** Única puerta de entrada de la app del docente. */
 function api(pin, fn, args) {
-  const ok = PropertiesService.getScriptProperties().getProperty('PIN');
-  if (!ok || String(pin) !== ok) throw new Error('PIN incorrecto');
+  if (!verificarClave(pin)) throw new Error('PIN incorrecto');
   if (!API[fn]) throw new Error('Acción desconocida: ' + fn);
   return API[fn].apply(null, args || []);
 }
@@ -178,6 +214,24 @@ function consultarNotas(dni) {
       movs: st.movs.filter(function (m) { return m.clave === a.clave; }),
       avatarEstilo: st.config.avatarEstilo
     };
+  });
+}
+
+/**
+ * El alumno personaliza su avatar desde su página. Solo puede tocar el suyo:
+ * se identifica con su DNI y se guarda en todas sus filas (un alumno puede estar en varios cursos).
+ */
+function guardarAvatar(dni, valor) {
+  dni = String(dni || '').replace(/\D/g, '');
+  valor = String(valor || '');
+  if (dni.length < 8) throw new Error('DNI no válido.');
+  if (valor !== 'iniciales' && !/^[a-z]+(-[a-z]+)*:[^|]{1,60}(\|[A-Za-z0-9=&,]{0,300})?$/.test(valor)) throw new Error('Avatar no válido.');
+  return conLock_(function () {
+    const filas = readRows_('Alumnos').filter(function (x) { return str_(x.v[2]).replace(/\D/g, '') === dni; });
+    if (!filas.length) throw new Error('No encontré ese DNI.');
+    const sh = sh_('Alumnos');
+    filas.forEach(function (d) { sh.getRange(d.row, 9).setValue(valor); });
+    return true;
   });
 }
 
@@ -364,6 +418,7 @@ function addMovs_(curso, origen, items, fecha) {
       return [f, h, curso, i.clave, nombres[i.clave] || '', i.categoria, Number(i.puntos), origen || 'manual', i.nota || '', lote, uid_()];
     });
     asegurarSesion_(curso, f);
+    asegurarCategorias_();
     append_('Registro', rows);
     const st = getState_(curso);
     st.msg = rows.length + (rows.length === 1 ? ' movimiento guardado' : ' movimientos guardados');

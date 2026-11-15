@@ -434,6 +434,24 @@ label.campo > * { margin-top: 6px; }
 .mini-nota.neg { background: var(--neg-bg); color: var(--neg); }
 .mini-nota.na { background: var(--surface-2); color: var(--muted); }
 
+/* Entrada y avatar personalizable */
+.ent-avs { display: flex; justify-content: center; margin-bottom: 18px; }
+.ent-avs .av { border: 3px solid var(--surface); margin-left: -10px; box-shadow: 0 6px 16px rgba(0,0,0,.25); animation: ent-flota 3.2s ease-in-out infinite; }
+.ent-avs .av:first-child { margin-left: 0; }
+.ent-avs .av:nth-child(2n) { animation-delay: -.8s; }
+.ent-avs .av:nth-child(3n) { animation-delay: -1.6s; }
+@keyframes ent-flota { 50% { transform: translateY(-7px); } }
+@media (prefers-reduced-motion: reduce) { .ent-avs .av { animation: none; } }
+.mi-avatar { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; text-align: left; }
+.ae-prev { display: grid; place-items: center; margin: 6px 0 12px; }
+.ae-estilos { margin-bottom: 6px; }
+.ae-campo { margin-top: 14px; text-align: left; }
+.ae-campo > b { display: block; font-size: 13px; margin-bottom: 6px; }
+.ae-col { display: flex; flex-wrap: wrap; gap: 8px; }
+.ae-sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line, rgba(128,128,128,.4)); padding: 0; cursor: pointer; }
+.ae-sw.on { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ae-pie { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; position: sticky; bottom: 0; padding: 10px 0; background: var(--surface); }
+
 </style>
   <style>
 /* ===== Tema futurista (oscuro, neón y vidrio) — se carga después de styles.css ===== */
@@ -710,6 +728,46 @@ option { background: var(--panel); color: var(--ink); }
 .curso-hero p { margin: 4px 0 0; }
 
 </style>
+  <style>
+/* Pantalla Semana: estilo Duolingo (botones gruesos con "suelo", verde/rojo, ruta de nodos) */
+.dl-stats { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 14px; }
+.dl-stat { border: 2px solid rgba(255,255,255,.14); border-radius: 14px; padding: 6px 12px; font-size: 13px; background: var(--surface); color: inherit; font-family: inherit; }
+.dl-stat b { font-weight: 800; }
+.dl-link { cursor: pointer; opacity: .8; }
+.dl-ruta { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scroll-snap-type: x proximity; }
+.dl-nodo { flex: none; display: grid; justify-items: center; gap: 4px; background: none; border: 0; color: inherit; font-family: inherit; scroll-snap-align: center; cursor: pointer; }
+.dl-nodo span { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px;
+  background: #3a3f55; color: #cfd3e6; box-shadow: 0 5px 0 #262a3c; transition: transform .1s; }
+.dl-nodo:active span { transform: translateY(3px); box-shadow: 0 2px 0 #262a3c; }
+.dl-nodo small { font-size: 11px; opacity: .7; }
+.dl-nodo.hecha span { background: #58cc02; color: #fff; box-shadow: 0 5px 0 #46a302; }
+.dl-nodo.sel span { background: #1cb0f6; color: #fff; box-shadow: 0 5px 0 #1899d6; width: 62px; height: 62px; animation: dl-pulso 1.8s ease-in-out infinite; }
+@keyframes dl-pulso { 50% { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) { .dl-nodo.sel span { animation: none; } }
+.dl-sub { font-weight: 800; margin: 2px 0 10px; }
+.dl-dias { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.dl-dia { border: 2px solid #3a3f55; border-bottom-width: 4px; border-radius: 14px; background: var(--surface); color: inherit; padding: 8px 14px; font-weight: 700; font-family: inherit; cursor: pointer; }
+.dl-dia.on { border-color: #1cb0f6; color: #1cb0f6; }
+.dl-prog { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+.dl-barra { flex: 1; height: 14px; border-radius: 9px; background: #2a2e42; overflow: hidden; }
+.dl-barra i { display: block; height: 100%; background: #58cc02; border-radius: 9px; transition: width .4s; box-shadow: inset 0 -4px 0 rgba(0,0,0,.15); }
+.pips { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+.pip { font-style: normal; font-size: 12px; opacity: .25; filter: grayscale(1); }
+.pip.p { opacity: 1; filter: none; }
+.pip.n { opacity: 1; filter: none; outline: 2px solid #ff4b4b; border-radius: 6px; }
+.dl-filas { display: grid; gap: 12px; margin-top: 12px; }
+.dl-fila { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; }
+.dl-cat { display: flex; gap: 10px; align-items: center; text-align: left; }
+.dl-cat small { display: block; }
+.dl-emo { font-size: 26px; }
+.dl-btn { min-width: 74px; border: 0; border-radius: 16px; padding: 12px 10px; font-size: 22px; font-weight: 800; color: #fff; cursor: pointer; font-family: inherit;
+  display: grid; justify-items: center; line-height: 1.1; transition: transform .08s; }
+.dl-btn span { font-size: 13px; }
+.dl-btn.favor { background: #58cc02; box-shadow: 0 5px 0 #46a302; }
+.dl-btn.contra { background: #ff4b4b; box-shadow: 0 5px 0 #d33a3a; }
+.dl-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }
+
+</style>
 </head>
 <body>
   <div id="app">
@@ -839,11 +897,9 @@ function cargarScript(src) {
 /* js/api.js */
 /* Comunicación con Apps Script (google.script.run). En desarrollo lo atiende dev/mock-gas.js. */
 
-// La demo guarda su PIN aparte para no pisar el de la app real en el mismo navegador
-const PIN_KEY = window.MOCK_DEMO ? 'pin-demo' : 'pin';
-
+// El PIN o la clave del docente solo vive en memoria: al recargar se vuelve a pedir en la pantalla de entrada
 const Api = {
-  pin: store.get(PIN_KEY, ''),
+  pin: '',
 
   run(fn, ...args) {
     return new Promise((ok, fail) => {
@@ -855,8 +911,8 @@ const Api = {
   /** Acciones del docente: siempre pasan por api(pin, fn, args) en el servidor. */
   call(fn, ...args) { return this.run('api', this.pin, fn, args); },
 
-  setPin(p) { this.pin = p; store.set(PIN_KEY, p); },
-  olvidarPin() { this.pin = ''; store.del(PIN_KEY); },
+  setPin(p) { this.pin = p; },
+  olvidarPin() { this.pin = ''; },
 
   location() {
     return new Promise(ok => {
@@ -869,7 +925,9 @@ const Api = {
 </script>
   <script>
 /* js/avatar.js */
-/* Avatares: ilustrados (DiceBear) o iniciales con el color del equipo. */
+/* Avatares: ilustrados (DiceBear) o iniciales con el color del equipo.
+   Valor guardado en la columna Avatar: "estilo:semilla" o "estilo:semilla|opcion=valor&opcion=valor"
+   (las opciones son la ropa, el peinado y los colores que elige el alumno), o "iniciales". */
 
 const ESTILOS = [
   { id: 'adventurer', nombre: 'Aventurero' },
@@ -882,22 +940,78 @@ const ESTILOS = [
   { id: 'thumbs', nombre: 'Pulgar' }
 ];
 
-/** Lee el valor de la columna Avatar: "estilo:semilla", "iniciales" o vacío (usa el estilo por defecto). */
+/* ---------- Catálogo del editor (cada valor se comprobó contra la API de DiceBear) ---------- */
+
+const PIEL = ['ffdbb4', 'edb98a', 'd08b5b', 'ae5d29', '614335', 'fd9841', 'f8d25c'];
+const PELO = ['2c1b18', '4a312c', '724133', 'a55728', 'b58143', 'c93305', 'd6b370', 'e8e1e1', 'f59797', '65c9ff'];
+const ROPA = ['262e33', '25557c', '5199e4', '65c9ff', 'b1e2ff', 'a7ffc4', 'ffffb1', 'ffdeb5', 'ffafb9', 'ff488e', 'ff5c5c', '929598', 'e6e6e6', 'ffffff'];
+
+// c: lista de opciones [valor, texto] · col: colores hex · prob: opción "Ninguno" que apaga el accesorio
+const AV_CAT = {
+  avataaars: { nombre: 'Clásico', campos: [
+    { k: 'top', t: 'Peinado / gorro', c: [['bob', 'Bob'], ['bun', 'Moño'], ['curly', 'Rizado'], ['curvy', 'Ondulado'], ['dreads', 'Rastas'], ['fro', 'Afro'], ['shortFlat', 'Corto'], ['shortWaved', 'Corto con ondas'], ['shaggy', 'Despeinado'], ['straight01', 'Lacio'], ['sides', 'Laterales'], ['shavedSides', 'Rapado'], ['hat', 'Sombrero'], ['winterHat1', 'Gorro de lana'], ['hijab', 'Hiyab'], ['turban', 'Turbante']] },
+    { k: 'hairColor', t: 'Color de pelo', col: PELO },
+    { k: 'clothing', t: 'Ropa', c: [['hoodie', 'Casaca con capucha'], ['graphicShirt', 'Polo estampado'], ['shirtCrewNeck', 'Polo'], ['shirtVNeck', 'Polo en V'], ['shirtScoopNeck', 'Polo escote'], ['blazerAndShirt', 'Saco y camisa'], ['blazerAndSweater', 'Saco y suéter'], ['collarAndSweater', 'Suéter con cuello'], ['overall', 'Overol']] },
+    { k: 'clothesColor', t: 'Color de la ropa', col: ROPA },
+    { k: 'accessories', t: 'Lentes', prob: 'accessoriesProbability', c: [['round', 'Redondos'], ['sunglasses', 'De sol'], ['wayfarers', 'Wayfarer'], ['kurt', 'Kurt'], ['prescription01', 'Medida 1'], ['prescription02', 'Medida 2']] },
+    { k: 'facialHair', t: 'Barba', prob: 'facialHairProbability', c: [['beardLight', 'Ligera'], ['beardMedium', 'Media'], ['beardMajestic', 'Majestuosa']] },
+    { k: 'eyes', t: 'Ojos', c: [['default', 'Normal'], ['happy', 'Feliz'], ['hearts', 'Corazones'], ['side', 'De lado'], ['squint', 'Entrecerrados'], ['surprised', 'Sorprendidos'], ['wink', 'Guiño']] },
+    { k: 'mouth', t: 'Boca', c: [['default', 'Normal'], ['smile', 'Sonrisa'], ['twinkle', 'Alegre'], ['serious', 'Seria'], ['tongue', 'Lengua']] },
+    { k: 'skinColor', t: 'Piel', col: PIEL }
+  ] },
+  micah: { nombre: 'Micah', campos: [
+    { k: 'hair', t: 'Peinado', c: [['full', 'Completo'], ['pixie', 'Pixie'], ['fonze', 'Fonzie'], ['mrClean', 'Rapado'], ['dougFunny', 'Doug'], ['dannyPhantom', 'Danny'], ['mrT', 'Mohicano'], ['turban', 'Turbante']] },
+    { k: 'hairColor', t: 'Color de pelo', col: ['000000', '6a4e35', 'ac6651', 'f4d150', 'fc909f', '9287ff', '6bd9e9', 'ffffff'] },
+    { k: 'shirt', t: 'Ropa', c: [['crew', 'Polo'], ['collared', 'Con cuello'], ['open', 'Abierta']] },
+    { k: 'shirtColor', t: 'Color de la ropa', col: ['000000', '6bd9e9', '9287ff', 'd2eff3', 'e0ddff', 'f4d150', 'fc909f', 'ffeba4', 'ffedef', 'ffffff'] },
+    { k: 'glasses', t: 'Lentes', prob: 'glassesProbability', c: [['round', 'Redondos'], ['square', 'Cuadrados']] },
+    { k: 'earrings', t: 'Aretes', prob: 'earringsProbability', c: [['hoop', 'Aros'], ['stud', 'Pequeños']] },
+    { k: 'facialHair', t: 'Barba', prob: 'facialHairProbability', c: [['beard', 'Barba'], ['scruff', 'Sombra']] },
+    { k: 'baseColor', t: 'Piel', col: ['f9c9b6', 'ac6651', '77311d'] }
+  ] },
+  adventurer: { nombre: 'Aventurero', campos: [
+    { k: 'hair', t: 'Peinado', c: [['short01', 'Corto 1'], ['short10', 'Corto 2'], ['short19', 'Corto 3'], ['long01', 'Largo 1'], ['long10', 'Largo 2']] },
+    { k: 'hairColor', t: 'Color de pelo', col: ['0e0e0e', '562306', '6a4e35', 'ac6651', 'ab2a18', 'cb6820', 'b9a05f', 'afafaf', 'dba3be', '85c2c6', '3eac2c'] },
+    { k: 'glasses', t: 'Lentes', prob: 'glassesProbability', c: [['variant01', 'Modelo 1'], ['variant05', 'Modelo 2']] },
+    { k: 'earrings', t: 'Aretes', prob: 'earringsProbability', c: [['variant01', 'Modelo 1'], ['variant03', 'Modelo 2']] },
+    { k: 'skinColor', t: 'Piel', col: ['f5d0c5', 'ecad80', 'd08b5b', 'ae5d29', '9e5622', '763900'] }
+  ] },
+  bottts: { nombre: 'Robot', campos: [
+    { k: 'primaryColor', t: 'Color', col: ['00acc1', '1e88e5', '5e35b1', '8e24aa', 'd81b60', 'e53935', 'f4511e', 'fb8c00', 'fdd835', '7cb342', '43a047', '00897b', '546e7a'] },
+    { k: 'eyes', t: 'Ojos', c: [['bulging', 'Saltones'], ['glow', 'Brillo'], ['happy', 'Felices'], ['hearts', 'Corazones'], ['round', 'Redondos'], ['eva', 'Eva'], ['sensor', 'Sensor']] },
+    { k: 'mouth', t: 'Boca', c: [['bite', 'Dientes'], ['diagram', 'Diagrama'], ['grill01', 'Parrilla'], ['smile01', 'Sonrisa 1'], ['smile02', 'Sonrisa 2'], ['square01', 'Cuadrada 1'], ['square02', 'Cuadrada 2']] },
+    { k: 'face', t: 'Cara', c: [['round01', 'Redonda 1'], ['round02', 'Redonda 2'], ['square01', 'Cuadrada 1'], ['square02', 'Cuadrada 2'], ['square03', 'Cuadrada 3']] },
+    { k: 'top', t: 'Antena', prob: 'topProbability', c: [['antenna', 'Antena'], ['antennaCrooked', 'Torcida'], ['bulb01', 'Foco'], ['glowingBulb01', 'Foco brillante'], ['horns', 'Cuernos'], ['lights', 'Luces'], ['radar', 'Radar']] }
+  ] }
+};
+
+/* ---------- Lectura y dibujo ---------- */
+
+const optsDe = txt => Object.fromEntries(String(txt || '').split('&').filter(Boolean).map(p => { const i = p.indexOf('='); return [p.slice(0, i), p.slice(i + 1)]; }));
+const optsATxt = o => Object.entries(o).map(([k, v]) => k + '=' + v).join('&');
+
+/** Lee el valor de la columna Avatar: "estilo:semilla[|opciones]", "iniciales" o vacío (usa el estilo por defecto). */
 function avatarDe(a, estiloDef) {
   const v = String(a.avatar || '');
   if (v === 'iniciales') return null;
-  if (v.includes(':')) { const [estilo, ...r] = v.split(':'); return { estilo, semilla: r.join(':') }; }
+  if (v.includes(':')) {
+    const [cabeza, extra] = v.split('|');
+    const [estilo, ...r] = cabeza.split(':');
+    return { estilo, semilla: r.join(':'), opts: optsDe(extra) };
+  }
   if (!estiloDef || estiloDef === 'iniciales') return null;
-  return { estilo: estiloDef, semilla: a.clave + ' ' + a.nombres };
+  return { estilo: estiloDef, semilla: a.clave + ' ' + a.nombres, opts: {} };
 }
 
-const avatarUrl = (estilo, semilla) => `https://api.dicebear.com/9.x/${estilo}/svg?seed=${encodeURIComponent(semilla)}`;
+const avatarUrl = (estilo, semilla, opts) =>
+  `https://api.dicebear.com/9.x/${estilo}/svg?seed=${encodeURIComponent(semilla)}` +
+  Object.entries(opts || {}).map(([k, v]) => `&${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('');
 
 /** a: alumno; color: color del equipo; px: tamaño. */
 function avatarHTML(a, color, px = 56, estiloDef) {
   const av = avatarDe(a, estiloDef ?? (typeof S !== 'undefined' && S.st ? S.st.config.avatarEstilo : 'adventurer'));
   const bg = color || '#E5E7EB';
-  const img = av ? `<img src="${esc(avatarUrl(av.estilo, av.semilla))}" alt="" loading="lazy" onerror="this.remove()">` : '';
+  const img = av ? `<img src="${esc(avatarUrl(av.estilo, av.semilla, av.opts))}" alt="" loading="lazy" onerror="this.remove()">` : '';
   return `<div class="av" style="width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px;--av-bg:${bg};--av-ink:${shade(bg, .55)}"><span>${esc(iniciales(a))}</span>${img}</div>`;
 }
 
@@ -1067,6 +1181,7 @@ const ICON = (() => {
     estrella: '<path d="M12 2l3 6.5 7 .8-5.2 4.8 1.5 7L12 17.6 5.7 21l1.5-7L2 9.3l7-.8z"/>',
     candado: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     birrete: '<path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
+    semana: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
     mas: '<path d="M12 5v14M5 12h14"/>',
     atras: '<path d="M15 18l-6-6 6-6"/>',
     salir: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'
@@ -1123,6 +1238,86 @@ const UI = {
 };
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') UI.cerrar(); });
+
+</script>
+  <script>
+/* js/editor-avatar.js */
+/* Editor de avatar: el alumno elige estilo, ropa, peinado y colores. Usa el catálogo de avatar.js. */
+
+/* ---------- Editor: el alumno viste y colorea su avatar ---------- */
+
+const AE = { estilo: 'avataaars', semilla: '', opts: {}, color: '#E5E7EB', nombre: '', guardar: null };
+
+const aeValor = () => AE.estilo + ':' + AE.semilla + (Object.keys(AE.opts).length ? '|' + optsATxt(AE.opts) : '');
+
+/**
+ * Abre el editor. actual: valor guardado (o vacío), guardar(valor): función que lo envía.
+ * Solo los estilos con catálogo se pueden vestir; el resto se elige entre variantes.
+ */
+function abrirEditorAvatar(a, { color, guardar }) {
+  const av = avatarDe(a, 'avataaars');
+  AE.estilo = av && AV_CAT[av.estilo] ? av.estilo : 'avataaars';
+  AE.semilla = av && av.estilo === AE.estilo ? av.semilla : a.clave + ' ' + a.nombres;
+  AE.opts = av && av.estilo === AE.estilo ? { ...av.opts } : {};
+  AE.color = color || '#E5E7EB';
+  AE.nombre = a.nombres || '';
+  AE.guardar = guardar;
+  pintarEditorAvatar();
+}
+
+function pintarEditorAvatar() {
+  const cat = AV_CAT[AE.estilo];
+  const campo = f => {
+    const act = AE.opts[f.k];
+    const apagado = f.prob && AE.opts[f.prob] === '0';
+    if (f.col) {
+      return `<div class="ae-campo"><b>${f.t}</b><div class="ae-col">${f.col.map(c =>
+        `<button class="ae-sw ${act === c ? 'on' : ''}" style="background:#${c}" data-act="avOpc" data-k="${f.k}" data-v="${c}" aria-label="${f.t} ${c}"></button>`).join('')}</div></div>`;
+    }
+    return `<div class="ae-campo"><b>${f.t}</b><div class="chips">
+      ${f.prob ? `<button class="chip ${apagado ? 'on' : ''}" data-act="avOpc" data-k="${f.k}" data-v="">Ninguno</button>` : ''}
+      ${f.c.map(([v, t]) => `<button class="chip ${act === v && !apagado ? 'on' : ''}" data-act="avOpc" data-k="${f.k}" data-v="${v}">${t}</button>`).join('')}</div></div>`;
+  };
+  UI.hoja(`<div class="hoja-head"><div class="grow"><h3>Tu avatar</h3></div>
+      <button class="icon-btn" data-act="cerrar">${ICON.x}</button></div>
+    <div class="ae-prev">${avatarHTML({ avatar: aeValor(), clave: '', nombres: AE.nombre, apellidos: '' }, AE.color, 132)}</div>
+    <div class="chips ae-estilos">${Object.entries(AV_CAT).map(([id, e]) =>
+      `<button class="chip ${id === AE.estilo ? 'on' : ''}" data-act="avEstilo" data-v="${id}">${e.nombre}</button>`).join('')}
+      <button class="chip" data-act="avAzar">🎲 Sorpréndeme</button></div>
+    ${cat.campos.map(campo).join('')}
+    <div class="ae-pie"><button class="btn" data-act="avIniciales">Usar mis iniciales</button><button class="btn primary" data-act="avGuardar">Guardar avatar</button></div>`,
+  { ancha: true });
+}
+
+Object.assign(Acciones, {
+  avEstilo(el) {
+    if (el.dataset.v !== AE.estilo) { AE.estilo = el.dataset.v; AE.opts = {}; }
+    pintarEditorAvatar();
+  },
+  avOpc(el) {
+    const f = AV_CAT[AE.estilo].campos.find(x => x.k === el.dataset.k);
+    const v = el.dataset.v;
+    if (f.prob) {
+      if (v === '') { delete AE.opts[f.k]; AE.opts[f.prob] = '0'; }
+      else { AE.opts[f.k] = v; AE.opts[f.prob] = '100'; }
+    } else AE.opts[f.k] = v;
+    pintarEditorAvatar();
+  },
+  avAzar() {
+    const cat = AV_CAT[AE.estilo];
+    const pick = l => l[Math.floor(Math.random() * l.length)];
+    AE.semilla = 'v' + Math.random().toString(36).slice(2, 8);
+    AE.opts = {};
+    cat.campos.forEach(f => {
+      if (f.col) AE.opts[f.k] = pick(f.col);
+      else if (f.prob) { if (Math.random() < .4) { AE.opts[f.k] = pick(f.c)[0]; AE.opts[f.prob] = '100'; } else AE.opts[f.prob] = '0'; }
+      else AE.opts[f.k] = pick(f.c)[0];
+    });
+    pintarEditorAvatar();
+  },
+  avIniciales() { UI.cerrar(); AE.guardar && AE.guardar('iniciales'); },
+  avGuardar() { const v = aeValor(); UI.cerrar(); AE.guardar && AE.guardar(v); }
+});
 
 </script>
   <script>
@@ -1200,7 +1395,7 @@ function cargarResumen() {
 Object.assign(Acciones, {
   abrirCurso(el) {
     const curso = el.dataset.curso;
-    S.tab = 'clase';
+    S.tab = 'semana';
     store.set('tab', S.tab);
     if (S.st && S.st.curso === curso) { render(); window.scrollTo(0, 0); return; }
     $('#app').innerHTML = '<div class="cargando"><div class="spinner"></div><p>Abriendo curso…</p></div>';
@@ -1334,7 +1529,7 @@ function darPuntos(claves, cat, fecha) {
   render();
   claves.forEach(k => UI.flotar($(`.tarjeta[data-clave="${CSS.escape(k)}"]`), signo(cat.puntos), cat.puntos > 0));
   const quien = claves.length === 1 ? nombreCorto(alumnoDe(claves[0])) : claves.length + ' alumnos';
-  UI.toast(`${quien} ${signo(cat.puntos)} ${cat.categoria}`, { accion: 'Deshacer', fn: deshacer });
+  UI.toast(`${quien} ${signo(cat.puntos)} ${cat.categoria}`, !fecha || fecha === st.fecha ? { accion: 'Deshacer', fn: deshacer } : {});
   enviar('addMovs', [st.curso, 'manual', claves.map(k => ({ clave: k, categoria: cat.categoria, puntos: cat.puntos })), fecha || null], { silencio: true });
 }
 
@@ -1359,6 +1554,151 @@ Object.assign(Acciones, {
   },
   deshacer
 });
+
+</script>
+  <script>
+/* js/views/semana.js */
+/* Semana: ruta tipo Duolingo. Eliges la semana y el día de clase, tocas un avatar
+   y das punto a favor o en contra en Puntualidad, Participación, Tarea o Proyecto.
+   Todo se guarda en el Registro del Google Sheets (mismo flujo que la pestaña Clase). */
+
+const SEM_CATS = [
+  { id: 'pun', nombre: 'Puntualidad', emoji: '⏰', pos: 'Puntualidad', neg: 'Tardanza' },
+  { id: 'par', nombre: 'Participación', emoji: '🙋', pos: 'Participación', neg: 'Falta de participación' },
+  { id: 'tar', nombre: 'Tarea', emoji: '📝', pos: 'Tarea completa', neg: 'No entregó tarea' },
+  { id: 'pro', nombre: 'Proyecto', emoji: '🚀', pos: 'Proyecto', neg: 'Proyecto sin avance' }
+];
+const SEM_N = 16;
+
+const isoLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const sumaDias = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return isoLocal(d); };
+const lunesDe = iso => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return isoLocal(d); };
+
+const Sem = {
+  n: null, fecha: null, curso: null, claveAbierta: null,
+
+  /** Lunes de la semana 1: el que fijó el docente o el de la primera sesión del curso. */
+  inicio() {
+    const g = store.get('inicioSem', '');
+    if (g) return lunesDe(g);
+    const p = S.st.sesiones.length ? S.st.sesiones[0].fecha : hoyISO();
+    return lunesDe(p);
+  },
+  lunesSemana(n) { return sumaDias(this.inicio(), 7 * (n - 1)); },
+  semanaDe(iso) { return Math.round((new Date(lunesDe(iso) + 'T12:00:00') - new Date(this.inicio() + 'T12:00:00')) / 6048e5) + 1; },
+  totalSemanas() {
+    const u = S.st.sesiones.length ? S.st.sesiones[S.st.sesiones.length - 1].fecha : hoyISO();
+    return Math.max(SEM_N, this.semanaDe(u));
+  },
+
+  /** Fechas de clase de esa semana según los días del curso (ej. "Mar, Jue"). */
+  dias(n) {
+    const toks = norm(S.st.cursoInfo.dias || '').split(/[\s,]+/).filter(Boolean);
+    const lun = this.lunesSemana(n);
+    let l = [];
+    for (let i = 0; i < 7; i++) if (toks.includes(norm(DIAS[(i + 1) % 7]))) l.push(sumaDias(lun, i));
+    if (!l.length) l = [0, 1, 2, 3, 4].map(i => sumaDias(lun, i));
+    return l;
+  },
+
+  asegurar() {
+    if (this.n && this.curso === S.st.curso) return;
+    this.curso = S.st.curso;
+    const hoy = hoyISO();
+    this.n = Math.min(Math.max(this.semanaDe(hoy), 1), this.totalSemanas());
+    this.elegirDia(hoy);
+  },
+  elegirDia(pref) {
+    const d = this.dias(this.n);
+    this.fecha = d.includes(pref) ? pref : (d.find(x => x >= pref) || d[d.length - 1]);
+  },
+
+  movsDe(fecha, clave) { return S.st.movs.filter(m => m.fecha === fecha && (!clave || m.clave === clave)); },
+  neto(fecha, clave, cat) { return this.movsDe(fecha, clave).filter(m => m.categoria === cat.pos || m.categoria === cat.neg).reduce((s, m) => s + m.puntos, 0); },
+  semanaConDatos(n) { const l = this.lunesSemana(n), f = sumaDias(l, 6); return S.st.movs.some(m => m.fecha >= l && m.fecha <= f); },
+
+  render() {
+    this.asegurar();
+    const st = S.st, c = st.cursoInfo;
+    const t = temaCurso(c, st.cursos.findIndex(x => x.curso === st.curso));
+    const N = this.totalSemanas();
+    let racha = 0;
+    for (let k = this.n; k >= 1 && this.semanaConDatos(k); k--) racha++;
+    const hoyMovs = this.movsDe(this.fecha);
+    const xp = hoyMovs.reduce((s, m) => s + m.puntos, 0);
+    const conDatos = new Set(hoyMovs.map(m => m.clave)).size;
+    const pct = st.alumnos.length ? Math.round(conDatos * 100 / st.alumnos.length) : 0;
+
+    let h = `<div class="curso-hero" style="${t.estilo}">${objeto3D(t.tipo, 'chico')}
+      <div class="grow"><h2>${esc(c.nombre)}</h2>
+      <p class="muted small"><b style="color:${t.c1}">${esc(c.seccion)}</b> · ${esc(c.dias || '')} · ${esc(c.hora || '')}</p></div></div>
+      <div class="dl-stats">
+        <span class="dl-stat">🔥 <b>${racha}</b> ${racha === 1 ? 'semana' : 'semanas'} seguidas</span>
+        <span class="dl-stat">⚡ <b>${signo(xp)}</b> XP del día</span>
+        <button class="dl-stat dl-link" data-act="semInicio">📅 Inicio: ${esc(fmtFecha(this.inicio()))}</button>
+      </div>
+      <div class="dl-ruta" id="dl-ruta">${Array.from({ length: N }, (_, i) => i + 1).map(k => {
+        const est = k === this.n ? 'sel' : this.semanaConDatos(k) ? 'hecha' : '';
+        return `<button class="dl-nodo ${est}" data-act="semSemana" data-n="${k}" aria-label="Semana ${k}"><span>${est === 'hecha' ? '✓' : k}</span><small>Sem ${k}</small></button>`;
+      }).join('')}</div>
+      <p class="dl-sub">Semana ${this.n} · ${esc(fmtFecha(this.lunesSemana(this.n), false))} al ${esc(fmtFecha(sumaDias(this.lunesSemana(this.n), 6), false))}</p>
+      <div class="dl-dias">${this.dias(this.n).map(f => `<button class="dl-dia ${f === this.fecha ? 'on' : ''}" data-act="semDia" data-f="${f}">${esc(fmtFecha(f))}${f === hoyISO() ? ' · hoy' : ''}</button>`).join('')}</div>
+      <div class="dl-prog"><div class="dl-barra"><i style="width:${pct}%"></i></div><span>${conDatos}/${st.alumnos.length} alumnos con puntos</span></div>`;
+
+    if (!st.alumnos.length) return h + `<div class="card vacio">${ICON.usuarios}<p>Este curso aún no tiene alumnos.</p></div>`;
+    h += '<p class="muted small" style="margin:6px 0 10px">Toca un avatar para dar puntos a favor o en contra.</p><div class="grid-alumnos">';
+    ordenarAlumnos(st.alumnos).forEach(a => { h += this.tarjeta(a); });
+    return h + '</div>';
+  },
+
+  tarjeta(a) {
+    const color = colorEq(a.equipo);
+    const pts = this.movsDe(this.fecha, a.clave).reduce((s, m) => s + m.puntos, 0);
+    const pips = SEM_CATS.map(c => {
+      const v = this.neto(this.fecha, a.clave, c);
+      return `<i class="pip ${v > 0 ? 'p' : v < 0 ? 'n' : ''}" title="${c.nombre}">${c.emoji}</i>`;
+    }).join('');
+    return `<button class="tarjeta dl-av" data-act="semAlumno" data-clave="${esc(a.clave)}" style="--eq:${color}">
+      <span class="total ${pts > 0 ? '' : pts < 0 ? 'neg' : 'cero'}">${pts ? signo(pts) : '·'}</span>
+      ${avatarHTML(a, color, 58)}<span class="nombre">${esc(nombreCorto(a))}</span>
+      <span class="pips">${pips}</span></button>`;
+  }
+};
+
+function abrirSemanaAlumno(clave) {
+  const a = alumnoDe(clave);
+  if (!a) return;
+  Sem.claveAbierta = clave;
+  const e = equipoDe(a.equipo);
+  const fila = (c, i) => {
+    const v = Sem.neto(Sem.fecha, clave, c);
+    return `<div class="dl-fila"><div class="dl-cat"><span class="dl-emo">${c.emoji}</span><div><b>${c.nombre}</b>
+        <small class="${v > 0 ? 'pos' : v < 0 ? 'neg' : 'muted'}">${v ? signo(v) + ' este día' : 'sin puntos'}</small></div></div>
+      <button class="dl-btn contra" data-act="semPunto" data-i="${i}" data-s="-1" aria-label="${c.nombre} en contra">👎<span>−1</span></button>
+      <button class="dl-btn favor" data-act="semPunto" data-i="${i}" data-s="1" aria-label="${c.nombre} a favor">👍<span>+1</span></button></div>`;
+  };
+  UI.hoja(`<div class="hoja-head">${avatarHTML(a, e.color, 56)}<div class="grow"><h3>${esc(nombreCompleto(a))}</h3>
+      <p class="muted small" style="margin:2px 0 0">${esc(fmtFecha(Sem.fecha))} · semana ${Sem.n}</p></div>
+      <button class="icon-btn" data-act="cerrar">${ICON.x}</button></div>
+    <div class="dl-filas">${SEM_CATS.map(fila).join('')}</div>`);
+}
+
+Object.assign(Acciones, {
+  semSemana(el) { Sem.n = +el.dataset.n; Sem.elegirDia(hoyISO()); render(); const n = $('.dl-nodo.sel'); if (n) n.scrollIntoView({ inline: 'center', block: 'nearest' }); },
+  semDia(el) { Sem.fecha = el.dataset.f; render(); },
+  semAlumno(el) { abrirSemanaAlumno(el.dataset.clave); },
+  semPunto(el) {
+    const c = SEM_CATS[+el.dataset.i], s = +el.dataset.s, k = Sem.claveAbierta;
+    darPuntos([k], { categoria: s > 0 ? c.pos : c.neg, puntos: s }, Sem.fecha);
+    abrirSemanaAlumno(k);
+  },
+  semInicio() {
+    const v = prompt('Fecha de la semana 1 (AAAA-MM-DD):', Sem.inicio());
+    if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) { store.set('inicioSem', v); Sem.n = null; render(); }
+  }
+});
+
+Views.semana = Sem;
 
 </script>
   <script>
@@ -2295,7 +2635,7 @@ Views.ajustes = {
     // Cuenta
     h += `<div class="card"><h3>Sesión</h3><div class="chips" style="margin-top:10px">
       <button class="btn" data-act="recargar">Recargar datos</button>
-      <button class="btn neg" data-act="salir">${ICON.salir}Salir de este equipo</button>
+      <button class="btn neg" data-act="salir">${ICON.salir}Cerrar sesión</button>
       ${window.devDemo ? `<button class="btn" data-act="devDemo">Cargar datos de prueba</button><button class="btn" data-act="devReset">Borrar datos de prueba</button>` : ''}
     </div><p class="muted small">Salir borra el PIN guardado en este navegador.</p></div>`;
 
@@ -2401,7 +2741,7 @@ Object.assign(Acciones, {
     enviar('importAlumnos', [S.st.curso, items]).then(() => { S.imp = null; render(); });
   },
   recargar: () => recargar(),
-  salir() { if (confirm('¿Salir? Tendrás que escribir tu PIN otra vez.')) { Api.olvidarPin(); location.reload(); } },
+  salir() { if (confirm('¿Cerrar sesión? Tendrás que escribir tu clave otra vez.')) { S.st = null; S.tab = 'inicio'; Views.entrada.iniciar(); } },
   devDemo() { if (confirm('Crea 8 sesiones pasadas con datos al azar en Pensamiento Lógico 105M.')) window.devDemo(); },
   devReset() { if (confirm('¿Borrar todos los datos de prueba?')) window.devReset(); }
 });
@@ -2412,44 +2752,96 @@ Object.assign(Acciones, {
 /* Página pública de notas: el alumno escribe su DNI y ve solo su información. (?v=notas) */
 
 Views.notas = {
-  iniciar() {
-    document.title = 'Mis notas';
-    this.form();
-  },
+  iniciar() { Views.entrada.iniciar(); },
 
-  form(error = '') {
-    $('#app').innerHTML = `<div class="centro"><form class="caja card" id="f-dni" style="padding:28px 20px">
-      <div class="logo">${ICON.birrete}</div>
-      <h2>Mis notas</h2>
-      <p class="muted">Escribe tu DNI para ver tu avance.</p>
-      <input type="tel" inputmode="numeric" maxlength="8" id="dni" class="pin-in" placeholder="DNI" autocomplete="off" required>
-      ${error ? `<p class="neg small" style="margin:10px 0 0">${esc(error)}</p>` : ''}
-      <button class="btn primary block" style="margin-top:14px">Ver mis notas</button>
-    </form></div>`;
-    const f = $('#f-dni');
-    $('#dni').focus();
-    f.onsubmit = e => {
-      e.preventDefault();
-      const dni = $('#dni').value.replace(/\D/g, '');
-      if (dni.length !== 8) return this.form('El DNI tiene 8 dígitos.');
-      f.querySelector('button').disabled = true;
-      f.querySelector('button').textContent = 'Buscando…';
-      Api.run('consultarNotas', dni)
-        .then(r => r.length ? this.mostrar(r) : this.form('No encontré ese DNI. Consulta con tu docente.'))
-        .catch(err => this.form(err.message));
-    };
-  },
-
-  mostrar(lista) {
+  mostrar(lista, dni) {
+    this.lista = lista; this.dni = dni;
+    const yo = lista[0].alumno;
+    const color = lista[0].equipo ? lista[0].equipo.color : '#E5E7EB';
     let h = `<div class="notas-wrap"><div class="fila" style="justify-content:space-between;margin-bottom:14px">
-      <h2>Mis notas</h2><button class="btn" id="otra">Salir</button></div>`;
+      <h2>Mis notas</h2><button class="btn" id="otra">Salir</button></div>
+      <div class="card mi-avatar"><div>${avatarHTML(yo, color, 96, lista[0].avatarEstilo)}</div>
+        <div class="grow"><h3>Hola, ${esc(nombreCorto(yo))}</h3>
+        <p class="muted small" style="margin:4px 0 10px">Este es tu avatar. Ponle ropa, peinado y colores a tu estilo.</p>
+        <button class="btn primary" data-act="miAvatar">Personalizar mi avatar</button></div></div>`;
     if (lista.length > 1) {
       h += `<div class="chips" style="margin-bottom:14px">${lista.map((d, i) => `<a class="chip" href="#c${i}">${esc(d.curso.nombre)} · ${esc(d.curso.seccion)}</a>`).join('')}</div>`;
     }
     lista.forEach((d, i) => { h += `<section id="c${i}" class="card" style="margin-bottom:16px">${Perfil.html(d, { publico: true })}</section>`; });
     h += '<p class="muted small" style="text-align:center">Si ves algo que no corresponde, coméntalo con tu docente.</p></div>';
     $('#app').innerHTML = h;
-    $('#otra').onclick = () => this.form();
+    $('#otra').onclick = () => Views.entrada.iniciar();
+  }
+};
+
+Object.assign(Acciones, {
+  miAvatar() {
+    const d = Views.notas.lista[0];
+    abrirEditorAvatar(d.alumno, {
+      color: d.equipo ? d.equipo.color : '#E5E7EB',
+      guardar: valor => Api.run('guardarAvatar', Views.notas.dni, valor)
+        .then(() => Api.run('consultarNotas', Views.notas.dni))
+        .then(r => { Views.notas.mostrar(r, Views.notas.dni); UI.toast('Avatar guardado'); })
+        .catch(e => UI.toast(e.message || 'No se pudo guardar', { error: true }))
+    });
+  }
+});
+
+</script>
+  <script>
+/* js/views/entrada.js */
+/* Puerta de entrada: DNI para el alumno (ve sus notas y viste su avatar) o clave del docente. */
+
+Views.entrada = {
+  // Avatares de adorno: no son alumnos reales, solo muestran que cada uno podrá personalizar el suyo
+  adorno: [
+    'avataaars:sol|top=bob&clothing=hoodie&clothesColor=ff488e&skinColor=edb98a&hairColor=724133',
+    'avataaars:luna|top=shortFlat&clothing=blazerAndShirt&clothesColor=25557c&skinColor=ffdbb4&hairColor=2c1b18&accessories=round&accessoriesProbability=100',
+    'micah:mar|hair=full&shirt=crew&shirtColor=9287ff&baseColor=ac6651&hairColor=000000',
+    'bottts:rayo|primaryColor=00acc1&eyes=glow&face=round01',
+    'avataaars:nube|top=curly&clothing=overall&clothesColor=a7ffc4&skinColor=614335&hairColor=2c1b18',
+    'adventurer:monte|hair=long10&hairColor=ab2a18&skinColor=ecad80',
+    'avataaars:rio|top=hijab&clothing=graphicShirt&clothesColor=ffafb9&skinColor=d08b5b'
+  ],
+
+  async iniciar(aviso = '') {
+    document.title = 'Puntos de clase';
+    Api.olvidarPin();
+    let configurado = true;
+    try { configurado = (await Api.run('estadoPin')).configurado; } catch (e) { return pantallaError(e.message); }
+    const demo = window.MOCK_DEMO;
+    $('#app').innerHTML = `<div class="centro"><form class="caja card entrada" id="f-ent" style="padding:28px 20px">
+      <div class="ent-avs">${this.adorno.map((v, i) => avatarHTML({ avatar: v, nombres: '', apellidos: '', clave: '' }, ['#BFE3F2', '#F7C8E6', '#D9CCF5', '#CDEDE6', '#FFF0A8', '#FFDDB0', '#C8EBC4'][i], 54)).join('')}</div>
+      <h2>Puntos de clase</h2>
+      <p class="muted">Escribe tu DNI para ver tus notas y personalizar tu avatar.</p>
+      <input type="password" inputmode="numeric" maxlength="8" id="ent-clave" class="pin-in" placeholder="DNI" autocomplete="off" required>
+      <p class="neg small" id="ent-err" style="margin:10px 0 0">${esc(aviso)}</p>
+      <button class="btn primary block" style="margin-top:12px">Entrar</button>
+      ${demo ? '<p class="muted small" style="margin:14px 0 0">Demo: DNI de prueba 70000001 a 70000045 · docente 0000</p>' : ''}
+      ${configurado ? '' : '<button type="button" class="btn block" id="ent-crear" style="margin-top:10px">Soy docente: crear mi PIN</button>'}
+    </form></div>`;
+    const campo = $('#ent-clave');
+    campo.focus();
+    const err = m => { $('#ent-err').textContent = m; };
+    if ($('#ent-crear')) $('#ent-crear').onclick = () => pantallaPin();
+    $('#f-ent').onsubmit = async ev => {
+      ev.preventDefault();
+      const v = campo.value.replace(/\D/g, '');
+      const btn = ev.target.querySelector('button.primary');
+      if (v.length < 4) return err('Escribe tu DNI de 8 dígitos.');
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      const fin = m => { btn.disabled = false; btn.textContent = 'Entrar'; err(m); };
+      try {
+        if (await Api.run('verificarClave', v)) {       // docente
+          Api.setPin(v);
+          return await cargar();
+        }
+        if (v.length !== 8) return fin('No reconozco esa clave.');
+        const r = await Api.run('consultarNotas', v);   // alumno
+        if (!r.length) return fin('No encontré ese DNI. Consulta con tu docente.');
+        Views.notas.mostrar(r, v);
+      } catch (e) { fin(e.message || 'No se pudo entrar.'); }
+    };
   }
 };
 
@@ -2470,7 +2862,7 @@ const S = {
 };
 
 const TABS = [
-  ['clase', 'Clase'], ['panel', 'Panel'], ['equipos', 'Equipos'],
+  ['semana', 'Semana'], ['clase', 'Clase'], ['panel', 'Panel'], ['equipos', 'Equipos'],
   ['asistencia', 'Asistencia'], ['chat', 'Chat'], ['sesiones', 'Sesiones']
 ];
 
@@ -2503,7 +2895,7 @@ function enviar(fn, args, { silencio = false } = {}) {
   }).catch(e => {
     S.pendientes--;
     pintarSync();
-    if (/PIN/.test(e.message)) { Api.olvidarPin(); return pantallaPin('Tu PIN cambió. Vuelve a entrar.'); }
+    if (/PIN/.test(e.message)) return Views.entrada.iniciar('Tu clave cambió. Vuelve a entrar.');
     UI.toast(e.message || 'No se pudo guardar', { error: true });
     recargar();
     throw e;
@@ -2547,11 +2939,12 @@ function render() {
   const y = window.scrollY;
   const vista = Views[S.tab] || Views.clase;
   const enInicio = S.tab === 'inicio';
+  const cerrar = `<button class="icon-btn" data-act="salir" title="Cerrar sesión" aria-label="Cerrar sesión">${ICON.salir}</button>`;
   const ajustes = `<button class="icon-btn ${S.tab === 'ajustes' ? 'on' : ''}" data-act="tab" data-tab="ajustes" aria-label="Ajustes">${ICON.ajustes}</button>`;
   $('#app').innerHTML = (enInicio ? `
     <header class="top"><div class="top-in">
       <div class="marca">${ICON.birrete}<b>Puntos de clase</b></div>
-      <span class="sync" id="sync"></span>${ajustes}
+      <span class="sync" id="sync"></span>${ajustes}${cerrar}
     </div></header>` : `
     <header class="top"><div class="top-in">
       <button class="icon-btn" data-act="tab" data-tab="inicio" title="Mis cursos" aria-label="Volver a mis cursos">${ICON.atras}</button>
@@ -2560,7 +2953,7 @@ function render() {
       </select>
       <span class="sync" id="sync"></span>
       <button class="icon-btn" data-act="deshacer" title="Deshacer último" aria-label="Deshacer último">${ICON.deshacer}</button>
-      ${ajustes}
+      ${ajustes}${cerrar}
     </div></header>`) + `
     <main>${vista.render()}</main>` + (enInicio ? '' : `
     <nav class="nav"><div class="nav-in">
@@ -2650,14 +3043,7 @@ async function cargar() {
 }
 
 (async function iniciar() {
-  const params = await Api.location();
-  if (params.v === 'notas') return Views.notas.iniciar();
-  if (!Api.pin) return pantallaPin();
-  try { await cargar(); }
-  catch (e) {
-    if (/PIN/.test(e.message)) { Api.olvidarPin(); pantallaPin('Escribe tu PIN otra vez.'); }
-    else pantallaError(e.message);
-  }
+  Views.entrada.iniciar();
 })();
 
 </script>

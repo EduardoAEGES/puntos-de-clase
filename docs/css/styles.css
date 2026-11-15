@@ -424,3 +424,21 @@ label.campo > * { margin-top: 6px; }
 .mini-nota { font-size: 11.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; background: var(--pos-bg); color: var(--pos); }
 .mini-nota.neg { background: var(--neg-bg); color: var(--neg); }
 .mini-nota.na { background: var(--surface-2); color: var(--muted); }
+
+/* Entrada y avatar personalizable */
+.ent-avs { display: flex; justify-content: center; margin-bottom: 18px; }
+.ent-avs .av { border: 3px solid var(--surface); margin-left: -10px; box-shadow: 0 6px 16px rgba(0,0,0,.25); animation: ent-flota 3.2s ease-in-out infinite; }
+.ent-avs .av:first-child { margin-left: 0; }
+.ent-avs .av:nth-child(2n) { animation-delay: -.8s; }
+.ent-avs .av:nth-child(3n) { animation-delay: -1.6s; }
+@keyframes ent-flota { 50% { transform: translateY(-7px); } }
+@media (prefers-reduced-motion: reduce) { .ent-avs .av { animation: none; } }
+.mi-avatar { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; text-align: left; }
+.ae-prev { display: grid; place-items: center; margin: 6px 0 12px; }
+.ae-estilos { margin-bottom: 6px; }
+.ae-campo { margin-top: 14px; text-align: left; }
+.ae-campo > b { display: block; font-size: 13px; margin-bottom: 6px; }
+.ae-col { display: flex; flex-wrap: wrap; gap: 8px; }
+.ae-sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line, rgba(128,128,128,.4)); padding: 0; cursor: pointer; }
+.ae-sw.on { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ae-pie { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; position: sticky; bottom: 0; padding: 10px 0; background: var(--surface); }
