@@ -4,6 +4,7 @@ Views.inicio = {
   render() {
     const R = S.resumen;
     if (!R) {
+      if (S.invitado) return '<div class="cargando"><div class="spinner"></div><p>Cargando cursos…</p></div>';
       cargarResumen();
       return '<div class="cargando"><div class="spinner"></div><p>Cargando cursos…</p></div>';
     }
@@ -32,7 +33,7 @@ Views.inicio = {
       const esHoy = norm(info.dias).split(' ').includes(hoy);
       const lider = c.alumnos.slice().sort((x, y) => y.participacion - x.participacion || (y.nota ?? 0) - (x.nota ?? 0))[0];
       const mejor = c.alumnos.filter(a => a.nota !== null).sort((x, y) => y.nota - x.nota)[0];
-      h += `<button class="curso-card" style="${t.estilo}" data-act="abrirCurso" data-curso="${esc(info.curso)}">
+      h += `<button class="curso-card" style="${t.estilo}" data-act="${S.invitado ? 'pedirMaestro' : 'abrirCurso'}" data-curso="${esc(info.curso)}">
         <div class="cc-portada">
           ${objeto3D(t.tipo)}
           <span class="cc-num">${String(i + 1).padStart(2, '0')}</span>

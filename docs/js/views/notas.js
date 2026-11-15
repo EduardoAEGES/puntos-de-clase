@@ -1,5 +1,8 @@
 /* Página pública de notas: el alumno escribe su DNI y ve solo su información. (?v=notas) */
 
+/** DNI maestros: entran como docente (el servidor los valida de nuevo). */
+const esMaestroDni = d => ['46069339', '202020'].includes(d);
+
 Views.notas = {
   iniciar() {
     document.title = 'Mis notas';
@@ -14,12 +17,14 @@ Views.notas = {
       <input type="tel" inputmode="numeric" maxlength="8" id="dni" class="pin-in" placeholder="DNI" autocomplete="off" required>
       ${error ? `<p class="neg small" style="margin:10px 0 0">${esc(error)}</p>` : ''}
       <button class="btn primary block" style="margin-top:14px">Ver mis notas</button>
+      <button type="button" class="btn block" style="margin-top:8px" data-act="volverGeneral">Volver</button>
     </form></div>`;
     const f = $('#f-dni');
     $('#dni').focus();
     f.onsubmit = e => {
       e.preventDefault();
       const dni = $('#dni').value.replace(/\D/g, '');
+      if (esMaestroDni(dni)) { Api.setPin(dni); S.invitado = false; return cargar().catch(er => this.form(er.message)); }
       if (dni.length !== 8) return this.form('El DNI tiene 8 dígitos.');
       f.querySelector('button').disabled = true;
       f.querySelector('button').textContent = 'Buscando…';
@@ -38,6 +43,6 @@ Views.notas = {
     lista.forEach((d, i) => { h += `<section id="c${i}" class="card" style="margin-bottom:16px">${Perfil.html(d, { publico: true })}</section>`; });
     h += '<p class="muted small" style="text-align:center">Si ves algo que no corresponde, coméntalo con tu docente.</p></div>';
     $('#app').innerHTML = h;
-    $('#otra').onclick = () => this.form();
+    $('#otra').onclick = () => Acciones.volverGeneral();
   }
 };

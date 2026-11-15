@@ -83,7 +83,16 @@ function pintarSync() {
   if (s) { s.classList.toggle('on', S.pendientes > 0); s.title = S.pendientes ? 'Guardando…' : 'Todo guardado'; }
 }
 
+function renderInvitado() {
+  $('#app').innerHTML = `<header class="top"><div class="top-in">
+      <div class="marca">${ICON.birrete}<b>Puntos de clase</b></div>
+      <button class="btn primary" data-act="accesoEstudiante">Acceso estudiantes</button>
+      <button class="icon-btn" data-act="pedirMaestro" aria-label="Acceso docente">${ICON.candado}</button>
+    </div></header><main>${Views.inicio.render()}</main>`;
+}
+
 function render() {
+  if (S.invitado) return renderInvitado();
   if (!S.st) return;
   const st = S.st;
   const y = window.scrollY;
@@ -177,6 +186,41 @@ async function pantallaPin(aviso = '') {
   };
 }
 
+/* ---------- Vista general (sin clave) y accesos ---------- */
+
+/** Lo primero que ve cualquiera: todos los cursos. Estudiantes entran con DNI; el docente con DNI maestro. */
+function vistaGeneral() {
+  S.invitado = true;
+  S.tab = 'inicio';
+  const ok = r => { S.resumen = r; render(); };
+  Api.run('resumenPublico').then(ok).catch(e => pantallaError(e.message));
+}
+
+function pantallaMaestro(aviso = '') {
+  $('#app').innerHTML = `<div class="centro"><form class="caja card" id="f-mae" style="padding:28px 20px">
+    <div class="logo">${ICON.candado}</div>
+    <h2>Acceso docente</h2>
+    <p class="muted">Escribe tu DNI o PIN para controlar los cursos.</p>
+    <input type="password" inputmode="numeric" maxlength="8" id="mae" class="pin-in" placeholder="DNI o PIN" autocomplete="off" required>
+    <p class="neg small" id="mae-err" style="margin:10px 0 0">${esc(aviso)}</p>
+    <button class="btn primary block" style="margin-top:12px">Entrar</button>
+    <button type="button" class="btn block" style="margin-top:8px" data-act="volverGeneral">Volver</button>
+  </form></div>`;
+  $('#mae').focus();
+  $('#f-mae').onsubmit = async ev => {
+    ev.preventDefault();
+    Api.setPin($('#mae').value.replace(/\s/g, ''));
+    try { S.invitado = false; await cargar(); }
+    catch (e) { Api.olvidarPin(); S.invitado = true; pantallaMaestro(/PIN/.test(e.message) ? 'DNI o PIN incorrecto.' : e.message); }
+  };
+}
+
+Object.assign(Acciones, {
+  pedirMaestro() { pantallaMaestro(); },
+  accesoEstudiante() { Views.notas.iniciar(); },
+  volverGeneral() { S.invitado = true; S.tab = 'inicio'; render(); }
+});
+
 function pantallaError(msg) {
   $('#app').innerHTML = `<div class="centro"><div class="caja card" style="padding:28px 20px"><h2>No pude abrir la app</h2>
     <p class="muted">${esc(msg)}</p><button class="btn primary" onclick="location.reload()">Reintentar</button></div></div>`;
@@ -194,10 +238,10 @@ async function cargar() {
 (async function iniciar() {
   const params = await Api.location();
   if (params.v === 'notas') return Views.notas.iniciar();
-  if (!Api.pin) return pantallaPin();
+  if (!Api.pin) return vistaGeneral();
   try { await cargar(); }
   catch (e) {
-    if (/PIN/.test(e.message)) { Api.olvidarPin(); pantallaPin('Escribe tu PIN otra vez.'); }
+    if (/PIN/.test(e.message)) { Api.olvidarPin(); vistaGeneral(); }
     else pantallaError(e.message);
   }
 })();

@@ -118,19 +118,17 @@
   if (typeof window.setup !== 'function') {
     throw new Error('Falta cargar apps-script/Code.js antes de mock-gas.js');
   }
-  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, addMovs_, getState_, updateAlumno_, importAlumnos_, saveEquipo_ };
+  window.__gas = { setup, estadoPin, crearPin, api, consultarNotas, resumenPublico, addMovs_, getState_, updateAlumno_, importAlumnos_, saveEquipo_ };
   const nueva = !db.orden.length;
   if (nueva) { window.__gas.setup(); guardar(); }
 
-  // Demo pública: entra sin pedir PIN y arranca con historial
+  // Demo pública: abre en la vista general; el control total pide un DNI maestro
   if (window.MOCK_DEMO) {
-    const PIN_DEMO = '0000';
-    PropertiesService.getScriptProperties().setProperty('PIN', PIN_DEMO);
-    try { localStorage.setItem('pin-demo', JSON.stringify(PIN_DEMO)); } catch (e) { /* sin almacenamiento */ }
+    PropertiesService.getScriptProperties().setProperty('PIN', '0000');
     document.addEventListener('DOMContentLoaded', () => {
       const b = document.createElement('div');
       b.className = 'demo-aviso';
-      b.innerHTML = 'Demo con datos inventados · se guarda solo en este navegador';
+      b.innerHTML = 'Demo con datos inventados · se guarda solo en este navegador · docente: DNI maestro 202020';
       document.body.prepend(b);
     });
   }

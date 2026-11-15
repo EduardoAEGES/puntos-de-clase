@@ -152,10 +152,18 @@ const API = {
   actualizarNotas: function (curso) { actualizarNotasHoja(); const st = getState_(curso); st.msg = 'Hoja Notas actualizada'; return st; }
 };
 
+/** DNI maestros: dan control total (como el PIN). */
+const MAESTROS = ['46069339', '202020'];
+
+function esMaestro(clave) { return MAESTROS.indexOf(String(clave || '').replace(/\D/g, '')) >= 0; }
+
+/** Vista general sin clave: la ve cualquiera al abrir la página. */
+function resumenPublico() { return getResumen_(); }
+
 /** Única puerta de entrada de la app del docente. */
 function api(pin, fn, args) {
   const ok = PropertiesService.getScriptProperties().getProperty('PIN');
-  if (!ok || String(pin) !== ok) throw new Error('PIN incorrecto');
+  if (!esMaestro(pin) && (!ok || String(pin) !== ok)) throw new Error('PIN incorrecto');
   if (!API[fn]) throw new Error('Acción desconocida: ' + fn);
   return API[fn].apply(null, args || []);
 }
