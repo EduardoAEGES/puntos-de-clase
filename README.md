@@ -32,7 +32,7 @@ build.js              Junta src/ en apps-script/Index.html
 
 ## Publicar
 
-1. Crea un Google Sheets nuevo. Ve a **Extensiones → Apps Script**.
+1. Abre la hoja conectada, **CONTROL NOTAS 2026 II** (`HOJA_ID` en `Code.js`). Ve a **Extensiones → Apps Script**. Las hojas de la app se crean con prefijo `PC_` (PC_Cursos, PC_Alumnos, PC_Registro…), así que no tocan tus pestañas CURSOS, SEG… ni PAPELES.
 2. Pega `apps-script/Code.js` en el archivo `Código.gs`.
 3. Crea un segundo archivo de script llamado **Datos** y pega `privado/Datos.js`. Este archivo tiene tus cursos y alumnos reales; está en `.gitignore` y no se sube a GitHub. Si no lo tienes, copia el formato de `demo/seed-demo.js`.
 4. Crea un archivo HTML llamado **Index** y pega `apps-script/Index.html`.

@@ -4,6 +4,11 @@
  * Extensiones > Apps Script del Sheets. Luego correr setup() una vez.
  */
 
+/** Hoja de cálculo conectada (CONTROL NOTAS 2026 II). */
+const HOJA_ID = '1MhVerg-394EF_IIwxbzZOUPpJQbAefELiOqb-h9Ss0c';
+/** Las hojas de la app llevan este prefijo para no tocar las pestañas que ya existen (CURSOS, SEG …). */
+const PREFIJO = 'PC_';
+
 const HOJAS = {
   Cursos: ['Curso', 'Nombre', 'Sección', 'NRC', 'Modalidad', 'Días', 'Hora inicio', 'Tolerancia (min)', 'Tope participación', 'Plataforma'],
   Alumnos: ['Clave', 'ID', 'DNI', 'Apellidos', 'Nombres', 'Correo', 'Curso', 'Equipo', 'Avatar', 'Apodos', 'Total'],
@@ -77,7 +82,7 @@ function setup() {
   const ss = ss_();
   ss.setSpreadsheetTimeZone('America/Lima');
   Object.keys(HOJAS).forEach(function (n) {
-    const s = ss.getSheetByName(n) || ss.insertSheet(n);
+    const s = ss.getSheetByName(PREFIJO + n) || ss.insertSheet(PREFIJO + n);
     const h = HOJAS[n];
     if (!s.getRange(1, 1).getValue()) s.getRange(1, 1, 1, h.length).setValues([h]);
     s.getRange(1, 1, 1, h.length).setFontWeight('bold').setBackground('#EEF2F7');
@@ -96,8 +101,8 @@ function setup() {
   if (lastRow_(sh_('Alumnos')) < 2) seedAlumnos_();
 
   // Totales de puntos calculados con fórmulas sobre Registro
-  sh_('Alumnos').getRange('K1').setFormula('={"Total";ARRAYFORMULA(IF(A2:A="","",SUMIFS(Registro!G:G,Registro!D:D,A2:A)))}');
-  sh_('Equipos').getRange('E1').setFormula('={"Total";ARRAYFORMULA(IF(A2:A="","",SUMIFS(Alumnos!K:K,Alumnos!G:G,A2:A,Alumnos!H:H,B2:B)))}');
+  sh_('Alumnos').getRange('K1').setFormula('={"Total";ARRAYFORMULA(IF(A2:A="","",SUMIFS(PC_Registro!G:G,PC_Registro!D:D,A2:A)))}');
+  sh_('Equipos').getRange('E1').setFormula('={"Total";ARRAYFORMULA(IF(A2:A="","",SUMIFS(PC_Alumnos!K:K,PC_Alumnos!G:G,A2:A,PC_Alumnos!H:H,B2:B)))}');
 
   ['Hoja 1', 'Sheet1'].forEach(function (n) {
     const s = ss.getSheetByName(n);
@@ -612,12 +617,12 @@ function conLock_(fn) {
   try { return fn(); } finally { lock.releaseLock(); }
 }
 
-function ss_() { return SpreadsheetApp.getActiveSpreadsheet(); }
+function ss_() { return SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(HOJA_ID); }
 function tz_() { return ss_().getSpreadsheetTimeZone() || 'America/Lima'; }
 
 function sh_(n) {
-  const s = ss_().getSheetByName(n);
-  if (!s) throw new Error('Falta la hoja ' + n + '. Corre setup() en Apps Script.');
+  const s = ss_().getSheetByName(PREFIJO + n);
+  if (!s) throw new Error('Falta la hoja ' + PREFIJO + n + '. Corre setup() en Apps Script.');
   return s;
 }
 
