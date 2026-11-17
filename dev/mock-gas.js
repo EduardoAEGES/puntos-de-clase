@@ -74,6 +74,10 @@
         return 0;
       },
       getMaxRows: () => h().max,
+      getDataRange() {
+        const v = h().v, n = this.getLastRow(), w = Math.max(0, ...v.map(f => (f || []).length));
+        return { getValues: () => v.slice(0, n).map(f => Array.from({ length: w }, (_, j) => ((f || [])[j] ?? ''))) };
+      },
       insertRowsAfter(_, n) { h().max += n; },
       deleteRow(r) { h().v.splice(r - 1, 1); },
       setFrozenRows() {}
@@ -85,11 +89,17 @@
     insertSheet(n) { db.hojas[n] = { v: [], max: 1000 }; db.orden.push(n); return Sheet(n); },
     deleteSheet(s) { delete db.hojas[s.getName()]; db.orden = db.orden.filter(x => x !== s.getName()); },
     getSheets: () => db.orden.map(Sheet),
+    getName: () => 'Hoja de prueba',
     setSpreadsheetTimeZone(tz) { db.tz = tz; },
     getSpreadsheetTimeZone: () => db.tz
   };
 
-  window.SpreadsheetApp = { getActiveSpreadsheet: () => ss, getUi: () => ({ createMenu: () => ({ addItem() { return this; }, addToUi() {} }) }) };
+  window.SpreadsheetApp = { getActiveSpreadsheet: () => ss, openById: () => ss, getUi: () => ({ createMenu: () => ({ addItem() { return this; }, addToUi() {} }) }) };
+  const cacheMock = {};
+  window.CacheService = { getScriptCache: () => ({
+    get: k => (cacheMock[k] && cacheMock[k].h > Date.now() ? cacheMock[k].v : null),
+    put: (k, v, s) => { cacheMock[k] = { v, h: Date.now() + s * 1000 }; }
+  }) };
   window.LockService = { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) };
   window.ScriptApp = { getService: () => ({ getUrl: () => location.origin + location.pathname }) };
   window.PropertiesService = {

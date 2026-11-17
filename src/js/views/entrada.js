@@ -26,7 +26,7 @@ Views.entrada = {
       <p class="neg small" id="ent-err" style="margin:10px 0 0">${esc(aviso)}</p>
       <button class="btn primary block" style="margin-top:12px">Entrar</button>
       ${demo ? '<p class="muted small" style="margin:14px 0 0">Demo: DNI de prueba 70000001 a 70000045 · docente 0000</p>' : ''}
-      ${configurado ? '' : '<button type="button" class="btn block" id="ent-crear" style="margin-top:10px">Soy docente: crear mi PIN</button>'}
+      ${configurado || window.APPS_SCRIPT_URL ? '' : '<button type="button" class="btn block" id="ent-crear" style="margin-top:10px">Soy docente: crear mi PIN</button>'}
     </form></div>`;
     const campo = $('#ent-clave');
     campo.focus();
@@ -40,13 +40,15 @@ Views.entrada = {
       btn.disabled = true; btn.textContent = 'Entrando…';
       const fin = m => { btn.disabled = false; btn.textContent = 'Entrar'; err(m); };
       try {
-        if (await Api.run('verificarClave', v)) {       // docente
+        const clave = await Api.run('verificarClave', v);
+        if (clave === true) {                           // docente
           Api.setPin(v);
           return await cargar();
         }
-        if (v.length !== 8) return fin('No reconozco esa clave.');
+        const bloq = 'Demasiados intentos con claves incorrectas. Espera unos minutos.';
+        if (v.length !== 8) return fin(clave === 'bloqueado' ? bloq : 'No reconozco esa clave.');
         const r = await Api.run('consultarNotas', v);   // alumno
-        if (!r.length) return fin('No encontré ese DNI. Consulta con tu docente.');
+        if (!r.length) return fin(clave === 'bloqueado' ? bloq : 'No encontré ese DNI. Consulta con tu docente.');
         Views.notas.mostrar(r, v);
       } catch (e) { fin(e.message || 'No se pudo entrar.'); }
     };

@@ -55,6 +55,17 @@ python dev/servidor.py
 
 Abre `http://localhost:5500/src/index.html` (o `index.html` con doble clic). Entra con una clave del docente (`CLAVES_MAESTRAS` de `privado/Datos.js`) o con el DNI de un alumno. En **Ajustes → Cargar datos de prueba** se crean 8 sesiones al azar y los DNI 70000001 a 70000030.
 
+## Página de GitHub con tus datos reales
+
+GitHub Pages es público, así que los alumnos reales **no** se publican ahí: la página llama a tu Apps Script, que lee tus datos en el servidor y a cada alumno solo le devuelve los suyos (por DNI).
+
+1. Publica el Apps Script como en **Publicar** (con `privado/Datos.js` pegado como archivo `Datos`). En `Datos.js` están `CLAVES_MAESTRAS` y `CONTROL_NOTAS` (la hoja CONTROL NOTAS con la pestaña CURSOS).
+2. En el editor corre `setup` una vez y luego `importarDesdeControl` cada vez que cambie la hoja (trae Apellidos, Nombres, DNI, SEXO y Curso).
+3. En **Implementar → Aplicación web**, acceso **Cualquier usuario**. Copia el enlace que termina en `/exec`.
+4. Pégalo en `url-apps-script.txt` (una sola línea), corre `node build-demo.js` y sube `docs/` con `git push`.
+
+Sin `url-apps-script.txt`, `docs/` queda como demo con datos inventados. Tras 20 claves incorrectas la entrada del docente se bloquea 10 minutos.
+
 ## Demo pública (GitHub Pages)
 
 ```bash

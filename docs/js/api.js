@@ -5,6 +5,12 @@ const Api = {
   pin: '',
 
   run(fn, ...args) {
+    // Página de GitHub Pages: habla con el Apps Script publicado (config en docs/index.html)
+    if (window.APPS_SCRIPT_URL) {
+      return fetch(window.APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) })
+        .then(r => r.json())
+        .then(j => { if (j.error) throw new Error(j.error); return j.ok; });
+    }
     return new Promise((ok, fail) => {
       if (typeof google === 'undefined' || !google.script) return fail(new Error('Abre la app desde el enlace de Apps Script.'));
       google.script.run.withSuccessHandler(ok).withFailureHandler(e => fail(e instanceof Error ? e : new Error(String(e && e.message || e))))[fn](...args);

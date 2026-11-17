@@ -67,6 +67,23 @@ function onOpen() {
     .addToUi();
 }
 
+/**
+ * API para la página de GitHub Pages (docs/): recibe POST con {fn, args} y devuelve JSON.
+ * Solo se exponen estas acciones; crearPin no está (el PIN se crea desde el editor o con CLAVES_MAESTRAS).
+ */
+function doPost(e) {
+  let out;
+  try {
+    const req = JSON.parse(e.postData.contents);
+    const permitidas = { estadoPin: estadoPin, verificarClave: verificarClave, consultarNotas: consultarNotas, guardarAvatar: guardarAvatar, api: api };
+    if (!permitidas[req.fn]) throw new Error('Acción no permitida.');
+    out = { ok: permitidas[req.fn].apply(null, req.args || []) };
+  } catch (err) {
+    out = { error: String(err && err.message || err) };
+  }
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Puntos de clase')
@@ -164,9 +181,28 @@ function estadoPin() {
   return { configurado: clavesDocente_().length > 0 };
 }
 
-/** true si es una clave del docente. No lanza error: la usa la pantalla de entrada. */
-function verificarClave(clave) {
+function claveValida_(clave) {
   return clavesDocente_().indexOf(String(clave || '').trim()) >= 0;
+}
+
+/** Intentos fallidos de clave en los últimos 10 minutos (frena adivinar la clave del docente). */
+const MAX_FALLOS = 20;
+function fallos_() { return Number(CacheService.getScriptCache().get('fallos') || 0); }
+function sumarFallo_() { CacheService.getScriptCache().put('fallos', String(fallos_() + 1), 600); }
+
+/**
+ * true si es una clave del docente, false si no, 'bloqueado' si hubo demasiados intentos.
+ * No lanza error: la usa la pantalla de entrada (que también recibe DNI de alumnos; esos no cuentan como fallo).
+ */
+function verificarClave(clave) {
+  if (fallos_() >= MAX_FALLOS) return 'bloqueado';
+  const ok = claveValida_(clave);
+  if (!ok) {
+    const dni = String(clave || '').replace(/\D/g, '');
+    const esDni = dni.length === 8 && read_('Alumnos').some(function (r) { return str_(r[2]).replace(/\D/g, '') === dni; });
+    if (!esDni) sumarFallo_();
+  }
+  return ok;
 }
 
 function crearPin(pin) {
@@ -191,7 +227,8 @@ const API = {
 
 /** Única puerta de entrada de la app del docente. */
 function api(pin, fn, args) {
-  if (!verificarClave(pin)) throw new Error('PIN incorrecto');
+  if (fallos_() >= MAX_FALLOS) throw new Error('PIN bloqueado unos minutos por demasiados intentos.');
+  if (!claveValida_(pin)) { sumarFallo_(); throw new Error('PIN incorrecto'); }
   if (!API[fn]) throw new Error('Acción desconocida: ' + fn);
   return API[fn].apply(null, args || []);
 }
@@ -608,6 +645,43 @@ function importAlumnos_(curso, items) {
     st.msg = nuevos + ' nuevos, ' + actualizados + ' actualizados';
     return st;
   });
+}
+
+/**
+ * Trae los alumnos de tu hoja de control (pestaña CURSOS: Apellidos, Nombres, DNI, SEXO, Curso) a la hoja Alumnos.
+ * Configuración en Datos.js (privado): const CONTROL_NOTAS = { id: 'ID de la hoja', hoja: 'CURSOS', cursos: { 'Contabilidad': 'CONT', ... } };
+ * Sin "id" lee la hoja donde está instalado el script. Se puede correr las veces que haga falta: actualiza y agrega.
+ */
+function importarDesdeControl() {
+  if (typeof CONTROL_NOTAS === 'undefined') throw new Error('Falta CONTROL_NOTAS en Datos.js.');
+  const ss = CONTROL_NOTAS.id ? SpreadsheetApp.openById(CONTROL_NOTAS.id) : ss_();
+  const sh = ss.getSheetByName(CONTROL_NOTAS.hoja || 'CURSOS');
+  if (!sh) throw new Error('No encuentro la pestaña ' + (CONTROL_NOTAS.hoja || 'CURSOS') + '.');
+  const v = sh.getDataRange().getValues();
+  const cab = v[0].map(function (x) { return norm_(String(x)); });
+  const col = function (n) { return cab.indexOf(norm_(n)); };
+  const ci = { ape: col('Apellidos'), nom: col('Nombres'), dni: col('DNI'), sexo: col('SEXO'), curso: col('Curso') };
+  if (ci.ape < 0 || ci.nom < 0 || ci.dni < 0 || ci.curso < 0) throw new Error('La pestaña debe tener las columnas Apellidos, Nombres, DNI y Curso.');
+  const porCurso = {};
+  const sexoDe = {};
+  v.slice(1).forEach(function (f) {
+    const ape = String(f[ci.ape] || '').trim();
+    const codigo = (CONTROL_NOTAS.cursos || {})[String(f[ci.curso] || '').trim()];
+    if (!ape || !codigo) return;
+    const dni = String(f[ci.dni] || '').replace(/\D/g, '');
+    (porCurso[codigo] = porCurso[codigo] || []).push({ apellidos: ape, nombres: String(f[ci.nom] || '').trim(), dni: dni });
+    if (dni && ci.sexo >= 0) sexoDe[dni] = String(f[ci.sexo] || '').trim().toUpperCase();
+  });
+  let total = 0;
+  Object.keys(porCurso).forEach(function (c) { importAlumnos_(c, porCurso[c]); total += porCurso[c].length; });
+  // Avatar de partida según el sexo, solo a quien aún no eligió uno
+  const hoja = sh_('Alumnos');
+  readRows_('Alumnos').forEach(function (d) {
+    if (str_(d.v[8])) return;
+    const a = avatarInicial_(str_(d.v[0]), str_(d.v[4]), sexoDe[str_(d.v[2]).replace(/\D/g, '')]);
+    if (a) hoja.getRange(d.row, 9).setValue(a);
+  });
+  return total + ' alumnos leídos de ' + ss.getName();
 }
 
 /** Escribe la hoja Notas con la nota de cada alumno de todos los cursos. */
