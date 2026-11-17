@@ -95,6 +95,7 @@
   };
 
   window.SpreadsheetApp = { getActiveSpreadsheet: () => ss, openById: () => ss, getUi: () => ({ createMenu: () => ({ addItem() { return this; }, addToUi() {} }) }) };
+  window.Logger = { log() {} };
   const cacheMock = {};
   window.CacheService = { getScriptCache: () => ({
     get: k => (cacheMock[k] && cacheMock[k].h > Date.now() ? cacheMock[k].v : null),

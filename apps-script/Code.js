@@ -652,7 +652,7 @@ function importAlumnos_(curso, items) {
  * Configuración en Datos.js (privado): const CONTROL_NOTAS = { id: 'ID de la hoja', hoja: 'CURSOS', cursos: { 'Contabilidad': 'CONT', ... } };
  * Sin "id" lee la hoja donde está instalado el script. Se puede correr las veces que haga falta: actualiza y agrega.
  */
-function importarDesdeControl() {
+function leerControl_() {
   if (typeof CONTROL_NOTAS === 'undefined') throw new Error('Falta CONTROL_NOTAS en Datos.js.');
   if (!ss_().getSheetByName('Config')) setup();   // primera vez: crea las hojas antes de importar
   const ss = CONTROL_NOTAS.id ? SpreadsheetApp.openById(CONTROL_NOTAS.id) : ss_();
@@ -665,24 +665,88 @@ function importarDesdeControl() {
   if (ci.ape < 0 || ci.nom < 0 || ci.dni < 0 || ci.curso < 0) throw new Error('La pestaña debe tener las columnas Apellidos, Nombres, DNI y Curso.');
   const porCurso = {};
   const sexoDe = {};
+  const sinCurso = {};
+  const sinDni = [];
   v.slice(1).forEach(function (f) {
     const ape = String(f[ci.ape] || '').trim();
-    const codigo = (CONTROL_NOTAS.cursos || {})[String(f[ci.curso] || '').trim()];
-    if (!ape || !codigo) return;
+    if (!ape) return;
+    const nombreCurso = String(f[ci.curso] || '').trim();
+    const codigo = (CONTROL_NOTAS.cursos || {})[nombreCurso];
+    if (!codigo) { sinCurso[nombreCurso] = (sinCurso[nombreCurso] || 0) + 1; return; }
     const dni = String(f[ci.dni] || '').replace(/\D/g, '');
-    (porCurso[codigo] = porCurso[codigo] || []).push({ apellidos: ape, nombres: String(f[ci.nom] || '').trim(), dni: dni });
+    const nom = String(f[ci.nom] || '').trim();
+    (porCurso[codigo] = porCurso[codigo] || []).push({ apellidos: ape, nombres: nom, dni: dni });
     if (dni && ci.sexo >= 0) sexoDe[dni] = String(f[ci.sexo] || '').trim().toUpperCase();
+    if (!dni) sinDni.push(ape + ' ' + nom + ' (' + codigo + ')');
   });
-  let total = 0;
-  Object.keys(porCurso).forEach(function (c) { importAlumnos_(c, porCurso[c]); total += porCurso[c].length; });
-  // Avatar de partida según el sexo, solo a quien aún no eligió uno
+  return { ss: ss, porCurso: porCurso, sexoDe: sexoDe, sinCurso: sinCurso, sinDni: sinDni };
+}
+
+function avatarsDeSexo_(sexoDe) {
   const hoja = sh_('Alumnos');
   readRows_('Alumnos').forEach(function (d) {
     if (str_(d.v[8])) return;
     const a = avatarInicial_(str_(d.v[0]), str_(d.v[4]), sexoDe[str_(d.v[2]).replace(/\D/g, '')]);
     if (a) hoja.getRange(d.row, 9).setValue(a);
   });
-  return total + ' alumnos leídos de ' + ss.getName();
+}
+
+function resumenControl_(c, extra) {
+  const total = Object.keys(c.porCurso).reduce(function (n, k) { return n + c.porCurso[k].length; }, 0);
+  const partes = [total + ' alumnos leídos de ' + c.ss.getName()];
+  if (extra) partes.push(extra);
+  if (c.sinDni.length) partes.push('SIN DNI (no podrán entrar con DNI): ' + c.sinDni.join('; '));
+  const nc = Object.keys(c.sinCurso);
+  if (nc.length) partes.push('Cursos de la hoja que no están en CONTROL_NOTAS.cursos (ignorados): ' + nc.map(function (k) { return k + ' (' + c.sinCurso[k] + ')'; }).join(', '));
+  return partes.join('\n');
+}
+
+/** Agrega y actualiza. No borra a nadie. Se puede correr las veces que haga falta. */
+function importarDesdeControl() {
+  const c = leerControl_();
+  Object.keys(c.porCurso).forEach(function (k) { importAlumnos_(k, c.porCurso[k]); });
+  avatarsDeSexo_(c.sexoDe);
+  const msg = resumenControl_(c);
+  Logger.log(msg);
+  return msg;
+}
+
+/**
+ * Deja la hoja Alumnos igual que la hoja de control: importa y además BORRA a los alumnos de esos cursos
+ * que ya no están en la hoja de control. Los que tienen puntos en Registro no se borran (se avisa).
+ */
+function sincronizarConControl() {
+  const c = leerControl_();
+  Object.keys(c.porCurso).forEach(function (k) { importAlumnos_(k, c.porCurso[k]); });
+  const enHoja = {};
+  Object.keys(c.porCurso).forEach(function (k) {
+    enHoja[k] = { dni: {}, nombre: {} };
+    c.porCurso[k].forEach(function (a) {
+      if (a.dni) enHoja[k].dni[a.dni] = true;
+      enHoja[k].nombre[norm_(a.apellidos + ' ' + a.nombres)] = true;
+    });
+  });
+  const conPuntos = {};
+  read_('Registro').forEach(function (r) { conPuntos[str_(r[3])] = true; });
+  const sh = sh_('Alumnos');
+  const borrar = [];
+  const conservados = [];
+  readRows_('Alumnos').forEach(function (d) {
+    const curso = str_(d.v[6]);
+    if (!enHoja[curso]) return;
+    const dni = str_(d.v[2]).replace(/\D/g, '');
+    const esta = (dni && enHoja[curso].dni[dni]) || enHoja[curso].nombre[norm_(str_(d.v[3]) + ' ' + str_(d.v[4]))];
+    if (esta) return;
+    if (conPuntos[str_(d.v[0])]) conservados.push(str_(d.v[3]) + ' ' + str_(d.v[4]) + ' (' + curso + ')');
+    else borrar.push(d.row);
+  });
+  borrar.sort(function (a, b) { return b - a; }).forEach(function (r) { sh.deleteRow(r); });
+  avatarsDeSexo_(c.sexoDe);
+  let extra = borrar.length + ' alumnos que ya no están en la hoja se quitaron de Alumnos';
+  if (conservados.length) extra += '\nNo se quitaron por tener puntos: ' + conservados.join('; ');
+  const msg = resumenControl_(c, extra);
+  Logger.log(msg);
+  return msg;
 }
 
 /** Escribe la hoja Notas con la nota de cada alumno de todos los cursos. */

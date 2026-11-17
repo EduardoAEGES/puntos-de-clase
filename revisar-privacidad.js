@@ -43,7 +43,7 @@ function revisar(archivos) {
   const lista = marcas().map(x => [x, plano(x)]);
   const fugas = [];
   archivos.forEach(f => {
-    if (/\.(png|jpe?g|ico|gif|webp)$/i.test(f)) return;
+    if (/\.(png|jpe?g|ico|gif|webp)$/i.test(f) || !fs.existsSync(path.resolve(R, f))) return;
     const t = plano(fs.readFileSync(path.resolve(R, f), 'utf8'));
     lista.forEach(([orig, p]) => { if (t.includes(p)) fugas.push(path.relative(R, path.resolve(R, f)) + ': ' + orig); });
   });
