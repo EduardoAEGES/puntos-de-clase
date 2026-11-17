@@ -654,6 +654,7 @@ function importAlumnos_(curso, items) {
  */
 function importarDesdeControl() {
   if (typeof CONTROL_NOTAS === 'undefined') throw new Error('Falta CONTROL_NOTAS en Datos.js.');
+  if (!ss_().getSheetByName('Config')) setup();   // primera vez: crea las hojas antes de importar
   const ss = CONTROL_NOTAS.id ? SpreadsheetApp.openById(CONTROL_NOTAS.id) : ss_();
   const sh = ss.getSheetByName(CONTROL_NOTAS.hoja || 'CURSOS');
   if (!sh) throw new Error('No encuentro la pestaña ' + (CONTROL_NOTAS.hoja || 'CURSOS') + '.');
