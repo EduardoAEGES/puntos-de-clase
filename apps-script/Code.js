@@ -197,6 +197,7 @@ function sumarFallo_() { CacheService.getScriptCache().put('fallos', String(fall
 function verificarClave(clave) {
   if (fallos_() >= MAX_FALLOS) return 'bloqueado';
   const ok = claveValida_(clave);
+  if (ok) importarAuto_();                     // el docente entra: se actualiza la lista de alumnos
   if (!ok) {
     const dni = String(clave || '').replace(/\D/g, '');
     const esDni = dni.length === 8 && read_('Alumnos').some(function (r) { return str_(r[2]).replace(/\D/g, '') === dni; });
@@ -238,8 +239,12 @@ function api(pin, fn, args) {
 function consultarNotas(dni) {
   dni = String(dni || '').replace(/\D/g, '');
   if (dni.length < 8) throw new Error('Escribe tu DNI de 8 dígitos.');
-  const db = load_();
-  const filas = db.alumnos.filter(function (a) { return a.dni.replace(/\D/g, '') === dni; });
+  let db = load_();
+  let filas = db.alumnos.filter(function (a) { return a.dni.replace(/\D/g, '') === dni; });
+  if (!filas.length && importarAuto_()) {      // quizá es un alumno nuevo de la hoja de control
+    db = load_();
+    filas = db.alumnos.filter(function (a) { return a.dni.replace(/\D/g, '') === dni; });
+  }
   return filas.map(function (a) {
     const st = calcCurso_(db, a.curso);
     const yo = st.alumnos.filter(function (x) { return x.clave === a.clave; })[0];
@@ -699,6 +704,18 @@ function resumenControl_(c, extra) {
   const nc = Object.keys(c.sinCurso);
   if (nc.length) partes.push('Cursos de la hoja que no están en CONTROL_NOTAS.cursos (ignorados): ' + nc.map(function (k) { return k + ' (' + c.sinCurso[k] + ')'; }).join(', '));
   return partes.join('\n');
+}
+
+/**
+ * Trae a los alumnos nuevos de la hoja de control sin que nadie corra nada: se llama cuando un DNI no aparece
+ * o cuando entra el docente. Como mucho una vez cada 5 minutos. Solo agrega y actualiza; nunca borra.
+ */
+function importarAuto_() {
+  if (typeof CONTROL_NOTAS === 'undefined') return false;
+  const cache = CacheService.getScriptCache();
+  if (cache.get('importado')) return false;
+  cache.put('importado', '1', 300);
+  try { importarDesdeControl(); return true; } catch (e) { return false; }
 }
 
 /** Agrega y actualiza. No borra a nadie. Se puede correr las veces que haga falta. */
