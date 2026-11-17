@@ -3,6 +3,9 @@
 .dl-stat { border: 2px solid rgba(255,255,255,.14); border-radius: 14px; padding: 6px 12px; font-size: 13px; background: var(--surface); color: inherit; font-family: inherit; }
 .dl-stat b { font-weight: 800; }
 .dl-link { cursor: pointer; opacity: .8; }
+.dl-titulo { margin: 4px 0 2px; padding-left: 10px; border-left: 4px solid #1cb0f6; }
+.dl-titulo h3 { margin: 0; font-size: 15px; letter-spacing: .06em; font-weight: 800; }
+.dl-titulo p { margin: 2px 0 0; font-size: 12px; opacity: .75; }
 .dl-ruta { display: flex; gap: 14px; overflow-x: auto; padding: 8px 4px 14px; scroll-snap-type: x proximity; }
 .dl-nodo { flex: none; display: grid; justify-items: center; gap: 4px; background: none; border: 0; color: inherit; font-family: inherit; scroll-snap-align: center; cursor: pointer; }
 .dl-nodo span { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px;

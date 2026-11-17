@@ -77,6 +77,8 @@ const Sem = {
         <span class="dl-stat">⚡ <b>${signo(xp)}</b> XP del día</span>
         <button class="dl-stat dl-link" data-act="semInicio">📅 Inicio: ${esc(fmtFecha(this.inicio()))}</button>
       </div>
+      <div class="dl-titulo"><h3>¿QUÉ SEMANA CONVIENE REVISAR? COMPARA OPCIONES</h3>
+        <p>Elige una semana y compárala con las demás: <b>✓</b> con puntos · <b>${this.n}</b> elegida · <b>${N}</b> en total.</p></div>
       <div class="dl-ruta" id="dl-ruta">${Array.from({ length: N }, (_, i) => i + 1).map(k => {
         const est = k === this.n ? 'sel' : this.semanaConDatos(k) ? 'hecha' : '';
         return `<button class="dl-nodo ${est}" data-act="semSemana" data-n="${k}" aria-label="Semana ${k}"><span>${est === 'hecha' ? '✓' : k}</span><small>Sem ${k}</small></button>`;
